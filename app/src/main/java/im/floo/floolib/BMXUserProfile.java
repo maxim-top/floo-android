@@ -180,6 +180,37 @@ public class BMXUserProfile extends BMXBaseObject {
       return flooJNI.BMXUserProfile_MessageSetting_mAutoDownloadAttachment_get(swigCPtr, this);
     }
   
+    public void setMSilenceStartTime(int value) {
+      flooJNI.BMXUserProfile_MessageSetting_mSilenceStartTime_set(swigCPtr, this, value);
+    }
+
+    public int getMSilenceStartTime() {
+      return flooJNI.BMXUserProfile_MessageSetting_mSilenceStartTime_get(swigCPtr, this);
+    }
+
+    public void setMSilenceEndTime(int value) {
+      flooJNI.BMXUserProfile_MessageSetting_mSilenceEndTime_set(swigCPtr, this, value);
+    }
+
+    public int getMSilenceEndTime() {
+      return flooJNI.BMXUserProfile_MessageSetting_mSilenceEndTime_get(swigCPtr, this);
+    }
+
+    public void setMPushStartTime(int value) {
+      flooJNI.BMXUserProfile_MessageSetting_mPushStartTime_set(swigCPtr, this, value);
+    }
+
+    public int getMPushStartTime() {
+      return flooJNI.BMXUserProfile_MessageSetting_mPushStartTime_get(swigCPtr, this);
+    }
+
+    public void setMPushEndTime(int value) {
+      flooJNI.BMXUserProfile_MessageSetting_mPushEndTime_set(swigCPtr, this, value);
+    }
+
+    public int getMPushEndTime() {
+      return flooJNI.BMXUserProfile_MessageSetting_mPushEndTime_get(swigCPtr, this);
+    }
   }
 
   /**
@@ -212,6 +243,14 @@ public class BMXUserProfile extends BMXBaseObject {
    **/
   public String nickname() {
     return flooJNI.BMXUserProfile_nickname(swigCPtr, this);
+  }
+
+  /**
+   *  用户头像ratel服务器地址
+   * @return std::string
+   **/
+  public String avatarRatelUrl() {
+    return flooJNI.BMXUserProfile_avatarRatelUrl(swigCPtr, this);
   }
 
   /**

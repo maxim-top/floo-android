@@ -157,6 +157,61 @@ public class BMXMessageConfig extends BMXBaseObject {
     flooJNI.BMXMessageConfig_clearGroupMemberList(swigCPtr, this);
   }
 
+  public void setIOSConfig(String iosConfig) {
+    flooJNI.BMXMessageConfig_setIOSConfig(swigCPtr, this, iosConfig);
+  }
+
+  /**
+   *  获取iOS消息配置
+   **/
+  public String getIOSConfig() {
+    return flooJNI.BMXMessageConfig_getIOSConfig(swigCPtr, this);
+  }
+
+  public void setAndroidConfig(String androidConfig) {
+    flooJNI.BMXMessageConfig_setAndroidConfig(swigCPtr, this, androidConfig);
+  }
+
+  /**
+   *  获取Android消息配置
+   **/
+  public String getAndroidConfig() {
+    return flooJNI.BMXMessageConfig_getAndroidConfig(swigCPtr, this);
+  }
+
+  public void setPushShowBeginTime(int beginTime) {
+    flooJNI.BMXMessageConfig_setPushShowBeginTime(swigCPtr, this, beginTime);
+  }
+
+  /**
+   *  获取推送消息开始展示时间
+   **/
+  public int getPushShowBeginTime() {
+    return flooJNI.BMXMessageConfig_getPushShowBeginTime(swigCPtr, this);
+  }
+
+  public void setPushShowEndTime(int endTime) {
+    flooJNI.BMXMessageConfig_setPushShowEndTime(swigCPtr, this, endTime);
+  }
+
+  /**
+   *  获取推送消息结束展示时间
+   **/
+  public int getPushShowEndTime() {
+    return flooJNI.BMXMessageConfig_getPushShowEndTime(swigCPtr, this);
+  }
+
+  public void setPushTitle(String pushTitle) {
+    flooJNI.BMXMessageConfig_setPushTitle(swigCPtr, this, pushTitle);
+  }
+
+  /**
+   *  获取推送消息标题
+   **/
+  public String getPushTitle() {
+    return flooJNI.BMXMessageConfig_getPushTitle(swigCPtr, this);
+  }
+
   /**
    *  序列化操作
    * @return std::string

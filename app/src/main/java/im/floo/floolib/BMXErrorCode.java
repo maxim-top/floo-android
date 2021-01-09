@@ -28,6 +28,10 @@ public enum BMXErrorCode {
   UserKickedByOtherDevices,
   UserAbnormal,
   UserCancel,
+  UserOldPasswordNotMatch,
+  PushTokenInvalid,
+  PushAliasBindByOtherUser,
+  PushAliasTokenNotMatch,
   InvalidVerificationCode,
   InvalidRequestParameter,
   InvalidUserNameParameter,
@@ -36,6 +40,10 @@ public enum BMXErrorCode {
   CurrentUserIsInBlocklist,
   AnswerFailed,
   InvalidToken,
+  InvalidFileSign,
+  InvalidFileObjectType,
+  InvalidFileUploadToType,
+  InvalidFileDownloadUrl,
   RosterNotFriend,
   RosterBlockListExist,
   RosterRejectApplication,
@@ -92,7 +100,17 @@ public enum BMXErrorCode {
   ServerNotAllowOpenRegister,
   ServerFireplaceUnknownError,
   ServerResponseInvalid,
-  ServerInvalidUploadUrl;
+  ServerInvalidUploadUrl,
+  ServerAppLicenseInvalid,
+  ServerAppLicenseExpired,
+  ServerAppLicenseExceedLimit,
+  ServerAppIdMissing,
+  ServerAppIdInvalid,
+  ServerAppSignInvalid,
+  ServerAppNotifierNotExist,
+  ServerNoClusterInfoForClusterId,
+  ServerFileDownloadFailure,
+  ServerAppStatusNotNormal;
 
   public final int swigValue() {
     return swigValue;

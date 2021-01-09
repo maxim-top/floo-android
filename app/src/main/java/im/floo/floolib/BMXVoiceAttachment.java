@@ -56,13 +56,13 @@ public class BMXVoiceAttachment extends BMXFileAttachment {
 
   /**
    *  构造函数，构建接收音频消息附件
-   * @param url 文件服务器地址
+   * @param ratelUrl ratel服务器地址
    * @param duration 音频时长
    * @param displayName 文件展示名
    * @param fileLength 文件大小
    **/
-  public BMXVoiceAttachment(String url, int duration, String displayName, long fileLength) {
-    this(flooJNI.new_BMXVoiceAttachment__SWIG_2(url, duration, displayName, fileLength), true);
+  public BMXVoiceAttachment(String ratelUrl, int duration, String displayName, long fileLength) {
+    this(flooJNI.new_BMXVoiceAttachment__SWIG_2(ratelUrl, duration, displayName, fileLength), true);
   }
 
   /**

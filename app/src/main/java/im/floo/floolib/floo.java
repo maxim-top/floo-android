@@ -41,6 +41,26 @@ public class floo implements flooConstants {
     return flooJNI.kGroupMemberList_get();
   }
 
+  public static String getKIOSConfig() {
+    return flooJNI.kIOSConfig_get();
+  }
+
+  public static String getKAndroidConfig() {
+    return flooJNI.kAndroidConfig_get();
+  }
+
+  public static String getKPushShowBeginTime() {
+    return flooJNI.kPushShowBeginTime_get();
+  }
+
+  public static String getKPushShowEndTime() {
+    return flooJNI.kPushShowEndTime_get();
+  }
+
+  public static String getKPushTitle() {
+    return flooJNI.kPushTitle_get();
+  }
+
   public static String encodeBMXMessageConfig(BMXMessageConfig arg0) {
     return flooJNI.encodeBMXMessageConfig(BMXMessageConfig.getCPtr(arg0), arg0);
   }

@@ -73,27 +73,27 @@ public class BMXVideoAttachment extends BMXFileAttachment {
 
   /**
    *  构造函数，构建接收视频消息附件
-   * @param url 文件服务器地址
+   * @param ratelUrl ratel服务器地址
    * @param duration 视频片段时长
    * @param size 视频大小，宽度和高度
    * @param displayName 文件展示名
    * @param fileLength 文件大小
    **/
-  public BMXVideoAttachment(String url, int duration, BMXMessageAttachment.Size size, String displayName, long fileLength) {
-    this(flooJNI.new_BMXVideoAttachment__SWIG_4(url, duration, BMXMessageAttachment.Size.getCPtr(size), size, displayName, fileLength), true);
+  public BMXVideoAttachment(String ratelUrl, int duration, BMXMessageAttachment.Size size, String displayName, long fileLength) {
+    this(flooJNI.new_BMXVideoAttachment__SWIG_4(ratelUrl, duration, BMXMessageAttachment.Size.getCPtr(size), size, displayName, fileLength), true);
   }
 
   /**
    *  构造函数，构建接收视频消息附件
-   * @param url 文件服务器地址
+   * @param ratelUrl ratel服务器地址
    * @param thumbnailUrl 缩略图文件服务器地址
    * @param duration 视频片段时长
    * @param size 视频大小，宽度和高度
    * @param displayName 文件展示名
    * @param fileLength 文件大小
    **/
-  public BMXVideoAttachment(String url, String thumbnailUrl, int duration, BMXMessageAttachment.Size size, String displayName, long fileLength) {
-    this(flooJNI.new_BMXVideoAttachment__SWIG_5(url, thumbnailUrl, duration, BMXMessageAttachment.Size.getCPtr(size), size, displayName, fileLength), true);
+  public BMXVideoAttachment(String ratelUrl, String thumbnailUrl, int duration, BMXMessageAttachment.Size size, String displayName, long fileLength) {
+    this(flooJNI.new_BMXVideoAttachment__SWIG_5(ratelUrl, thumbnailUrl, duration, BMXMessageAttachment.Size.getCPtr(size), size, displayName, fileLength), true);
   }
 
   /**
@@ -146,19 +146,19 @@ public class BMXVideoAttachment extends BMXFileAttachment {
   }
 
   /**
-   *  设置发送视频片段消息缩略图服务器路径
-   * @param thumbnailUrl 视频片段消息缩略图服务器路径
-   **/
-  public void setThumbnailUrl(String thumbnailUrl) {
-    flooJNI.BMXVideoAttachment_setThumbnailUrl(swigCPtr, this, thumbnailUrl);
-  }
-
-  /**
    *  缩略图服务器路径
    * @return std::string
    **/
   public String thumbnailUrl() {
     return flooJNI.BMXVideoAttachment_thumbnailUrl(swigCPtr, this);
+  }
+
+  public void setThumbnailRatelUrl(String thumbnailRatelUrl) {
+    flooJNI.BMXVideoAttachment_setThumbnailRatelUrl(swigCPtr, this, thumbnailRatelUrl);
+  }
+
+  public String thumbnailRatelUrl() {
+    return flooJNI.BMXVideoAttachment_thumbnailRatelUrl(swigCPtr, this);
   }
 
   /**

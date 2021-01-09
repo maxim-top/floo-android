@@ -507,6 +507,29 @@ public class BMXUserManager {
     }
 
     /**
+     *  设置推送别名
+     * @param alias 别名
+     * @param bmxPushToken 推送token
+     * @param callBack  BMXErrorCode
+     **/
+    public void setPushAlias(final String alias, final String bmxPushToken,final BMXCallBack callBack) {
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.setPushAlias(alias, bmxPushToken);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code);
+            }
+        });
+    }
+
+    /**
      *  设置收到新消息是否声音提醒
      * @param enable 收到新消息是否声音提醒，true提醒，false不提醒
      * @param callBack BMXErrorCode

@@ -146,6 +146,18 @@ public class BMXMessage extends BMXBaseObject {
   }
 
   /**
+   *  语音或者视频消息是否收到播放回执，仅对收到的音视频消息有效
+   * @return bool
+   */
+  public boolean isPlayAcked() {
+    return flooJNI.BMXMessage_isPlayAcked(swigCPtr, this);
+  }
+
+  public void setIsPlayAcked(boolean arg0) {
+    flooJNI.BMXMessage_setIsPlayAcked(swigCPtr, this, arg0);
+  }
+
+  /**
    *  是否接收的消息
    * @return bool
    */
@@ -330,6 +342,38 @@ public class BMXMessage extends BMXBaseObject {
   }
 
   /**
+   *  获取群消息已播放计数
+   * @return bool
+   */
+  public int groupPlayAckCount() {
+    return flooJNI.BMXMessage_groupPlayAckCount(swigCPtr, this);
+  }
+
+  public void setGroupPlayAckCount(int count) {
+    flooJNI.BMXMessage_setGroupPlayAckCount(swigCPtr, this, count);
+  }
+
+  /**
+   *  获取群消息已播放回执未读计数
+   * @return bool
+   */
+  public int groupPlayAckUnreadCount() {
+    return flooJNI.BMXMessage_groupPlayAckUnreadCount(swigCPtr, this);
+  }
+
+  public void setGroupPlayAckUnreadCount(int count) {
+    flooJNI.BMXMessage_setGroupPlayAckUnreadCount(swigCPtr, this, count);
+  }
+
+  /**
+   *  设置所有群消息已播回执为已读
+   * @return bool
+   */
+  public boolean groupPlayAckReadAll() {
+    return flooJNI.BMXMessage_groupPlayAckReadAll(swigCPtr, this);
+  }
+
+  /**
    * 设置消息的扩散优先级，默认为0。0表示扩散，数字越小扩散的越多。
    * 取值范围0-10。普通人在聊天室发送的消息级别默认为5，可以丢弃。管理员默认为0不会丢弃。其它值可以根据业务自行设置。
    * @param priority 设置群消息未读数目
@@ -345,6 +389,23 @@ public class BMXMessage extends BMXBaseObject {
   public int priority() {
     return flooJNI.BMXMessage_priority(swigCPtr, this);
   }
+
+
+  /**
+   * 设置是否推送消息
+   */
+  public void setPushMessageMode(boolean arg0) {
+    flooJNI.BMXMessage_setPushMessageMode(swigCPtr, this, arg0);
+  }
+
+  /**
+   * 是否是推送消息
+   * @return boolean
+   */
+  public boolean isPushMessage() {
+    return flooJNI.BMXMessage_isPushMessage(swigCPtr, this);
+  }
+
 
   /**
    *  创建发送文本消息

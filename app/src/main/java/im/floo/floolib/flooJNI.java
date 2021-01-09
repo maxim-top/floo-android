@@ -20,6 +20,17 @@ public class flooJNI {
   public final static native long BMXMessageList_get(long jarg1, BMXMessageList jarg1_, int jarg2);
   public final static native void BMXMessageList_set(long jarg1, BMXMessageList jarg1_, int jarg2, long jarg3, BMXMessage jarg3_);
   public final static native void delete_BMXMessageList(long jarg1);
+  public final static native long new_TagList__SWIG_0();
+  public final static native long new_TagList__SWIG_1(long jarg1);
+  public final static native long TagList_size(long jarg1, TagList jarg1_);
+  public final static native long TagList_capacity(long jarg1, TagList jarg1_);
+  public final static native void TagList_reserve(long jarg1, TagList jarg1_, long jarg2);
+  public final static native boolean TagList_isEmpty(long jarg1, TagList jarg1_);
+  public final static native void TagList_clear(long jarg1, TagList jarg1_);
+  public final static native void TagList_add(long jarg1, TagList jarg1_, String jarg2);
+  public final static native String TagList_get(long jarg1, TagList jarg1_, int jarg2);
+  public final static native void TagList_set(long jarg1, TagList jarg1_, int jarg2, String jarg3);
+  public final static native void delete_TagList(long jarg1);
   public final static native long new_BMXConversationList__SWIG_0();
   public final static native long new_BMXConversationList__SWIG_1(long jarg1);
   public final static native long BMXConversationList_size(long jarg1, BMXConversationList jarg1_);
@@ -184,6 +195,11 @@ public class flooJNI {
   public final static native String kSenderNickname_get();
   public final static native String kGroupAck_get();
   public final static native String kGroupMemberList_get();
+  public final static native String kIOSConfig_get();
+  public final static native String kAndroidConfig_get();
+  public final static native String kPushShowBeginTime_get();
+  public final static native String kPushShowEndTime_get();
+  public final static native String kPushTitle_get();
   public final static native void delete_BMXMessageConfig(long jarg1);
   public final static native void BMXMessageConfig_setMentionAll(long jarg1, BMXMessageConfig jarg1_, boolean jarg2);
   public final static native boolean BMXMessageConfig_getMentionAll(long jarg1, BMXMessageConfig jarg1_);
@@ -200,6 +216,16 @@ public class flooJNI {
   public final static native void BMXMessageConfig_addGroupMember(long jarg1, BMXMessageConfig jarg1_, long jarg2);
   public final static native void BMXMessageConfig_removeGroupMember(long jarg1, BMXMessageConfig jarg1_, long jarg2);
   public final static native void BMXMessageConfig_clearGroupMemberList(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setIOSConfig(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getIOSConfig(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setAndroidConfig(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getAndroidConfig(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushShowBeginTime(long jarg1, BMXMessageConfig jarg1_, int jarg2);
+  public final static native int BMXMessageConfig_getPushShowBeginTime(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushShowEndTime(long jarg1, BMXMessageConfig jarg1_, int jarg2);
+  public final static native int BMXMessageConfig_getPushShowEndTime(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushTitle(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getPushTitle(long jarg1, BMXMessageConfig jarg1_);
   public final static native String BMXMessageConfig_serialize(long jarg1, BMXMessageConfig jarg1_);
   public final static native long BMXMessageConfig_createMessageConfig(boolean jarg1);
   public final static native String encodeBMXMessageConfig(long jarg1, BMXMessageConfig jarg1_);
@@ -219,6 +245,8 @@ public class flooJNI {
   public final static native void BMXMessage_setClientTimestamp(long jarg1, BMXMessage jarg1_, long jarg2);
   public final static native boolean BMXMessage_isPlayed(long jarg1, BMXMessage jarg1_);
   public final static native void BMXMessage_setIsPlayed(long jarg1, BMXMessage jarg1_, boolean jarg2);
+  public final static native boolean BMXMessage_isPlayAcked(long jarg1, BMXMessage jarg1_);
+  public final static native void BMXMessage_setIsPlayAcked(long jarg1, BMXMessage jarg1_, boolean jarg2);
   public final static native boolean BMXMessage_isReceiveMsg(long jarg1, BMXMessage jarg1_);
   public final static native void BMXMessage_setIsReceiveMsg(long jarg1, BMXMessage jarg1_, boolean jarg2);
   public final static native boolean BMXMessage_isRead(long jarg1, BMXMessage jarg1_);
@@ -244,8 +272,15 @@ public class flooJNI {
   public final static native int BMXMessage_groupAckUnreadCount(long jarg1, BMXMessage jarg1_);
   public final static native void BMXMessage_setGroupAckUnreadCount(long jarg1, BMXMessage jarg1_, int jarg2);
   public final static native boolean BMXMessage_groupAckReadAll(long jarg1, BMXMessage jarg1_);
+  public final static native int BMXMessage_groupPlayAckCount(long jarg1, BMXMessage jarg1_);
+  public final static native void BMXMessage_setGroupPlayAckCount(long jarg1, BMXMessage jarg1_, int jarg2);
+  public final static native int BMXMessage_groupPlayAckUnreadCount(long jarg1, BMXMessage jarg1_);
+  public final static native void BMXMessage_setGroupPlayAckUnreadCount(long jarg1, BMXMessage jarg1_, int jarg2);
+  public final static native boolean BMXMessage_groupPlayAckReadAll(long jarg1, BMXMessage jarg1_);
   public final static native void BMXMessage_setPriority(long jarg1, BMXMessage jarg1_, int jarg2);
   public final static native int BMXMessage_priority(long jarg1, BMXMessage jarg1_);
+  public final static native void BMXMessage_setPushMessageMode(long jarg1, BMXMessage jarg1_, boolean jarg2);
+  public final static native boolean BMXMessage_isPushMessage(long jarg1, BMXMessage jarg1_);
   public final static native long BMXMessage_createMessage__SWIG_0(long jarg1, long jarg2, int jarg3, long jarg4, String jarg5);
   public final static native long BMXMessage_createMessage__SWIG_1(long jarg1, long jarg2, int jarg3, long jarg4, long jarg5, BMXMessageAttachment jarg5_);
   public final static native long BMXMessage_createCommandMessage__SWIG_0(long jarg1, long jarg2, int jarg3, long jarg4, String jarg5);
@@ -293,6 +328,8 @@ public class flooJNI {
   public final static native void delete_BMXSDKConfig_HostConfig(long jarg1);
   public final static native long new_BMXSDKConfig__SWIG_0(int jarg1, String jarg2, String jarg3, String jarg4, String jarg5, String jarg6, String jarg7, boolean jarg8);
   public final static native long new_BMXSDKConfig__SWIG_1(int jarg1, String jarg2, String jarg3, String jarg4, String jarg5, String jarg6, String jarg7);
+  public final static native long new_BMXSDKConfig__SWIG_2(int jarg1, String jarg2, String jarg3, String jarg4, String jarg5, String jarg6, String jarg7, String jarg8, String jarg9, boolean jarg10);
+  public final static native long new_BMXSDKConfig__SWIG_3(int jarg1, String jarg2, String jarg3, String jarg4, String jarg5, String jarg6, String jarg7, String jarg8, String jarg9);
   public final static native void delete_BMXSDKConfig(long jarg1);
   public final static native String BMXSDKConfig_getDataDir(long jarg1, BMXSDKConfig jarg1_);
   public final static native String BMXSDKConfig_getCacheDir(long jarg1, BMXSDKConfig jarg1_);
@@ -300,6 +337,7 @@ public class flooJNI {
   public final static native String BMXSDKConfig_getVsn(long jarg1, BMXSDKConfig jarg1_);
   public final static native String BMXSDKConfig_getSDKVersion(long jarg1, BMXSDKConfig jarg1_);
   public final static native String BMXSDKConfig_getPushCertName(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setPushCertName(long jarg1, BMXSDKConfig jarg1_, String jarg2);
   public final static native String BMXSDKConfig_getUserAgent(long jarg1, BMXSDKConfig jarg1_);
   public final static native boolean BMXSDKConfig_enableDeliveryAck(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setEnableDeliveryAck(long jarg1, BMXSDKConfig jarg1_, boolean jarg2);
@@ -324,6 +362,12 @@ public class flooJNI {
   public final static native void BMXSDKConfig_setUserDNSAddress(long jarg1, BMXSDKConfig jarg1_, String jarg2);
   public final static native String BMXSDKConfig_getAppID(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setAppID(long jarg1, BMXSDKConfig jarg1_, String jarg2);
+  public final static native String BMXSDKConfig_getAppSecret(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setAppSecret(long jarg1, BMXSDKConfig jarg1_, String jarg2);
+  public final static native int BMXSDKConfig_getPushProviderType(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setPushProviderType(long jarg1, BMXSDKConfig jarg1_, int jarg2);
+  public final static native int BMXSDKConfig_getPushEnvironmentType(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setEnvironmentType(long jarg1, BMXSDKConfig jarg1_, int jarg2);
   public final static native long BMXSDKConfig_getDebugLogReceiverId(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setDebugLogReceiverId(long jarg1, BMXSDKConfig jarg1_, long jarg2);
   public final static native void delete_BMXNetworkListener(long jarg1);
@@ -338,6 +382,7 @@ public class flooJNI {
   public final static native int BMXChatService_forwardMessage__SWIG_0(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessageList jarg2_, long jarg3, BMXConversation jarg3_, long jarg4, BMXMessage jarg4_);
   public final static native void BMXChatService_forwardMessage__SWIG_1(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_ackMessage(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXChatService_ackPlayMessage(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_readCancel(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_readAllMessage(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_removeMessage__SWIG_0(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, boolean jarg3);
@@ -345,6 +390,7 @@ public class flooJNI {
   public final static native void BMXChatService_downloadThumbnail__SWIG_0(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
   public final static native void BMXChatService_downloadThumbnail__SWIG_1(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_downloadAttachment(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXChatService_downloadAttachmentByUrl(long jarg1, BMXChatService jarg1_, long jarg2, String jarg3, String jarg4);
   public final static native void BMXChatService_cancelUploadAttachment(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_cancelDownloadAttachment(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native int BMXChatService_insertMessages(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessageList jarg2_);
@@ -364,6 +410,8 @@ public class flooJNI {
   public final static native int BMXChatService_searchMessages__SWIG_1(long jarg1, BMXChatService jarg1_, String jarg2, long jarg3, long jarg4, long jarg5, BMXMessageListList jarg5_);
   public final static native int BMXChatService_getGroupAckMessageUserIdList(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, long jarg3, ListOfLongLong jarg3_);
   public final static native int BMXChatService_getGroupAckMessageUnreadUserIdList(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, long jarg3, ListOfLongLong jarg3_);
+  public final static native int BMXChatService_getGroupPlayAckMessageUserIdList(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, long jarg3, ListOfLongLong jarg3_);
+  public final static native int BMXChatService_getGroupUnPlayAckMessageUserIdList(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, long jarg3, ListOfLongLong jarg3_);
   public final static native void BMXChatService_addChatListener(long jarg1, BMXChatService jarg1_, long jarg2, BMXChatServiceListener jarg2_);
   public final static native void BMXChatService_removeChatListener(long jarg1, BMXChatService jarg1_, long jarg2, BMXChatServiceListener jarg2_);
   public final static native void delete_BMXChatServiceListener(long jarg1);
@@ -391,8 +439,12 @@ public class flooJNI {
   public final static native void BMXChatServiceListener_onReceiveReadAllMessagesSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
   public final static native void BMXChatServiceListener_onReceiveDeleteMessages(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
   public final static native void BMXChatServiceListener_onReceiveDeleteMessagesSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
+  public final static native void BMXChatServiceListener_onReceivePlayAcks(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
+  public final static native void BMXChatServiceListener_onReceivePlayAcksSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
   public final static native void BMXChatServiceListener_onAttachmentStatusChanged(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3, int jarg4);
   public final static native void BMXChatServiceListener_onAttachmentStatusChangedSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3, int jarg4);
+  public final static native void BMXChatServiceListener_onAttachmentDownloadByUrlStatusChanged(long jarg1, BMXChatServiceListener jarg1_, long jarg2, int jarg3, int jarg4);
+  public final static native void BMXChatServiceListener_onAttachmentDownloadByUrlStatusChangedSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, int jarg3, int jarg4);
   public final static native void BMXChatServiceListener_onRetrieveHistoryMessages(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXConversation jarg2_);
   public final static native void BMXChatServiceListener_onRetrieveHistoryMessagesSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXConversation jarg2_);
   public final static native void BMXChatServiceListener_onLoadAllConversation(long jarg1, BMXChatServiceListener jarg1_);
@@ -406,6 +458,62 @@ public class flooJNI {
   public final static native long new_BMXChatServiceListener();
   public final static native void BMXChatServiceListener_director_connect(BMXChatServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXChatServiceListener_change_ownership(BMXChatServiceListener obj, long cptr, boolean take_or_release);
+  public final static native void delete_BMXPushService(long jarg1);
+  public final static native int BMXPushService_start__SWIG_0(long jarg1, BMXPushService jarg1_, String jarg2, String jarg3);
+  public final static native int BMXPushService_start__SWIG_1(long jarg1, BMXPushService jarg1_, String jarg2);
+  public final static native int BMXPushService_start__SWIG_2(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_stop(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_resume(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_unbindAlias(long jarg1, BMXPushService jarg1_, String jarg2);
+  public final static native String BMXPushService_getToken(long jarg1, BMXPushService jarg1_);
+  public final static native String BMXPushService_getCert(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_status(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_bindDeviceToken(long jarg1, BMXPushService jarg1_, String jarg2);
+  public final static native int BMXPushService_bindVoipToken(long jarg1, BMXPushService jarg1_, String jarg2);
+  public final static native int BMXPushService_getPushProfile(long jarg1, BMXPushService jarg1_, long jarg2,ListOfLongLong jarg2_, boolean jarg3);
+  public final static native int BMXPushService_setTags(long jarg1, BMXPushService jarg1_, long jarg2, TagList jarg2_, String jarg3);
+  public final static native int BMXPushService_getTags(long jarg1, BMXPushService jarg1_, long jarg2, TagList jarg2_, String jarg3);
+  public final static native int BMXPushService_deleteTags(long jarg1, BMXPushService jarg1_, long jarg2, TagList jarg2_, String jarg3);
+  public final static native int BMXPushService_clearTags(long jarg1, BMXPushService jarg1_, String jarg2);
+  public final static native int BMXPushService_setBadge(long jarg1, BMXPushService jarg1_, int jarg2);
+  public final static native int BMXPushService_setPushMode__SWIG_0(long jarg1, BMXPushService jarg1_, boolean jarg2);
+  public final static native int BMXPushService_setPushMode__SWIG_1(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_setPushTime(long jarg1, BMXPushService jarg1_, int jarg2, int jarg3);
+  public final static native int BMXPushService_setSilenceTime(long jarg1, BMXPushService jarg1_, int jarg2, int jarg3);
+  public final static native int BMXPushService_setRunBackgroundMode__SWIG_0(long jarg1, BMXPushService jarg1_, boolean jarg2);
+  public final static native int BMXPushService_setRunBackgroundMode__SWIG_1(long jarg1, BMXPushService jarg1_);
+  public final static native int BMXPushService_setGeoFenceMode__SWIG_0(long jarg1, BMXPushService jarg1_, boolean jarg2, boolean jarg3);
+  public final static native int BMXPushService_setGeoFenceMode__SWIG_1(long jarg1, BMXPushService jarg1_, boolean jarg2);
+  public final static native int BMXPushService_setGeoFenceMode__SWIG_2(long jarg1, BMXPushService jarg1_);
+  public final static native void BMXPushService_clearNotification(long jarg1, BMXPushService jarg1_, long jarg2);
+  public final static native void BMXPushService_clearAllNotifications(long jarg1, BMXPushService jarg1_);
+  public final static native void BMXPushService_sendMessage(long jarg1, BMXPushService jarg1_, String jarg2);
+  public final static native int BMXPushService_loadLocalPushMessages__SWIG_0(long jarg1, BMXPushService jarg1_, long jarg2, long jarg3, long jarg4, BMXMessageList jarg4_, int jarg5);
+  public final static native int BMXPushService_loadLocalPushMessages__SWIG_1(long jarg1, BMXPushService jarg1_, long jarg2, long jarg3, long jarg4, BMXMessageList jarg4_);
+  public final static native void BMXPushService_addPushListener(long jarg1, BMXPushService jarg1_, long jarg2, BMXPushServiceListener jarg2_);
+  public final static native void BMXPushService_removePushListener(long jarg1, BMXPushService jarg1_, long jarg2, BMXPushServiceListener jarg2_);
+  public final static native void delete_BMXPushServiceListener(long jarg1);
+  public final static native void BMXPushServiceListener_onPushStart(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onPushStartSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onPushStop(long jarg1, BMXPushServiceListener jarg1_);
+  public final static native void BMXPushServiceListener_onPushStopSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_);
+  public final static native void BMXPushServiceListener_onCertRetrieved(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onCertRetrievedSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onSetTags(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onSetTagsSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onGetTags(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onGetTagsSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onDeleteTags(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onDeleteTagsSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onClearTags(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onClearTagsSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
+  public final static native void BMXPushServiceListener_onReceivePush(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
+  public final static native void BMXPushServiceListener_onReceivePushSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
+  public final static native void BMXPushServiceListener_onStatusChanged(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
+  public final static native void BMXPushServiceListener_onStatusChangedSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
+  public final static native long new_BMXPushServiceListener();
+  public final static native void BMXPushServiceListener_director_connect(BMXPushServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void BMXPushServiceListener_change_ownership(BMXPushServiceListener obj, long cptr, boolean take_or_release);
   public final static native long BMXClient_create(long jarg1, BMXSDKConfig jarg1_);
   public final static native void delete_BMXClient(long jarg1);
   public final static native long BMXClient_getSDKConfig(long jarg1, BMXClient jarg1_);
@@ -414,6 +522,7 @@ public class flooJNI {
   public final static native long BMXClient_getGroupService(long jarg1, BMXClient jarg1_);
   public final static native long BMXClient_getRosterService(long jarg1, BMXClient jarg1_);
   public final static native int BMXClient_signUpNewUser(long jarg1, BMXClient jarg1_, String jarg2, String jarg3, long jarg4, ListOfLongLong jarg4_);
+  public final static native long BMXClient_getPushService(long jarg1, BMXClient jarg1_);
   public final static native int BMXClient_signInByName(long jarg1, BMXClient jarg1_, String jarg2, String jarg3);
   public final static native int BMXClient_signInById(long jarg1, BMXClient jarg1_, long jarg2, String jarg3);
   public final static native int BMXClient_fastSignInByName(long jarg1, BMXClient jarg1_, String jarg2, String jarg3);
@@ -426,7 +535,8 @@ public class flooJNI {
   public final static native void BMXClient_reconnect(long jarg1, BMXClient jarg1_);
   public final static native void BMXClient_onNetworkChanged(long jarg1, BMXClient jarg1_, int jarg2, boolean jarg3);
   public final static native void BMXClient_disconnect(long jarg1, BMXClient jarg1_);
-  public final static native int BMXClient_changeAppId(long jarg1, BMXClient jarg1_, String jarg2);
+  public final static native int BMXClient_changeAppId__SWIG_0(long jarg1, BMXClient jarg1_, String jarg2, String jarg3);
+  public final static native int BMXClient_changeAppId__SWIG_1(long jarg1, BMXClient jarg1_, String jarg2);
   public final static native int BMXClient_initializeServerConfig(long jarg1, BMXClient jarg1_, boolean jarg2);
   public final static native void BMXClient_sendMessage(long jarg1, BMXClient jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native long new_BMXFileAttachment__SWIG_0(String jarg1, String jarg2);
@@ -437,6 +547,7 @@ public class flooJNI {
   public final static native long BMXFileAttachment_clone(long jarg1, BMXFileAttachment jarg1_);
   public final static native String BMXFileAttachment_path(long jarg1, BMXFileAttachment jarg1_);
   public final static native String BMXFileAttachment_displayName(long jarg1, BMXFileAttachment jarg1_);
+  public final static native String BMXFileAttachment_ratelUrl(long jarg1, BMXFileAttachment jarg1_);
   public final static native String BMXFileAttachment_url(long jarg1, BMXFileAttachment jarg1_);
   public final static native long BMXFileAttachment_fileLength(long jarg1, BMXFileAttachment jarg1_);
   public final static native int BMXFileAttachment_downloadStatus(long jarg1, BMXFileAttachment jarg1_);
@@ -473,6 +584,8 @@ public class flooJNI {
   public final static native long BMXGroup_SharedFile_mCreateTime_get(long jarg1, BMXGroup.SharedFile jarg1_);
   public final static native void BMXGroup_SharedFile_mUpdateTime_set(long jarg1, BMXGroup.SharedFile jarg1_, long jarg2);
   public final static native long BMXGroup_SharedFile_mUpdateTime_get(long jarg1, BMXGroup.SharedFile jarg1_);
+  public final static native void BMXGroup_SharedFile_mRatelUrl_set(long jarg1, BMXGroup.SharedFile jarg1_, String jarg2);
+  public final static native String BMXGroup_SharedFile_mRatelUrl_get(long jarg1, BMXGroup.SharedFile jarg1_);
   public final static native void BMXGroup_SharedFile_mUrl_set(long jarg1, BMXGroup.SharedFile jarg1_, String jarg2);
   public final static native String BMXGroup_SharedFile_mUrl_get(long jarg1, BMXGroup.SharedFile jarg1_);
   public final static native void BMXGroup_SharedFile_mPath_set(long jarg1, BMXGroup.SharedFile jarg1_, String jarg2);
@@ -523,8 +636,10 @@ public class flooJNI {
   public final static native String BMXGroup_myNickname(long jarg1, BMXGroup jarg1_);
   public final static native String BMXGroup_name(long jarg1, BMXGroup jarg1_);
   public final static native String BMXGroup_description(long jarg1, BMXGroup jarg1_);
+  public final static native String BMXGroup_avatarRatelUrl(long jarg1, BMXGroup jarg1_);
   public final static native String BMXGroup_avatarUrl(long jarg1, BMXGroup jarg1_);
   public final static native String BMXGroup_avatarPath(long jarg1, BMXGroup jarg1_);
+  public final static native String BMXGroup_avatarThumbnailUrl(long jarg1, BMXGroup jarg1_);
   public final static native String BMXGroup_avatarThumbnailPath(long jarg1, BMXGroup jarg1_);
   public final static native long BMXGroup_createTime(long jarg1, BMXGroup jarg1_);
   public final static native String BMXGroup_extension(long jarg1, BMXGroup jarg1_);
@@ -643,6 +758,7 @@ public class flooJNI {
   public final static native int BMXImageAttachment_type(long jarg1, BMXImageAttachment jarg1_);
   public final static native long BMXImageAttachment_clone(long jarg1, BMXImageAttachment jarg1_);
   public final static native long BMXImageAttachment_size(long jarg1, BMXImageAttachment jarg1_);
+  public final static native String BMXImageAttachment_thumbnailUrl(long jarg1, BMXImageAttachment jarg1_);
   public final static native void BMXImageAttachment_setThumbnail(long jarg1, BMXImageAttachment jarg1_, String jarg2);
   public final static native String BMXImageAttachment_thumbnailPath(long jarg1, BMXImageAttachment jarg1_);
   public final static native int BMXImageAttachment_thumbnailDownloadStatus(long jarg1, BMXImageAttachment jarg1_);
@@ -724,8 +840,10 @@ public class flooJNI {
   public final static native long BMXRosterItem_rosterId(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_username(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_nickname(long jarg1, BMXRosterItem jarg1_);
+  public final static native String BMXRosterItem_avatarRatelUrl(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_avatarUrl(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_avatarPath(long jarg1, BMXRosterItem jarg1_);
+  public final static native String BMXRosterItem_avatarThumbnailUrl(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_avatarThumbnailPath(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_publicInfo(long jarg1, BMXRosterItem jarg1_);
   public final static native String BMXRosterItem_alias(long jarg1, BMXRosterItem jarg1_);
@@ -811,12 +929,21 @@ public class flooJNI {
   public final static native boolean BMXUserProfile_MessageSetting_mNotificationVibrate_get(long jarg1, BMXUserProfile.MessageSetting jarg1_);
   public final static native void BMXUserProfile_MessageSetting_mAutoDownloadAttachment_set(long jarg1, BMXUserProfile.MessageSetting jarg1_, boolean jarg2);
   public final static native boolean BMXUserProfile_MessageSetting_mAutoDownloadAttachment_get(long jarg1, BMXUserProfile.MessageSetting jarg1_);
+  public final static native void BMXUserProfile_MessageSetting_mSilenceStartTime_set(long jarg1, BMXUserProfile.MessageSetting jarg1_, int jarg2);
+  public final static native int BMXUserProfile_MessageSetting_mSilenceStartTime_get(long jarg1, BMXUserProfile.MessageSetting jarg1_);
+  public final static native void BMXUserProfile_MessageSetting_mSilenceEndTime_set(long jarg1, BMXUserProfile.MessageSetting jarg1_, int jarg2);
+  public final static native int BMXUserProfile_MessageSetting_mSilenceEndTime_get(long jarg1, BMXUserProfile.MessageSetting jarg1_);
+  public final static native void BMXUserProfile_MessageSetting_mPushStartTime_set(long jarg1, BMXUserProfile.MessageSetting jarg1_, int jarg2);
+  public final static native int BMXUserProfile_MessageSetting_mPushStartTime_get(long jarg1, BMXUserProfile.MessageSetting jarg1_);
+  public final static native void BMXUserProfile_MessageSetting_mPushEndTime_set(long jarg1, BMXUserProfile.MessageSetting jarg1_, int jarg2);
+  public final static native int BMXUserProfile_MessageSetting_mPushEndTime_get(long jarg1, BMXUserProfile.MessageSetting jarg1_);
   public final static native void delete_BMXUserProfile_MessageSetting(long jarg1);
   public final static native void delete_BMXUserProfile(long jarg1);
   public final static native long BMXUserProfile_userId(long jarg1, BMXUserProfile jarg1_);
   public final static native int BMXUserProfile_category(long jarg1, BMXUserProfile jarg1_);
   public final static native String BMXUserProfile_username(long jarg1, BMXUserProfile jarg1_);
   public final static native String BMXUserProfile_nickname(long jarg1, BMXUserProfile jarg1_);
+  public final static native String BMXUserProfile_avatarRatelUrl(long jarg1, BMXUserProfile jarg1_);
   public final static native String BMXUserProfile_avatarUrl(long jarg1, BMXUserProfile jarg1_);
   public final static native String BMXUserProfile_avatarPath(long jarg1, BMXUserProfile jarg1_);
   public final static native String BMXUserProfile_avatarThumbnailPath(long jarg1, BMXUserProfile jarg1_);
@@ -834,6 +961,7 @@ public class flooJNI {
   public final static native int UserProfileImpl_category(long jarg1, UserProfileImpl jarg1_);
   public final static native String UserProfileImpl_username(long jarg1, UserProfileImpl jarg1_);
   public final static native String UserProfileImpl_nickname(long jarg1, UserProfileImpl jarg1_);
+  public final static native String UserProfileImpl_avatarRatelUrl(long jarg1, UserProfileImpl jarg1_);
   public final static native String UserProfileImpl_avatarUrl(long jarg1, UserProfileImpl jarg1_);
   public final static native String UserProfileImpl_avatarPath(long jarg1, UserProfileImpl jarg1_);
   public final static native String UserProfileImpl_avatarThumbnailPath(long jarg1, UserProfileImpl jarg1_);
@@ -845,6 +973,7 @@ public class flooJNI {
   public final static native long UserProfileImpl_authQuestion(long jarg1, UserProfileImpl jarg1_);
   public final static native long UserProfileImpl_messageSetting(long jarg1, UserProfileImpl jarg1_);
   public final static native boolean UserProfileImpl_isAutoAcceptGroupInvite(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl_calculateUrl(long jarg1, UserProfileImpl jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native void UserProfileImpl__userId_set(long jarg1, UserProfileImpl jarg1_, long jarg2);
   public final static native long UserProfileImpl__userId_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void UserProfileImpl__category_set(long jarg1, UserProfileImpl jarg1_, int jarg2);
@@ -853,6 +982,8 @@ public class flooJNI {
   public final static native String UserProfileImpl__username_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void UserProfileImpl__nickname_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
   public final static native String UserProfileImpl__nickname_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__avatarRatelUrl_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__avatarRatelUrl_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void UserProfileImpl__avatarUrl_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
   public final static native String UserProfileImpl__avatarUrl_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void UserProfileImpl__avatarPath_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
@@ -891,8 +1022,26 @@ public class flooJNI {
   public final static native String UserProfileImpl__deviceToken_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void UserProfileImpl__cacheBaseDir_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
   public final static native String UserProfileImpl__cacheBaseDir_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__appId_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__appId_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__storeToken_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__storeToken_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__accessKeySecret_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__accessKeySecret_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__appSecret_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__appSecret_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__pushAlias_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__pushAlias_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__pushToken_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__pushToken_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__pushCertName_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__pushCertName_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__pushCertContent_set(long jarg1, UserProfileImpl jarg1_, String jarg2);
+  public final static native String UserProfileImpl__pushCertContent_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void UserProfileImpl__deviceSN_set(long jarg1, UserProfileImpl jarg1_, int jarg2);
   public final static native int UserProfileImpl__deviceSN_get(long jarg1, UserProfileImpl jarg1_);
+  public final static native void UserProfileImpl__mutex_set(long jarg1, UserProfileImpl jarg1_, long jarg2);
+  public final static native long UserProfileImpl__mutex_get(long jarg1, UserProfileImpl jarg1_);
   public final static native void delete_BMXUserService(long jarg1);
   public final static native int BMXUserService_bindDevice(long jarg1, BMXUserService jarg1_, String jarg2);
   public final static native int BMXUserService_getProfile(long jarg1, BMXUserService jarg1_, long jarg2, ListOfLongLong jarg2_, boolean jarg3);
@@ -909,6 +1058,7 @@ public class flooJNI {
   public final static native int BMXUserService_setEnablePush(long jarg1, BMXUserService jarg1_, boolean jarg2);
   public final static native int BMXUserService_setEnablePushDetaile(long jarg1, BMXUserService jarg1_, boolean jarg2);
   public final static native int BMXUserService_setPushNickname(long jarg1, BMXUserService jarg1_, String jarg2);
+  public final static native int BMXUserService_setPushAlias(long jarg1, BMXUserService jarg1_, String jarg2, String jarg3);
   public final static native int BMXUserService_setNotificationSound(long jarg1, BMXUserService jarg1_, boolean jarg2);
   public final static native int BMXUserService_setNotificationVibrate(long jarg1, BMXUserService jarg1_, boolean jarg2);
   public final static native int BMXUserService_setAutoDownloadAttachment(long jarg1, BMXUserService jarg1_, boolean jarg2);
@@ -944,8 +1094,9 @@ public class flooJNI {
   public final static native int BMXVideoAttachment_duration(long jarg1, BMXVideoAttachment jarg1_);
   public final static native void BMXVideoAttachment_setThumbnail(long jarg1, BMXVideoAttachment jarg1_, String jarg2);
   public final static native String BMXVideoAttachment_thumbnailPath(long jarg1, BMXVideoAttachment jarg1_);
-  public final static native void BMXVideoAttachment_setThumbnailUrl(long jarg1, BMXVideoAttachment jarg1_, String jarg2);
   public final static native String BMXVideoAttachment_thumbnailUrl(long jarg1, BMXVideoAttachment jarg1_);
+  public final static native void BMXVideoAttachment_setThumbnailRatelUrl(long jarg1, BMXVideoAttachment jarg1_, String jarg2);
+  public final static native String BMXVideoAttachment_thumbnailRatelUrl(long jarg1, BMXVideoAttachment jarg1_);
   public final static native int BMXVideoAttachment_thumbnailDownloadStatus(long jarg1, BMXVideoAttachment jarg1_);
   public final static native long BMXVideoAttachment_dynamic_cast(long jarg1, BMXMessageAttachment jarg1_);
   public final static native long new_BMXVoiceAttachment__SWIG_0(String jarg1, int jarg2, String jarg3);
@@ -1012,6 +1163,23 @@ public class flooJNI {
   public final static native long new_BMXGroupServiceListener();
   public final static native void BMXGroupServiceListener_director_connect(BMXGroupServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXGroupServiceListener_change_ownership(BMXGroupServiceListener obj, long cptr, boolean take_or_release);
+  public final static native long new_BMXPushUserProfile_MessagePushSetting();
+  public final static native void BMXPushUserProfile_MessagePushSetting_mPushEnabled_set(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_, boolean jarg2);
+  public final static native boolean BMXPushUserProfile_MessagePushSetting_mPushEnabled_get(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_);
+  public final static native void BMXPushUserProfile_MessagePushSetting_mSilenceStartTime_set(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_, int jarg2);
+  public final static native int BMXPushUserProfile_MessagePushSetting_mSilenceStartTime_get(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_);
+  public final static native void BMXPushUserProfile_MessagePushSetting_mSilenceEndTime_set(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_, int jarg2);
+  public final static native int BMXPushUserProfile_MessagePushSetting_mSilenceEndTime_get(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_);
+  public final static native void BMXPushUserProfile_MessagePushSetting_mPushStartTime_set(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_, int jarg2);
+  public final static native int BMXPushUserProfile_MessagePushSetting_mPushStartTime_get(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_);
+  public final static native void BMXPushUserProfile_MessagePushSetting_mPushEndTime_set(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_, int jarg2);
+  public final static native int BMXPushUserProfile_MessagePushSetting_mPushEndTime_get(long jarg1, BMXPushUserProfile.MessagePushSetting jarg1_);
+  public final static native void delete_BMXPushUserProfile_MessagePushSetting(long jarg1);
+  public final static native void delete_BMXPushUserProfile(long jarg1);
+  public final static native long BMXPushUserProfile_userId(long jarg1, BMXPushUserProfile jarg1_);
+  public final static native String BMXPushUserProfile_pushAlias(long jarg1, BMXPushUserProfile jarg1_);
+  public final static native String BMXPushUserProfile_pushToken(long jarg1, BMXPushUserProfile jarg1_);
+  public final static native long BMXPushUserProfile_messagePushSetting(long jarg1, BMXPushUserProfile jarg1_);
   public final static native long BMXMessageAttachment_SWIGSmartPtrUpcast(long jarg1);
   public final static native long BMXMessageConfig_SWIGSmartPtrUpcast(long jarg1);
   public final static native long BMXMessage_SWIGSmartPtrUpcast(long jarg1);
@@ -1032,6 +1200,7 @@ public class flooJNI {
   public final static native long UserProfileImpl_SWIGSmartPtrUpcast(long jarg1);
   public final static native long BMXVideoAttachment_SWIGSmartPtrUpcast(long jarg1);
   public final static native long BMXVoiceAttachment_SWIGSmartPtrUpcast(long jarg1);
+  public final static native long BMXPushUserProfile_SWIGUpcast(long jarg1);
 
   public static void SwigDirector_BMXNetworkListener_onNetworkChanged(BMXNetworkListener jself, int type, boolean reconnect) {
     jself.onNetworkChanged(BMXNetworkType.swigToEnum(type), reconnect);
@@ -1072,8 +1241,14 @@ public class flooJNI {
   public static void SwigDirector_BMXChatServiceListener_onReceiveDeleteMessages(BMXChatServiceListener jself, long list) {
     jself.onReceiveDeleteMessages(new BMXMessageList(list, false));
   }
+  public static void SwigDirector_BMXChatServiceListener_onReceivePlayAcks(BMXChatServiceListener jself, long list) {
+    jself.onReceivePlayAcks(new BMXMessageList(list, false));
+  }
   public static void SwigDirector_BMXChatServiceListener_onAttachmentStatusChanged(BMXChatServiceListener jself, long msg, int error, int percent) {
     jself.onAttachmentStatusChanged(new BMXMessage(msg, true), BMXErrorCode.swigToEnum(error), percent);
+  }
+  public static void SwigDirector_BMXChatServiceListener_onAttachmentDownloadByUrlStatusChanged(BMXChatServiceListener jself, long msgId, int error, int percent) {
+    jself.onAttachmentDownloadByUrlStatusChanged(msgId, BMXErrorCode.swigToEnum(error), percent);
   }
   public static void SwigDirector_BMXChatServiceListener_onRetrieveHistoryMessages(BMXChatServiceListener jself, long conversation) {
     jself.onRetrieveHistoryMessages(new BMXConversation(conversation, true));
@@ -1089,6 +1264,33 @@ public class flooJNI {
   }
   public static void SwigDirector_BMXChatServiceListener_onTotalUnreadCountChanged(BMXChatServiceListener jself, int unreadCount) {
     jself.onTotalUnreadCountChanged(unreadCount);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onPushStart(BMXPushServiceListener jself, String bmxToken) {
+    jself.onPushStart(bmxToken);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onPushStop(BMXPushServiceListener jself) {
+    jself.onPushStop();
+  }
+  public static void SwigDirector_BMXPushServiceListener_onCertRetrieved(BMXPushServiceListener jself, String cert) {
+    jself.onCertRetrieved(cert);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onSetTags(BMXPushServiceListener jself, String operationId) {
+    jself.onSetTags(operationId);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onGetTags(BMXPushServiceListener jself, String operationId) {
+    jself.onGetTags(operationId);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onDeleteTags(BMXPushServiceListener jself, String operationId) {
+    jself.onDeleteTags(operationId);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onClearTags(BMXPushServiceListener jself, String operationId) {
+    jself.onClearTags(operationId);
+  }
+  public static void SwigDirector_BMXPushServiceListener_onReceivePush(BMXPushServiceListener jself, long list) {
+    jself.onReceivePush(new BMXMessageList(list, false));
+  }
+  public static void SwigDirector_BMXPushServiceListener_onStatusChanged(BMXPushServiceListener jself, long msg, int error) {
+    jself.onStatusChanged(new BMXMessage(msg, true), BMXErrorCode.swigToEnum(error));
   }
   public static void SwigDirector_BMXRosterServiceListener_onFriendAdded(BMXRosterServiceListener jself, long sponsorId, long recipientId) {
     jself.onFriendAdded(sponsorId, recipientId);

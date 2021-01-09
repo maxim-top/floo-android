@@ -57,6 +57,10 @@ public class UserProfileImpl extends BMXUserProfile {
     return flooJNI.UserProfileImpl_nickname(swigCPtr, this);
   }
 
+  public String avatarRatelUrl() {
+    return flooJNI.UserProfileImpl_avatarRatelUrl(swigCPtr, this);
+  }
+
   public String avatarUrl() {
     return flooJNI.UserProfileImpl_avatarUrl(swigCPtr, this);
   }
@@ -101,6 +105,10 @@ public class UserProfileImpl extends BMXUserProfile {
     return flooJNI.UserProfileImpl_isAutoAcceptGroupInvite(swigCPtr, this);
   }
 
+  public void calculateUrl(String storeToken, String accessKeySecret, String appId) {
+    flooJNI.UserProfileImpl_calculateUrl(swigCPtr, this, storeToken, accessKeySecret, appId);
+  }
+
   public void set_userId(long value) {
     flooJNI.UserProfileImpl__userId_set(swigCPtr, this, value);
   }
@@ -131,6 +139,14 @@ public class UserProfileImpl extends BMXUserProfile {
 
   public String get_nickname() {
     return flooJNI.UserProfileImpl__nickname_get(swigCPtr, this);
+  }
+
+  public void set_avatarRatelUrl(String value) {
+    flooJNI.UserProfileImpl__avatarRatelUrl_set(swigCPtr, this, value);
+  }
+
+  public String get_avatarRatelUrl() {
+    return flooJNI.UserProfileImpl__avatarRatelUrl_get(swigCPtr, this);
   }
 
   public void set_avatarUrl(String value) {
@@ -287,6 +303,70 @@ public class UserProfileImpl extends BMXUserProfile {
     return flooJNI.UserProfileImpl__cacheBaseDir_get(swigCPtr, this);
   }
 
+  public void set_appId(String value) {
+    flooJNI.UserProfileImpl__appId_set(swigCPtr, this, value);
+  }
+
+  public String get_appId() {
+    return flooJNI.UserProfileImpl__appId_get(swigCPtr, this);
+  }
+
+  public void set_storeToken(String value) {
+    flooJNI.UserProfileImpl__storeToken_set(swigCPtr, this, value);
+  }
+
+  public String get_storeToken() {
+    return flooJNI.UserProfileImpl__storeToken_get(swigCPtr, this);
+  }
+
+  public void set_accessKeySecret(String value) {
+    flooJNI.UserProfileImpl__accessKeySecret_set(swigCPtr, this, value);
+  }
+
+  public String get_accessKeySecret() {
+    return flooJNI.UserProfileImpl__accessKeySecret_get(swigCPtr, this);
+  }
+
+  public void set_appSecret(String value) {
+    flooJNI.UserProfileImpl__appSecret_set(swigCPtr, this, value);
+  }
+
+  public String get_appSecret() {
+    return flooJNI.UserProfileImpl__appSecret_get(swigCPtr, this);
+  }
+
+  public void set_pushAlias(String value) {
+    flooJNI.UserProfileImpl__pushAlias_set(swigCPtr, this, value);
+  }
+
+  public String get_pushAlias() {
+    return flooJNI.UserProfileImpl__pushAlias_get(swigCPtr, this);
+  }
+
+  public void set_pushToken(String value) {
+    flooJNI.UserProfileImpl__pushToken_set(swigCPtr, this, value);
+  }
+
+  public String get_pushToken() {
+    return flooJNI.UserProfileImpl__pushToken_get(swigCPtr, this);
+  }
+
+  public void set_pushCertName(String value) {
+    flooJNI.UserProfileImpl__pushCertName_set(swigCPtr, this, value);
+  }
+
+  public String get_pushCertName() {
+    return flooJNI.UserProfileImpl__pushCertName_get(swigCPtr, this);
+  }
+
+  public void set_pushCertContent(String value) {
+    flooJNI.UserProfileImpl__pushCertContent_set(swigCPtr, this, value);
+  }
+
+  public String get_pushCertContent() {
+    return flooJNI.UserProfileImpl__pushCertContent_get(swigCPtr, this);
+  }
+
   public void set_deviceSN(int value) {
     flooJNI.UserProfileImpl__deviceSN_set(swigCPtr, this, value);
   }
@@ -294,5 +374,4 @@ public class UserProfileImpl extends BMXUserProfile {
   public int get_deviceSN() {
     return flooJNI.UserProfileImpl__deviceSN_get(swigCPtr, this);
   }
-
 }

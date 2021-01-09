@@ -6,16 +6,15 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "2.4.1.20200514"
+        versionName "3.0.14.20210105"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
+   }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     android.libraryVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "floo-android" + "_${defaultConfig.versionName}" + '.aar'

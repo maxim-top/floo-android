@@ -71,6 +71,14 @@ public class BMXRosterItem extends BMXBaseObject {
   }
 
   /**
+   *  好友头像ratel服务器地址
+   * @return std::string
+   **/
+  public String avatarRatelUrl() {
+    return flooJNI.BMXRosterItem_avatarRatelUrl(swigCPtr, this);
+  }
+
+  /**
    *  好友头像服务器地址
    * @return std::string
    **/
@@ -84,6 +92,14 @@ public class BMXRosterItem extends BMXBaseObject {
    **/
   public String avatarPath() {
     return flooJNI.BMXRosterItem_avatarPath(swigCPtr, this);
+  }
+
+  /**
+   *  好友头像缩略图地址
+   * @return std::string
+   **/
+  public String avatarThumbnailUrl() {
+    return flooJNI.BMXRosterItem_avatarThumbnailUrl(swigCPtr, this);
   }
 
   /**

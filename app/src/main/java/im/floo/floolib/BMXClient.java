@@ -25,6 +25,7 @@ public class BMXClient extends BMXNetworkListener {
   private BMXChatManager chatManager;
   private BMXRosterManager rosterManager;
   private BMXGroupManager groupManager;
+  private BMXPushManager pushManager;
 
   protected BMXClient(long cPtr, boolean cMemoryOwn) {
     super(flooJNI.BMXClient_SWIGSmartPtrUpcast(cPtr), true);
@@ -105,6 +106,14 @@ public class BMXClient extends BMXNetworkListener {
   }
 
   /**
+   *  获取推送Service
+   * @return BMXPushService
+   **/
+  public BMXPushService getPushService() {
+    return new BMXPushService(flooJNI.BMXClient_getPushService(swigCPtr, this), false);
+  }
+
+  /**
    *  获取用户Manager
    * @return BMXUserManager
    **/
@@ -146,6 +155,18 @@ public class BMXClient extends BMXNetworkListener {
       rosterManager = new BMXRosterManager(getRosterService());
     }
     return rosterManager;
+  }
+
+
+  /**
+   *  获取推送Manager
+   * @return BMXPushManager
+   **/
+  public BMXPushManager getPushManager() {
+    if (pushManager == null) {
+      pushManager = new BMXPushManager(getPushService());
+    }
+    return pushManager;
   }
 
   /**
@@ -286,9 +307,18 @@ public class BMXClient extends BMXNetworkListener {
   /**
    *  更改SDK的appId，本操作会同时更新BMXConfig中的appId。
    * @param appId 新变更的appId
+   * @param appSecret 新变更的appSecret
+   **/
+  public BMXErrorCode changeAppId(String appId, String appSecret) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXClient_changeAppId__SWIG_0(swigCPtr, this, appId, appSecret));
+  }
+
+  /**
+   *  更改SDK的appId，本操作会同时更新BMXConfig中的appId。
+   * @param appId 新变更的appId
    **/
   public BMXErrorCode changeAppId(String appId) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXClient_changeAppId(swigCPtr, this, appId));
+    return BMXErrorCode.swigToEnum(flooJNI.BMXClient_changeAppId__SWIG_1(swigCPtr, this, appId));
   }
 
   /**

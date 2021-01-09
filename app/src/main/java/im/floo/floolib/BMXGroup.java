@@ -256,6 +256,14 @@ public class BMXGroup extends BMXBaseObject {
       return flooJNI.BMXGroup_SharedFile_mUpdateTime_get(swigCPtr, this);
     }
   
+    public void setMRatelUrl(String value) {
+      flooJNI.BMXGroup_SharedFile_mRatelUrl_set(swigCPtr, this, value);
+    }
+  
+    public String getMRatelUrl() {
+      return flooJNI.BMXGroup_SharedFile_mRatelUrl_get(swigCPtr, this);
+    }
+  
     public void setMUrl(String value) {
       flooJNI.BMXGroup_SharedFile_mUrl_set(swigCPtr, this, value);
     }
@@ -559,6 +567,14 @@ public class BMXGroup extends BMXBaseObject {
   }
 
   /**
+   *  群头像ratel地址
+   * @return std::string
+   **/
+  public String avatarRatelUrl() {
+    return flooJNI.BMXGroup_avatarRatelUrl(swigCPtr, this);
+  }
+
+  /**
    *  群头像
    * @return std::string
    **/
@@ -572,6 +588,14 @@ public class BMXGroup extends BMXBaseObject {
    **/
   public String avatarPath() {
     return flooJNI.BMXGroup_avatarPath(swigCPtr, this);
+  }
+
+  /**
+   *  群头像缩略图地址
+   * @return std::string
+   **/
+  public String avatarThumbnailUrl() {
+    return flooJNI.BMXGroup_avatarThumbnailUrl(swigCPtr, this);
   }
 
   /**

@@ -2,12 +2,14 @@
 sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__\(.*\)_t/\1/g' src/main/java/im/floo/floolib/flooJNI.java
 sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__\(.*\)_t/\1/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/BMXGroupMemberResultPagePtr/floo::BMXGroupMemberResultPagePtr/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/BMXPushUserProfilePtr/floo::BMXPushUserProfilePtr/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/BMXGroupBannedMemberResultPagePtr/floo::BMXGroupBannedMemberResultPagePtr/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/< BMXGroup::MemberPtr >/< floo::BMXGroup::MemberPtr >/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/< BMXGroup::BannedMemberPtr >/< floo::BMXGroup::BannedMemberPtr >/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/BMXGroupInvitationPagePtr/floo::BMXGroupInvitationPagePtr/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/BMXGroupApplicationPagePtr/floo::BMXGroupApplicationPagePtr/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/SWIGTYPE_p_BMXGroupMemberResultPagePtr/BMXGroupMemberResultPage/g' src/main/java/im/floo/floolib/BMXGroupService.java
+sed -i.bak 's/SWIGTYPE_p_BMXPushUserProfilePtr/BMXPushUserProfile/g' src/main/java/im/floo/floolib/BMXPushService.java
 sed -i.bak 's/SWIGTYPE_p_BMXGroupBannedMemberResultPagePtr/BMXGroupBannedMemberResultPage/g' src/main/java/im/floo/floolib/BMXGroupService.java
 sed -i.bak 's/SWIGTYPE_p_BMXGroupApplicationPagePtr/GroupApplicationPage/g' src/main/java/im/floo/floolib/BMXGroupService.java
 sed -i.bak 's/SWIGTYPE_p_BMXGroupInvitaionPagePtr/GroupInvitaionPage/g' src/main/java/im/floo/floolib/BMXGroupService.java

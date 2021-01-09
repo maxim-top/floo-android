@@ -44,7 +44,9 @@ public:
     virtual void onReceiveReadCancels(floo::BMXMessageList const &list);
     virtual void onReceiveReadAllMessages(floo::BMXMessageList const &list);
     virtual void onReceiveDeleteMessages(floo::BMXMessageList const &list);
+    virtual void onReceivePlayAcks(floo::BMXMessageList const &list);
     virtual void onAttachmentStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error, int percent);
+    virtual void onAttachmentDownloadByUrlStatusChanged(int64_t msgId, floo::BMXErrorCode error, int percent);
     virtual void onRetrieveHistoryMessages(floo::BMXConversationPtr conversation);
     virtual void onLoadAllConversation();
     virtual void onConversationCreate(floo::BMXConversationPtr conversation, floo::BMXMessagePtr msg);
@@ -52,10 +54,33 @@ public:
     virtual void onTotalUnreadCountChanged(int unreadCount);
 public:
     bool swig_overrides(int n) {
-      return (n < 18 ? swig_override[n] : false);
+      return (n < 20 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<18> swig_override;
+    Swig::BoolArray<20> swig_override;
+};
+
+class SwigDirector_BMXPushServiceListener : public floo::BMXPushServiceListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_BMXPushServiceListener(JNIEnv *jenv);
+    virtual ~SwigDirector_BMXPushServiceListener();
+    virtual void onPushStart(std::string const bmxToken);
+    virtual void onPushStop();
+    virtual void onCertRetrieved(std::string const cert);
+    virtual void onSetTags(std::string const &operationId);
+    virtual void onGetTags(std::string const &operationId);
+    virtual void onDeleteTags(std::string const &operationId);
+    virtual void onClearTags(std::string const &operationId);
+    virtual void onReceivePush(floo::BMXMessageList const &list);
+    virtual void onStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
+public:
+    bool swig_overrides(int n) {
+      return (n < 9 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<9> swig_override;
 };
 
 class SwigDirector_BMXRosterServiceListener : public floo::BMXRosterServiceListener, public Swig::Director {

@@ -56,13 +56,13 @@ public class BMXImageAttachment extends BMXFileAttachment {
 
   /**
    *  构造函数，构建接收图片消息附件
-   * @param url 图片服务器地址
+   * @param ratelUrl ratel服务器地址
    * @param size 图片的大小，宽度和高度
    * @param displayName 展示名
    * @param fileLength 文件大小
    **/
-  public BMXImageAttachment(String url, BMXMessageAttachment.Size size, String displayName, long fileLength) {
-    this(flooJNI.new_BMXImageAttachment__SWIG_2(url, BMXMessageAttachment.Size.getCPtr(size), size, displayName, fileLength), true);
+  public BMXImageAttachment(String ratelUrl, BMXMessageAttachment.Size size, String displayName, long fileLength) {
+    this(flooJNI.new_BMXImageAttachment__SWIG_2(ratelUrl, BMXMessageAttachment.Size.getCPtr(size), size, displayName, fileLength), true);
   }
 
   /**
@@ -88,6 +88,10 @@ public class BMXImageAttachment extends BMXFileAttachment {
    **/
   public BMXMessageAttachment.Size size() {
     return new BMXMessageAttachment.Size(flooJNI.BMXImageAttachment_size(swigCPtr, this), false);
+  }
+
+  public String thumbnailUrl() {
+    return flooJNI.BMXImageAttachment_thumbnailUrl(swigCPtr, this);
   }
 
   /**

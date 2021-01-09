@@ -153,6 +153,14 @@ public class BMXChatServiceListener {
   }
 
   /**
+   *  收到消息已播放回执
+   * @param list 接收到的已读回执消息列表
+   **/
+  public void onReceivePlayAcks(BMXMessageList list) {
+    if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onReceivePlayAcks(swigCPtr, this, BMXMessageList.getCPtr(list), list); else flooJNI.BMXChatServiceListener_onReceivePlayAcksSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessageList.getCPtr(list), list);
+  }
+
+  /**
    *  附件下载状态发生变化
    * @param msg 发生下载状态变化的消息
    * @param error 状态错误码
@@ -160,6 +168,16 @@ public class BMXChatServiceListener {
    **/
   public void onAttachmentStatusChanged(BMXMessage msg, BMXErrorCode error, int percent) {
     if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onAttachmentStatusChanged(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue(), percent); else flooJNI.BMXChatServiceListener_onAttachmentStatusChangedSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue(), percent);
+  }
+
+  /**
+   *  附件下载状态发生变化
+   * @param msgId 发生下载状态变化的消息ID
+   * @param error 状态错误码
+   * @param percent 附件下载的进度
+   **/
+  public void onAttachmentDownloadByUrlStatusChanged(long msgId, BMXErrorCode error, int percent) {
+    if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onAttachmentDownloadByUrlStatusChanged(swigCPtr, this, msgId, error.swigValue(), percent); else flooJNI.BMXChatServiceListener_onAttachmentDownloadByUrlStatusChangedSwigExplicitBMXChatServiceListener(swigCPtr, this, msgId, error.swigValue(), percent);
   }
 
   /**

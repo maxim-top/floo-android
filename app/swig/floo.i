@@ -4,6 +4,7 @@
 %feature("director")  BMXNetworkListener;
 %feature("director")  BMXRosterServiceListener;
 %feature("director")  BMXUserServiceListener;
+%feature("director")  BMXPushServiceListener;
 %{
 #include "bmx_error.h"
 #include "bmx_defines.h"
@@ -17,6 +18,8 @@
 #include "bmx_network_listener.h"
 #include "bmx_chat_service.h"
 #include "bmx_chat_service_listener.h"
+#include "bmx_push_service.h"
+#include "bmx_push_service_listener.h"
 #include "bmx_client.h"
 #include "bmx_file_attachment.h"
 #include "bmx_group.h"
@@ -34,6 +37,7 @@
 #include "bmx_video_attachment.h"
 #include "bmx_voice_attachment.h"
 #include "bmx_group_service_listener.h"
+#include "bmx_push_user_profile.h"
 #include <utility>
 %}
 
@@ -52,6 +56,7 @@
 %shared_ptr(floo::BMXMessageConfig)
 %shared_ptr(floo::BMXMessage)
 %template(BMXMessageList) std::vector<std::shared_ptr<floo::BMXMessage>>;
+%template(TagList) std::vector<std::string>;
 
 typedef floo::BMXConversation::Type BMXConversationType;
 
@@ -108,6 +113,8 @@ typedef floo::BMXConversation::Type BMXConversationType;
 %include "bmx_network_listener.h"
 %include "bmx_chat_service.h"
 %include "bmx_chat_service_listener.h"
+%include "bmx_push_service.h"
+%include "bmx_push_service_listener.h"
 %include "bmx_client.h"
 %include "bmx_file_attachment.h"
 %exception floo::BMXFileAttachment::dynamic_cast(floo::BMXMessageAttachment *attachment) {
@@ -215,3 +222,4 @@ typedef floo::BMXConversation::Type BMXConversationType;
 
 
 %include "bmx_group_service_listener.h"
+%include "bmx_push_user_profile.h"

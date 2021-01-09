@@ -91,6 +91,14 @@ public class BMXChatService {
   }
 
   /**
+   *  发送已播放回执
+   * @param msg 需要发送已读回播放的消息
+   **/
+  public void ackPlayMessage(BMXMessage msg) {
+    flooJNI.BMXChatService_ackPlayMessage(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  /**
    *  标记此消息为未读，该消息同步到当前用户的所有设备
    * @param msg 需要发送消息已读取消的消息
    **/
@@ -139,6 +147,16 @@ public class BMXChatService {
    **/
   public void downloadAttachment(BMXMessage msg) {
     flooJNI.BMXChatService_downloadAttachment(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  /**
+   *  下载附件，下载状态变化和进度通过listener通知
+   * @param msgId 需要下载附件的消息
+   * @param url 文件远程地址
+   * @param path 文件本地路径
+   **/
+  public void downloadAttachmentByUrl(long msgId, String url, String path) {
+    flooJNI.BMXChatService_downloadAttachmentByUrl(swigCPtr, this, msgId, url, path);
   }
 
   /**
@@ -304,6 +322,26 @@ public class BMXChatService {
    **/
   public BMXErrorCode getGroupAckMessageUnreadUserIdList(BMXMessage msg, ListOfLongLong groupMemberIdList) {
     return BMXErrorCode.swigToEnum(flooJNI.BMXChatService_getGroupAckMessageUnreadUserIdList(swigCPtr, this, BMXMessage.getCPtr(msg), msg, ListOfLongLong.getCPtr(groupMemberIdList), groupMemberIdList));
+  }
+
+  /**
+   *  获取发送的群组消息已播放用户id列表
+   * @param msg 需要获取已播放用户id列表的消息
+   * @param groupMemberIdList 对该条消息已播放的用户id列表，初始传入为空列表
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode getGroupPlayAckMessageUserIdList(BMXMessage msg, ListOfLongLong groupMemberIdList) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXChatService_getGroupPlayAckMessageUserIdList(swigCPtr, this, BMXMessage.getCPtr(msg), msg, ListOfLongLong.getCPtr(groupMemberIdList), groupMemberIdList));
+  }
+
+  /**
+   *  获取发送的群组消息未播放用户id列表
+   * @param msg 需要获取未播放用户id列表的消息
+   * @param groupMemberIdList 对该条消息未播放的用户id列表，初始传入为空列表
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode getGroupUnPlayAckMessageUserIdList(BMXMessage msg, ListOfLongLong groupMemberIdList) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXChatService_getGroupUnPlayAckMessageUserIdList(swigCPtr, this, BMXMessage.getCPtr(msg), msg, ListOfLongLong.getCPtr(groupMemberIdList), groupMemberIdList));
   }
 
   /**

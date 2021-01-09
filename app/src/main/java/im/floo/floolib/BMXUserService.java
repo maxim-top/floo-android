@@ -171,6 +171,15 @@ public class BMXUserService {
   public BMXErrorCode setPushNickname(String nickname) {
     return BMXErrorCode.swigToEnum(flooJNI.BMXUserService_setPushNickname(swigCPtr, this, nickname));
   }
+  /**
+   *  设置推送别名
+   * @param alias 别名
+   * @param bmxPushToken 推送token
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode setPushAlias(String alias, String bmxPushToken) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXUserService_setPushAlias(swigCPtr, this, alias, bmxPushToken));
+  }
 
   /**
    *  设置收到新消息是否声音提醒

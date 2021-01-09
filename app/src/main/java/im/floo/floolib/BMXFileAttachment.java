@@ -55,12 +55,12 @@ public class BMXFileAttachment extends BMXMessageAttachment {
 
   /**
    *  构造函数，构建接收文件消息附件
-   * @param url 文件服务器地址
+   * @param ratelUrl ratel服务器地址
    * @param displayName 文件展示名
    * @param fileLength 文件大小
    **/
-  public BMXFileAttachment(String url, String displayName, long fileLength) {
-    this(flooJNI.new_BMXFileAttachment__SWIG_2(url, displayName, fileLength), true);
+  public BMXFileAttachment(String ratelUrl, String displayName, long fileLength) {
+    this(flooJNI.new_BMXFileAttachment__SWIG_2(ratelUrl, displayName, fileLength), true);
   }
 
   /**
@@ -94,6 +94,10 @@ public class BMXFileAttachment extends BMXMessageAttachment {
    **/
   public String displayName() {
     return flooJNI.BMXFileAttachment_displayName(swigCPtr, this);
+  }
+
+  public String ratelUrl() {
+    return flooJNI.BMXFileAttachment_ratelUrl(swigCPtr, this);
   }
 
   /**

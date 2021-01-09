@@ -148,6 +148,10 @@ public class BMXSDKConfig {
     return flooJNI.BMXSDKConfig_getPushCertName(swigCPtr, this);
   }
 
+  public void setPushCertName(String arg0) {
+    flooJNI.BMXSDKConfig_setPushCertName(swigCPtr, this, arg0);
+  }
+
   public String getUserAgent() {
     return flooJNI.BMXSDKConfig_getUserAgent(swigCPtr, this);
   }
@@ -242,6 +246,30 @@ public class BMXSDKConfig {
 
   public void setAppID(String appID) {
     flooJNI.BMXSDKConfig_setAppID(swigCPtr, this, appID);
+  }
+
+  public String getAppSecret() {
+    return flooJNI.BMXSDKConfig_getAppSecret(swigCPtr, this);
+  }
+
+  public void setAppSecret(String appSecret) {
+    flooJNI.BMXSDKConfig_setAppSecret(swigCPtr, this, appSecret);
+  }
+
+  public BMXPushProviderType getPushProviderType() {
+    return BMXPushProviderType.swigToEnum(flooJNI.BMXSDKConfig_getPushProviderType(swigCPtr, this));
+  }
+
+  public void setPushProviderType(BMXPushProviderType type) {
+    flooJNI.BMXSDKConfig_setPushProviderType(swigCPtr, this, type.swigValue());
+  }
+
+  public BMXPushEnvironmentType getPushEnvironmentType() {
+    return BMXPushEnvironmentType.swigToEnum(flooJNI.BMXSDKConfig_getPushEnvironmentType(swigCPtr, this));
+  }
+
+  public void setEnvironmentType(BMXPushEnvironmentType type) {
+    flooJNI.BMXSDKConfig_setEnvironmentType(swigCPtr, this, type.swigValue());
   }
 
   public long getDebugLogReceiverId() {
