@@ -73,12 +73,16 @@ public class BMXGroupService {
       this(flooJNI.new_BMXGroupService_CreateGroupOptions__SWIG_0(), true);
     }
   
+    public CreateGroupOptions(String name, String description, boolean isPublic, boolean isChatroom) {
+      this(flooJNI.new_BMXGroupService_CreateGroupOptions__SWIG_1(name, description, isPublic, isChatroom), true);
+    }
+
     public CreateGroupOptions(String name, String description, boolean isPublic) {
-      this(flooJNI.new_BMXGroupService_CreateGroupOptions__SWIG_1(name, description, isPublic), true);
+      this(flooJNI.new_BMXGroupService_CreateGroupOptions__SWIG_2(name, description, isPublic), true);
     }
   
     public CreateGroupOptions(String name, String description) {
-      this(flooJNI.new_BMXGroupService_CreateGroupOptions__SWIG_2(name, description), true);
+      this(flooJNI.new_BMXGroupService_CreateGroupOptions__SWIG_3(name, description), true);
     }
   
     public void setMName(String value) {
@@ -105,6 +109,14 @@ public class BMXGroupService {
       return flooJNI.BMXGroupService_CreateGroupOptions_mIsPublic_get(swigCPtr, this);
     }
   
+    public void setMIsChatroom(boolean value) {
+      flooJNI.BMXGroupService_CreateGroupOptions_mIsChatroom_set(swigCPtr, this, value);
+    }
+
+    public boolean getMIsChatroom() {
+      return flooJNI.BMXGroupService_CreateGroupOptions_mIsChatroom_get(swigCPtr, this);
+    }
+
     public void setMMessage(String value) {
       flooJNI.BMXGroupService_CreateGroupOptions_mMessage_set(swigCPtr, this, value);
     }

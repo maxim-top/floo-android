@@ -200,6 +200,8 @@ public class flooJNI {
   public final static native String kPushShowBeginTime_get();
   public final static native String kPushShowEndTime_get();
   public final static native String kPushTitle_get();
+  public final static native String kSilence_get();
+  public final static native String kBadge_get();
   public final static native void delete_BMXMessageConfig(long jarg1);
   public final static native void BMXMessageConfig_setMentionAll(long jarg1, BMXMessageConfig jarg1_, boolean jarg2);
   public final static native boolean BMXMessageConfig_getMentionAll(long jarg1, BMXMessageConfig jarg1_);
@@ -226,6 +228,9 @@ public class flooJNI {
   public final static native int BMXMessageConfig_getPushShowEndTime(long jarg1, BMXMessageConfig jarg1_);
   public final static native void BMXMessageConfig_setPushTitle(long jarg1, BMXMessageConfig jarg1_, String jarg2);
   public final static native String BMXMessageConfig_getPushTitle(long jarg1, BMXMessageConfig jarg1_);
+  public final static native boolean BMXMessageConfig_isSilence(long jarg1, BMXMessageConfig jarg1_);
+  public final static native int BMXMessageConfig_getBadgeCountType(long jarg1, BMXMessageConfig jarg1_);
+  public final static native int BMXMessageConfig_getBadgeCount(long jarg1, BMXMessageConfig jarg1_, int jarg2);
   public final static native String BMXMessageConfig_serialize(long jarg1, BMXMessageConfig jarg1_);
   public final static native long BMXMessageConfig_createMessageConfig(boolean jarg1);
   public final static native String encodeBMXMessageConfig(long jarg1, BMXMessageConfig jarg1_);
@@ -352,6 +357,8 @@ public class flooJNI {
   public final static native void BMXSDKConfig_setLoadAllServerConversations__SWIG_1(long jarg1, BMXSDKConfig jarg1_);
   public final static native String BMXSDKConfig_getDeviceUuid(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setDeviceUuid(long jarg1, BMXSDKConfig jarg1_, String jarg2);
+  public final static native String BMXSDKConfig_getDBCryptoKey(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setDBCryptoKey(long jarg1, BMXSDKConfig jarg1_, String jarg2);
   public final static native boolean BMXSDKConfig_getVerifyCertificate(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setVerifyCertificate__SWIG_0(long jarg1, BMXSDKConfig jarg1_, boolean jarg2);
   public final static native void BMXSDKConfig_setVerifyCertificate__SWIG_1(long jarg1, BMXSDKConfig jarg1_);
@@ -662,14 +669,17 @@ public class flooJNI {
   public final static native boolean BMXGroup_historyVisible(long jarg1, BMXGroup jarg1_);
   public final static native int BMXGroup_roleType(long jarg1, BMXGroup jarg1_);
   public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_0();
-  public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_1(String jarg1, String jarg2, boolean jarg3);
-  public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_2(String jarg1, String jarg2);
+  public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_1(String jarg1, String jarg2, boolean jarg3, boolean jarg4);
+  public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_2(String jarg1, String jarg2, boolean jarg3);
+  public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_3(String jarg1, String jarg2);
   public final static native void BMXGroupService_CreateGroupOptions_mName_set(long jarg1, BMXGroupService.CreateGroupOptions jarg1_, String jarg2);
   public final static native String BMXGroupService_CreateGroupOptions_mName_get(long jarg1, BMXGroupService.CreateGroupOptions jarg1_);
   public final static native void BMXGroupService_CreateGroupOptions_mDescription_set(long jarg1, BMXGroupService.CreateGroupOptions jarg1_, String jarg2);
   public final static native String BMXGroupService_CreateGroupOptions_mDescription_get(long jarg1, BMXGroupService.CreateGroupOptions jarg1_);
   public final static native void BMXGroupService_CreateGroupOptions_mIsPublic_set(long jarg1, BMXGroupService.CreateGroupOptions jarg1_, boolean jarg2);
   public final static native boolean BMXGroupService_CreateGroupOptions_mIsPublic_get(long jarg1, BMXGroupService.CreateGroupOptions jarg1_);
+  public final static native void BMXGroupService_CreateGroupOptions_mIsChatroom_set(long jarg1, BMXGroupService.CreateGroupOptions jarg1_, boolean jarg2);
+  public final static native boolean BMXGroupService_CreateGroupOptions_mIsChatroom_get(long jarg1, BMXGroupService.CreateGroupOptions jarg1_);
   public final static native void BMXGroupService_CreateGroupOptions_mMessage_set(long jarg1, BMXGroupService.CreateGroupOptions jarg1_, String jarg2);
   public final static native String BMXGroupService_CreateGroupOptions_mMessage_get(long jarg1, BMXGroupService.CreateGroupOptions jarg1_);
   public final static native void BMXGroupService_CreateGroupOptions_mMembers_set(long jarg1, BMXGroupService.CreateGroupOptions jarg1_, long jarg2, ListOfLongLong jarg2_);

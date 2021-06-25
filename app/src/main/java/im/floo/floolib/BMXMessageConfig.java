@@ -212,6 +212,18 @@ public class BMXMessageConfig extends BMXBaseObject {
     return flooJNI.BMXMessageConfig_getPushTitle(swigCPtr, this);
   }
 
+  public boolean isSilence() {
+    return flooJNI.BMXMessageConfig_isSilence(swigCPtr, this);
+  }
+
+  public BMXMessageConfig.BadgeCountType getBadgeCountType() {
+    return BMXMessageConfig.BadgeCountType.swigToEnum(flooJNI.BMXMessageConfig_getBadgeCountType(swigCPtr, this));
+  }
+
+  public int getBadgeCount(int count) {
+    return flooJNI.BMXMessageConfig_getBadgeCount(swigCPtr, this, count);
+  }
+
   /**
    *  序列化操作
    * @return std::string
@@ -223,6 +235,48 @@ public class BMXMessageConfig extends BMXBaseObject {
   public static BMXMessageConfig createMessageConfig(boolean mentionAll) {
     long cPtr = flooJNI.BMXMessageConfig_createMessageConfig(mentionAll);
     return (cPtr == 0) ? null : new BMXMessageConfig(cPtr, true);
+  }
+
+  public enum BadgeCountType {
+    Change,
+    Set;
+
+    public final int swigValue() {
+      return swigValue;
+    }
+
+    public static BadgeCountType swigToEnum(int swigValue) {
+      BadgeCountType[] swigValues = BadgeCountType.class.getEnumConstants();
+      if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+        return swigValues[swigValue];
+      for (BadgeCountType swigEnum : swigValues)
+        if (swigEnum.swigValue == swigValue)
+          return swigEnum;
+      throw new IllegalArgumentException("No enum " + BadgeCountType.class + " with value " + swigValue);
+    }
+
+    @SuppressWarnings("unused")
+    private BadgeCountType() {
+      this.swigValue = SwigNext.next++;
+    }
+
+    @SuppressWarnings("unused")
+    private BadgeCountType(int swigValue) {
+      this.swigValue = swigValue;
+      SwigNext.next = swigValue+1;
+    }
+
+    @SuppressWarnings("unused")
+    private BadgeCountType(BadgeCountType swigEnum) {
+      this.swigValue = swigEnum.swigValue;
+      SwigNext.next = this.swigValue+1;
+    }
+
+    private final int swigValue;
+
+    private static class SwigNext {
+      private static int next = 0;
+    }
   }
 
 }

@@ -11,6 +11,8 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 LINK_LIBRARIES(z)
+ADD_DEFINITIONS(-DENABLE_SQLCIPHER)
+ADD_DEFINITIONS(-fsigned-char)
 
 add_library(crypto
         STATIC

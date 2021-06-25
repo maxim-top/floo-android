@@ -61,6 +61,14 @@ public class floo implements flooConstants {
     return flooJNI.kPushTitle_get();
   }
 
+  public static String getKSilence() {
+    return flooJNI.kSilence_get();
+  }
+
+  public static String getKBadge() {
+    return flooJNI.kBadge_get();
+  }
+
   public static String encodeBMXMessageConfig(BMXMessageConfig arg0) {
     return flooJNI.encodeBMXMessageConfig(BMXMessageConfig.getCPtr(arg0), arg0);
   }

@@ -6330,6 +6330,30 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kPushTitle_1get(JNIEnv *
 }
 
 
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kSilence_1get(JNIEnv *jenv, jclass jcls) {
+  jstring jresult = 0 ;
+  std::string *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (std::string *) &floo::kSilence;
+  jresult = jenv->NewStringUTF(result->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kBadge_1get(JNIEnv *jenv, jclass jcls) {
+  jstring jresult = 0 ;
+  std::string *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (std::string *) &floo::kBadge;
+  jresult = jenv->NewStringUTF(result->c_str()); 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_delete_1BMXMessageConfig(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
   std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
@@ -6817,6 +6841,62 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPus
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getPushTitle();
   jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1isSilence(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (bool)(arg1)->isSilence();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getBadgeCountType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  floo::BMXMessageConfig::BadgeCountType result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (floo::BMXMessageConfig::BadgeCountType)(arg1)->getBadgeCountType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getBadgeCount(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jint jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  int arg2 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  arg2 = (int)jarg2; 
+  result = (int)(arg1)->getBadgeCount(arg2);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -9625,6 +9705,48 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setDeviceUuid
   arg2 = &arg2_str;
   jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setDeviceUuid((std::string const &)*arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getDBCryptoKey(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXSDKConfig *arg1 = (floo::BMXSDKConfig *) 0 ;
+  std::shared_ptr< floo::BMXSDKConfig > *smartarg1 = 0 ;
+  std::string *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
+  arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (std::string *) &(arg1)->getDBCryptoKey();
+  jresult = jenv->NewStringUTF(result->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setDBCryptoKey(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXSDKConfig *arg1 = (floo::BMXSDKConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXSDKConfig > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
+  arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
+  if (!arg2_pstr) return ;
+  std::string arg2_str(arg2_pstr);
+  arg2 = &arg2_str;
+  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  (arg1)->setDBCryptoKey((std::string const &)*arg2);
 }
 
 
@@ -15419,7 +15541,43 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1Crea
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1CreateGroupOptions_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jboolean jarg3) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1CreateGroupOptions_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jboolean jarg3, jboolean jarg4) {
+  jlong jresult = 0 ;
+  std::string *arg1 = 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  bool arg4 ;
+  floo::BMXGroupService::CreateGroupOptions *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  if(!jarg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
+  if (!arg1_pstr) return 0;
+  std::string arg1_str(arg1_pstr);
+  arg1 = &arg1_str;
+  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
+  if (!arg2_pstr) return 0;
+  std::string arg2_str(arg2_pstr);
+  arg2 = &arg2_str;
+  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg3 = jarg3 ? true : false; 
+  arg4 = jarg4 ? true : false; 
+  result = (floo::BMXGroupService::CreateGroupOptions *)new floo::BMXGroupService::CreateGroupOptions((std::string const &)*arg1,(std::string const &)*arg2,arg3,arg4);
+  *(floo::BMXGroupService::CreateGroupOptions **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1CreateGroupOptions_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2, jboolean jarg3) {
   jlong jresult = 0 ;
   std::string *arg1 = 0 ;
   std::string *arg2 = 0 ;
@@ -15453,7 +15611,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1Crea
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1CreateGroupOptions_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1CreateGroupOptions_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jstring jarg1, jstring jarg2) {
   jlong jresult = 0 ;
   std::string *arg1 = 0 ;
   std::string *arg2 = 0 ;
@@ -15580,6 +15738,34 @@ SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1Create
   (void)jarg1_;
   arg1 = *(floo::BMXGroupService::CreateGroupOptions **)&jarg1; 
   result = (bool) ((arg1)->mIsPublic);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateGroupOptions_1mIsChatroom_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  floo::BMXGroupService::CreateGroupOptions *arg1 = (floo::BMXGroupService::CreateGroupOptions *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXGroupService::CreateGroupOptions **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->mIsChatroom = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateGroupOptions_1mIsChatroom_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  floo::BMXGroupService::CreateGroupOptions *arg1 = (floo::BMXGroupService::CreateGroupOptions *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXGroupService::CreateGroupOptions **)&jarg1; 
+  result = (bool) ((arg1)->mIsChatroom);
   jresult = (jboolean)result; 
   return jresult;
 }

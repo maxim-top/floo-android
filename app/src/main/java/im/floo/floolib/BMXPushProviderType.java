@@ -15,7 +15,8 @@ public enum BMXPushProviderType {
   XiaoMi,
   MeiZu,
   VIVO,
-  OPPS;
+  OPPS,
+  FCM;
 
   public final int swigValue() {
     return swigValue;

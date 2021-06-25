@@ -121,7 +121,15 @@ public class BMXSDKConfig {
   }
 
   public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName) {
-    this(flooJNI.new_BMXSDKConfig__SWIG_1(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND+ ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT), true);
+    this(flooJNI.new_BMXSDKConfig__SWIG_1(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND + ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT), true);
+  }
+
+  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String appId, String appSecret, boolean deliveryAck) {
+    this(flooJNI.new_BMXSDKConfig__SWIG_2(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND + ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT, appId, appSecret, deliveryAck), true);
+  }
+
+  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String appId, String appSecret) {
+    this(flooJNI.new_BMXSDKConfig__SWIG_3(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND + ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT, appId, appSecret), true);
   }
 
   public String getDataDir() {
@@ -206,6 +214,14 @@ public class BMXSDKConfig {
 
   public void setDeviceUuid(String uuid) {
     flooJNI.BMXSDKConfig_setDeviceUuid(swigCPtr, this, uuid);
+  }
+
+  public String getDBCryptoKey() {
+    return flooJNI.BMXSDKConfig_getDBCryptoKey(swigCPtr, this);
+  }
+
+  public void setDBCryptoKey(String cryptoKey) {
+    flooJNI.BMXSDKConfig_setDBCryptoKey(swigCPtr, this, cryptoKey);
   }
 
   public boolean getVerifyCertificate() {

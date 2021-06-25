@@ -6,7 +6,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "3.0.14.20210105"
+        versionName "3.1.1.20210624"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
    }
     buildTypes {
