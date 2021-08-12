@@ -106,4 +106,8 @@ public class BMXUserServiceListener {
     flooJNI.BMXUserServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
+  public void registerUserService(BMXUserService service) {
+    flooJNI.BMXUserServiceListener_registerUserService(swigCPtr, this, BMXUserService.getCPtr(service), service);
+  }
+
 }

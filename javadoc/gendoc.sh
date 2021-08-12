@@ -33,5 +33,11 @@ javadoc -d $out_dir  -windowtitle "floo-android api" -encoding utf-8 -charset ut
 ../app/src/main/java/im/floo/floolib/BMXUserManager.java \
 ../app/src/main/java/im/floo/floolib/BMXGroupManager.java \
 ../app/src/main/java/im/floo/floolib/BMXRosterManager.java \
-../app/src/main/java/im/floo/floolib/BMXChatManager.java
+../app/src/main/java/im/floo/floolib/BMXChatManager.java \
+../app/src/main/java/im/floo/floolib/BMXPushEnvironmentType.java \
+../app/src/main/java/im/floo/floolib/BMXPushManager.java \
+../app/src/main/java/im/floo/floolib/BMXPushProviderType.java \
+../app/src/main/java/im/floo/floolib/BMXPushService.java \
+../app/src/main/java/im/floo/floolib/BMXPushServiceListener.java \
+../app/src/main/java/im/floo/floolib/BMXPushUserProfile.java
 cp -r resources $out_dir

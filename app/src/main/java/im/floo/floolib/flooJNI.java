@@ -421,6 +421,7 @@ public class flooJNI {
   public final static native int BMXChatService_getGroupUnPlayAckMessageUserIdList(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_, long jarg3, ListOfLongLong jarg3_);
   public final static native void BMXChatService_addChatListener(long jarg1, BMXChatService jarg1_, long jarg2, BMXChatServiceListener jarg2_);
   public final static native void BMXChatService_removeChatListener(long jarg1, BMXChatService jarg1_, long jarg2, BMXChatServiceListener jarg2_);
+  public final static native long new_BMXChatServiceListener();
   public final static native void delete_BMXChatServiceListener(long jarg1);
   public final static native void BMXChatServiceListener_onStatusChanged(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
   public final static native void BMXChatServiceListener_onStatusChangedSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
@@ -462,7 +463,7 @@ public class flooJNI {
   public final static native void BMXChatServiceListener_onConversationDeleteSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, long jarg2, int jarg3);
   public final static native void BMXChatServiceListener_onTotalUnreadCountChanged(long jarg1, BMXChatServiceListener jarg1_, int jarg2);
   public final static native void BMXChatServiceListener_onTotalUnreadCountChangedSwigExplicitBMXChatServiceListener(long jarg1, BMXChatServiceListener jarg1_, int jarg2);
-  public final static native long new_BMXChatServiceListener();
+  public final static native void BMXChatServiceListener_registerChatService(long jarg1, BMXChatServiceListener jarg1_, long jarg2, BMXChatService jarg2_);
   public final static native void BMXChatServiceListener_director_connect(BMXChatServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXChatServiceListener_change_ownership(BMXChatServiceListener obj, long cptr, boolean take_or_release);
   public final static native void delete_BMXPushService(long jarg1);
@@ -499,6 +500,7 @@ public class flooJNI {
   public final static native int BMXPushService_loadLocalPushMessages__SWIG_1(long jarg1, BMXPushService jarg1_, long jarg2, long jarg3, long jarg4, BMXMessageList jarg4_);
   public final static native void BMXPushService_addPushListener(long jarg1, BMXPushService jarg1_, long jarg2, BMXPushServiceListener jarg2_);
   public final static native void BMXPushService_removePushListener(long jarg1, BMXPushService jarg1_, long jarg2, BMXPushServiceListener jarg2_);
+  public final static native long new_BMXPushServiceListener();
   public final static native void delete_BMXPushServiceListener(long jarg1);
   public final static native void BMXPushServiceListener_onPushStart(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
   public final static native void BMXPushServiceListener_onPushStartSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, String jarg2);
@@ -518,7 +520,7 @@ public class flooJNI {
   public final static native void BMXPushServiceListener_onReceivePushSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
   public final static native void BMXPushServiceListener_onStatusChanged(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
   public final static native void BMXPushServiceListener_onStatusChangedSwigExplicitBMXPushServiceListener(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
-  public final static native long new_BMXPushServiceListener();
+  public final static native void BMXPushServiceListener_registerPushService(long jarg1, BMXPushServiceListener jarg1_, long jarg2, BMXPushService jarg2_);
   public final static native void BMXPushServiceListener_director_connect(BMXPushServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXPushServiceListener_change_ownership(BMXPushServiceListener obj, long cptr, boolean take_or_release);
   public final static native long BMXClient_create(long jarg1, BMXSDKConfig jarg1_);
@@ -898,6 +900,7 @@ public class flooJNI {
   public final static native int BMXRosterService_downloadAvatar(long jarg1, BMXRosterService jarg1_, long jarg2, BMXRosterItem jarg2_, boolean jarg3, FileProgressListener jarg4);
   public final static native void BMXRosterService_addRosterListener(long jarg1, BMXRosterService jarg1_, long jarg2, BMXRosterServiceListener jarg2_);
   public final static native void BMXRosterService_removeRosterListener(long jarg1, BMXRosterService jarg1_, long jarg2, BMXRosterServiceListener jarg2_);
+  public final static native long new_BMXRosterServiceListener();
   public final static native void delete_BMXRosterServiceListener(long jarg1);
   public final static native void BMXRosterServiceListener_onFriendAdded(long jarg1, BMXRosterServiceListener jarg1_, long jarg2, long jarg3);
   public final static native void BMXRosterServiceListener_onFriendAddedSwigExplicitBMXRosterServiceListener(long jarg1, BMXRosterServiceListener jarg1_, long jarg2, long jarg3);
@@ -917,7 +920,7 @@ public class flooJNI {
   public final static native void BMXRosterServiceListener_onRosterInfoUpdateSwigExplicitBMXRosterServiceListener(long jarg1, BMXRosterServiceListener jarg1_, long jarg2, BMXRosterItem jarg2_);
   public final static native void BMXRosterServiceListener_onRosterListUpdate(long jarg1, BMXRosterServiceListener jarg1_);
   public final static native void BMXRosterServiceListener_onRosterListUpdateSwigExplicitBMXRosterServiceListener(long jarg1, BMXRosterServiceListener jarg1_);
-  public final static native long new_BMXRosterServiceListener();
+  public final static native void BMXRosterServiceListener_registerRosterService(long jarg1, BMXRosterServiceListener jarg1_, long jarg2, BMXRosterService jarg2_);
   public final static native void BMXRosterServiceListener_director_connect(BMXRosterServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXRosterServiceListener_change_ownership(BMXRosterServiceListener obj, long cptr, boolean take_or_release);
   public final static native long new_BMXUserProfile_AuthQuestion();
@@ -1075,6 +1078,7 @@ public class flooJNI {
   public final static native int BMXUserService_setAutoAcceptGroupInvite(long jarg1, BMXUserService jarg1_, boolean jarg2);
   public final static native void BMXUserService_addUserListener(long jarg1, BMXUserService jarg1_, long jarg2, BMXUserServiceListener jarg2_);
   public final static native void BMXUserService_removeUserListener(long jarg1, BMXUserService jarg1_, long jarg2, BMXUserServiceListener jarg2_);
+  public final static native long new_BMXUserServiceListener();
   public final static native void delete_BMXUserServiceListener(long jarg1);
   public final static native void BMXUserServiceListener_onConnectStatusChanged(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
   public final static native void BMXUserServiceListener_onConnectStatusChangedSwigExplicitBMXUserServiceListener(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
@@ -1088,7 +1092,7 @@ public class flooJNI {
   public final static native void BMXUserServiceListener_onOtherDeviceSingInSwigExplicitBMXUserServiceListener(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
   public final static native void BMXUserServiceListener_onOtherDeviceSingOut(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
   public final static native void BMXUserServiceListener_onOtherDeviceSingOutSwigExplicitBMXUserServiceListener(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
-  public final static native long new_BMXUserServiceListener();
+  public final static native void BMXUserServiceListener_registerUserService(long jarg1, BMXUserServiceListener jarg1_, long jarg2, BMXUserService jarg2_);
   public final static native void BMXUserServiceListener_director_connect(BMXUserServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXUserServiceListener_change_ownership(BMXUserServiceListener obj, long cptr, boolean take_or_release);
   public final static native long new_BMXVideoAttachment__SWIG_0(String jarg1, int jarg2, long jarg3, BMXMessageAttachment.Size jarg3_, String jarg4);
@@ -1117,6 +1121,7 @@ public class flooJNI {
   public final static native long BMXVoiceAttachment_clone(long jarg1, BMXVoiceAttachment jarg1_);
   public final static native int BMXVoiceAttachment_duration(long jarg1, BMXVoiceAttachment jarg1_);
   public final static native long BMXVoiceAttachment_dynamic_cast(long jarg1, BMXMessageAttachment jarg1_);
+  public final static native long new_BMXGroupServiceListener();
   public final static native void delete_BMXGroupServiceListener(long jarg1);
   public final static native void BMXGroupServiceListener_onGroupCreate(long jarg1, BMXGroupServiceListener jarg1_, long jarg2, BMXGroup jarg2_);
   public final static native void BMXGroupServiceListener_onGroupCreateSwigExplicitBMXGroupServiceListener(long jarg1, BMXGroupServiceListener jarg1_, long jarg2, BMXGroup jarg2_);
@@ -1170,7 +1175,7 @@ public class flooJNI {
   public final static native void BMXGroupServiceListener_onBlockListRemovedSwigExplicitBMXGroupServiceListener(long jarg1, BMXGroupServiceListener jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_);
   public final static native void BMXGroupServiceListener_onGroupListUpdate__SWIG_1(long jarg1, BMXGroupServiceListener jarg1_);
   public final static native void BMXGroupServiceListener_onGroupListUpdateSwigExplicitBMXGroupServiceListener__SWIG_1(long jarg1, BMXGroupServiceListener jarg1_);
-  public final static native long new_BMXGroupServiceListener();
+  public final static native void BMXGroupServiceListener_registerGroupService(long jarg1, BMXGroupServiceListener jarg1_, long jarg2, BMXGroupService jarg2_);
   public final static native void BMXGroupServiceListener_director_connect(BMXGroupServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXGroupServiceListener_change_ownership(BMXGroupServiceListener obj, long cptr, boolean take_or_release);
   public final static native long new_BMXPushUserProfile_MessagePushSetting();

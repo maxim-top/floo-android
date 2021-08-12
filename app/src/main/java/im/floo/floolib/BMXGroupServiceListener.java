@@ -295,4 +295,8 @@ public class BMXGroupServiceListener {
     flooJNI.BMXGroupServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
+  public void registerGroupService(BMXGroupService service) {
+    flooJNI.BMXGroupServiceListener_registerGroupService(swigCPtr, this, BMXGroupService.getCPtr(service), service);
+  }
+
 }

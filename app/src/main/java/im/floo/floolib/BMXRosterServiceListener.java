@@ -138,4 +138,8 @@ public class BMXRosterServiceListener {
     flooJNI.BMXRosterServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
+  public void registerRosterService(BMXRosterService service) {
+    flooJNI.BMXRosterServiceListener_registerRosterService(swigCPtr, this, BMXRosterService.getCPtr(service), service);
+  }
+
 }

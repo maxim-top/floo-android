@@ -226,4 +226,8 @@ public class BMXChatServiceListener {
     flooJNI.BMXChatServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
+  public void registerChatService(BMXChatService service) {
+    flooJNI.BMXChatServiceListener_registerChatService(swigCPtr, this, BMXChatService.getCPtr(service), service);
+  }
+
 }

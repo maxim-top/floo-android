@@ -226,6 +226,7 @@ public class BMXClient extends BMXNetworkListener {
   /**
    *  退出登录
    * @param uid 退出用户的uid（默认输入0则退出当前登陆用户）
+   * @param ignoreUnbindDevice 用户退出时是否忽略解绑定设备操作。对应某些服务器不可访问的情况下忽略服务器解绑定设备操作直接强制退出时设置为true
    * @return BMXErrorCode
    **/
   public BMXErrorCode signOut(long uid, boolean ignoreUnbindDevice) {

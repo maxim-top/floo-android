@@ -127,4 +127,8 @@ public class BMXPushServiceListener {
     flooJNI.BMXPushServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
+  public void registerPushService(BMXPushService service) {
+    flooJNI.BMXPushServiceListener_registerPushService(swigCPtr, this, BMXPushService.getCPtr(service), service);
+  }
+
 }
