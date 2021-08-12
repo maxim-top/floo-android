@@ -6,6 +6,8 @@ Floo Android native codes 美信拓扑IM SDK，安卓本地库
 
 本工程 floo-android 为供安卓使用的本地应用库，主体由 [SWIG](http://www.swig.org/index.php) 框架自动生成。
 
+[![Scc Count Badge](https://sloc.xyz/github/maxim-top/floo-android/?category=total&avg-wage=1)](https://github.com/maxim-top/floo-android/) [![Scc Count Badge](https://sloc.xyz/github/maxim-top/floo-android/?category=code&avg-wage=1)](https://github.com/maxim-top/floo-android/)
+
 ## 设计思想
 
 用 SWIG 生成的 Java 代码，通过 JNI 方式调用底层 C++ 类库，因此大部分接口均为同步，这便是 floo-android 低级 API 的主体。
