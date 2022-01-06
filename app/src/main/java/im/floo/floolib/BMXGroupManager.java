@@ -251,6 +251,31 @@ public class BMXGroupManager {
     /**
      *  获取群成员列表，如果设置了forceRefresh则从服务器拉取，最多拉取1000人
      * @param group 进行操作的群组
+     * @param cursor 分页获取的起始cursor，第一次传入为空，后续传入上次操作返回的result中的cursor
+     * @param pageSize 分页大小
+     * @param callBack BMXErrorCode,群成员列表
+     **/
+    public void getMembers(final BMXGroup group, final String cursor, final int pageSize, final BMXDataCallBack<BMXGroupMemberResultPage> callBack) {
+        final  BMXGroupMemberResultPage page = new BMXGroupMemberResultPage();
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.getMembers(group, page, cursor, pageSize);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code, page);
+            }
+        });
+    }
+
+    /**
+     *  获取群成员列表，如果设置了forceRefresh则从服务器拉取，最多拉取1000人
+     * @param group 进行操作的群组
      * @param forceRefresh 设置为true强制从服务器获取，本地获取失败的情况sdk会自动从服务器获取
      * @param callBack BMXErrorCode,群成员列表
      **/
@@ -443,6 +468,31 @@ public class BMXGroupManager {
     /**
      *  获取黑名单
      * @param group 进行操作的群组
+     * @param cursor 分页获取的起始cursor，第一次传入为空，后续传入上次操作返回的result中的cursor
+     * @param pageSize 分页大小
+     * @param callBack BMXErrorCode,群黑名单列表
+     **/
+    public void getBlockList(final BMXGroup group, final String cursor, final int pageSize, final BMXDataCallBack<BMXGroupMemberResultPage> callBack) {
+        final  BMXGroupMemberResultPage page = new BMXGroupMemberResultPage();
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.getBlockList(group, page, cursor, pageSize);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code, page);
+            }
+        });
+    }
+
+    /**
+     *  获取黑名单
+     * @param group 进行操作的群组
      * @param forceRefresh 设置为true强制从服务器获取，本地获取失败的情况sdk会自动从服务器获取
      * @param callBack BMXErrorCode,群黑名单列表
      **/
@@ -491,6 +541,29 @@ public class BMXGroupManager {
     }
 
     /**
+     *  全员禁言
+     * @param group 进行操作的群组
+     * @param duration 禁言时长
+     * @param callBack BMXErrorCode
+     **/
+    public void banGroup(final BMXGroup group, final  long duration, final BMXCallBack callBack) {
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.banGroup(group, duration);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code);
+            }
+        });
+    }
+
+    /**
      *  解除禁言
      * @param group 进行操作的群组
      * @param members 被解除禁言的群成员id列表
@@ -509,6 +582,53 @@ public class BMXGroupManager {
                     return;
                 }
                 callBack.onResult(code);
+            }
+        });
+    }
+
+    /**
+     *  解除全员禁言
+     * @param group 进行操作的群组
+     * @param callBack BMXErrorCode
+     **/
+    public void unbanGroup(final BMXGroup group, final BMXCallBack callBack) {
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.unbanGroup(group);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code);
+            }
+        });
+    }
+
+    /**
+     *  获取禁言列表
+     * @param group 进行操作的群组
+     * @param cursor 分页获取的起始cursor，第一次传入为空，后续传入上次操作返回的result中的cursor
+     * @param pageSize 分页大小
+     * @param callBack BMXErrorCode 群禁言列表
+     **/
+    public void getBannedMembers(final BMXGroup group, final String cursor, final int pageSize, final BMXDataCallBack<BMXGroupBannedMemberResultPage> callBack) {
+        final  BMXGroupBannedMemberResultPage page = new BMXGroupBannedMemberResultPage();
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.getBannedMembers(group, page, cursor, pageSize);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code, page);
             }
         });
     }

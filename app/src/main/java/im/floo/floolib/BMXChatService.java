@@ -91,6 +91,14 @@ public class BMXChatService {
   }
 
   /**
+   *  发送送达回执
+   * @param msg 需要发送送达回执的消息
+   **/
+  public void ackMessageDelivered(BMXMessage msg) {
+    flooJNI.BMXChatService_ackMessageDelivered(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  /**
    *  发送已播放回执
    * @param msg 需要发送已读回播放的消息
    **/
@@ -173,6 +181,14 @@ public class BMXChatService {
    **/
   public void cancelDownloadAttachment(BMXMessage msg) {
     flooJNI.BMXChatService_cancelDownloadAttachment(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  /**
+   *  上传或下载中的文件数
+   * @return 文件数
+   **/
+  public int transferingNum() {
+    return flooJNI.BMXChatService_transferingNum(swigCPtr, this);
   }
 
   /**

@@ -225,6 +225,13 @@ public class BMXMessageConfig extends BMXBaseObject {
   }
 
   /**
+   *  获取消息发送者用户名
+   **/
+  public String getUsername() {
+    return flooJNI.BMXMessageConfig_getUsername(swigCPtr, this);
+  }
+
+  /**
    *  序列化操作
    * @return std::string
    **/

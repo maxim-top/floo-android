@@ -768,6 +768,13 @@ public class BMXGroup extends BMXBaseObject {
   }
 
   /**
+   *  群组全员禁言到期时间
+   **/
+  public long banExpireTime() {
+    return flooJNI.BMXGroup_banExpireTime(swigCPtr, this);
+  }
+
+  /**
    *  群邀请状态
    **/
   public enum InvitationStatus {
@@ -1060,7 +1067,8 @@ public class BMXGroup extends BMXBaseObject {
     MsgPushMode,
     MsgMuteMode,
     ReadAckMode,
-    HistoryVisibleMode;
+    HistoryVisibleMode,
+    BanExpireTime;
 
     public final int swigValue() {
       return swigValue;

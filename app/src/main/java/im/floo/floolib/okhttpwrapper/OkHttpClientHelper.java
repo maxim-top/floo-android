@@ -1,6 +1,7 @@
 package im.floo.floolib.okhttpwrapper;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -19,6 +20,7 @@ public class OkHttpClientHelper {
      */
     public static OkHttpClient addProgressResponseListener(final ProgressResponseListener progressListener){
         OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.readTimeout(1, TimeUnit.HOURS).writeTimeout(1, TimeUnit.HOURS);
         //增加拦截器
         client.addInterceptor(new Interceptor() {
             @Override
@@ -43,6 +45,7 @@ public class OkHttpClientHelper {
      */
     public static OkHttpClient addProgressRequestListener(final ProgressRequestListener progressListener){
         OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.readTimeout(1, TimeUnit.HOURS).writeTimeout(1, TimeUnit.HOURS);
         //增加拦截器
         client.addInterceptor(new Interceptor() {
             @Override

@@ -202,6 +202,7 @@ public class flooJNI {
   public final static native String kPushTitle_get();
   public final static native String kSilence_get();
   public final static native String kBadge_get();
+  public final static native String kUsername_get();
   public final static native void delete_BMXMessageConfig(long jarg1);
   public final static native void BMXMessageConfig_setMentionAll(long jarg1, BMXMessageConfig jarg1_, boolean jarg2);
   public final static native boolean BMXMessageConfig_getMentionAll(long jarg1, BMXMessageConfig jarg1_);
@@ -231,6 +232,7 @@ public class flooJNI {
   public final static native boolean BMXMessageConfig_isSilence(long jarg1, BMXMessageConfig jarg1_);
   public final static native int BMXMessageConfig_getBadgeCountType(long jarg1, BMXMessageConfig jarg1_);
   public final static native int BMXMessageConfig_getBadgeCount(long jarg1, BMXMessageConfig jarg1_, int jarg2);
+  public final static native String BMXMessageConfig_getUsername(long jarg1, BMXMessageConfig jarg1_);
   public final static native String BMXMessageConfig_serialize(long jarg1, BMXMessageConfig jarg1_);
   public final static native long BMXMessageConfig_createMessageConfig(boolean jarg1);
   public final static native String encodeBMXMessageConfig(long jarg1, BMXMessageConfig jarg1_);
@@ -344,6 +346,8 @@ public class flooJNI {
   public final static native String BMXSDKConfig_getPushCertName(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setPushCertName(long jarg1, BMXSDKConfig jarg1_, String jarg2);
   public final static native String BMXSDKConfig_getUserAgent(long jarg1, BMXSDKConfig jarg1_);
+  public final static native boolean BMXSDKConfig_carryUsernameInMessage(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setCarryUsernameInMessage(long jarg1, BMXSDKConfig jarg1_, boolean jarg2);
   public final static native boolean BMXSDKConfig_enableDeliveryAck(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setEnableDeliveryAck(long jarg1, BMXSDKConfig jarg1_, boolean jarg2);
   public final static native int BMXSDKConfig_getLogLevel(long jarg1, BMXSDKConfig jarg1_);
@@ -389,6 +393,7 @@ public class flooJNI {
   public final static native int BMXChatService_forwardMessage__SWIG_0(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessageList jarg2_, long jarg3, BMXConversation jarg3_, long jarg4, BMXMessage jarg4_);
   public final static native void BMXChatService_forwardMessage__SWIG_1(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_ackMessage(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXChatService_ackMessageDelivered(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_ackPlayMessage(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_readCancel(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_readAllMessage(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
@@ -400,6 +405,7 @@ public class flooJNI {
   public final static native void BMXChatService_downloadAttachmentByUrl(long jarg1, BMXChatService jarg1_, long jarg2, String jarg3, String jarg4);
   public final static native void BMXChatService_cancelUploadAttachment(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXChatService_cancelDownloadAttachment(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native int BMXChatService_transferingNum(long jarg1, BMXChatService jarg1_);
   public final static native int BMXChatService_insertMessages(long jarg1, BMXChatService jarg1_, long jarg2, BMXMessageList jarg2_);
   public final static native long BMXChatService_getMessage(long jarg1, BMXChatService jarg1_, long jarg2);
   public final static native void BMXChatService_deleteConversation__SWIG_0(long jarg1, BMXChatService jarg1_, long jarg2, boolean jarg3);
@@ -670,6 +676,7 @@ public class flooJNI {
   public final static native boolean BMXGroup_enableReadAck(long jarg1, BMXGroup jarg1_);
   public final static native boolean BMXGroup_historyVisible(long jarg1, BMXGroup jarg1_);
   public final static native int BMXGroup_roleType(long jarg1, BMXGroup jarg1_);
+  public final static native long BMXGroup_banExpireTime(long jarg1, BMXGroup jarg1_);
   public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_0();
   public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_1(String jarg1, String jarg2, boolean jarg3, boolean jarg4);
   public final static native long new_BMXGroupService_CreateGroupOptions__SWIG_2(String jarg1, String jarg2, boolean jarg3);
@@ -702,13 +709,13 @@ public class flooJNI {
   public final static native int BMXGroupService_leave(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_);
   public final static native int BMXGroupService_getInfo(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_);
   public final static native int BMXGroupService_getMembersNickname(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_, long jarg4, BMXGroupMemberList jarg4_);
-  public final static native int BMXGroupService_getInvitationList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, String jarg3, int jarg4);
+  public final static native int BMXGroupService_getInvitationList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, ListOfLongLong jarg2_, String jarg3, int jarg4);
   public final static native int BMXGroupService_getInvitationList__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, String jarg3);
   public final static native int BMXGroupService_getInvitationList__SWIG_2(long jarg1, BMXGroupService jarg1_, long jarg2);
-  public final static native int BMXGroupService_getApplicationList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroupList jarg2_, long jarg3, String jarg4, int jarg5);
+  public final static native int BMXGroupService_getApplicationList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroupList jarg2_, long jarg3, ListOfLongLong jarg3_, String jarg4, int jarg5);
   public final static native int BMXGroupService_getApplicationList__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroupList jarg2_, long jarg3, String jarg4);
   public final static native int BMXGroupService_getApplicationList__SWIG_2(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroupList jarg2_, long jarg3);
-  public final static native int BMXGroupService_getMembers__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, String jarg4, int jarg5);
+  public final static native int BMXGroupService_getMembers__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3,ListOfLongLong jarg3_, String jarg4, int jarg5);
   public final static native int BMXGroupService_getMembers__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, String jarg4);
   public final static native int BMXGroupService_getMembers__SWIG_2(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3);
   public final static native int BMXGroupService_getMembers__SWIG_3(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, BMXGroupMemberList jarg3_, boolean jarg4);
@@ -719,14 +726,16 @@ public class flooJNI {
   public final static native int BMXGroupService_getAdmins(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, BMXGroupMemberList jarg3_, boolean jarg4);
   public final static native int BMXGroupService_blockMembers(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_);
   public final static native int BMXGroupService_unblockMembers(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_);
-  public final static native int BMXGroupService_getBlockList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, String jarg4, int jarg5);
+  public final static native int BMXGroupService_getBlockList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_, String jarg4, int jarg5);
   public final static native int BMXGroupService_getBlockList__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, String jarg4);
   public final static native int BMXGroupService_getBlockList__SWIG_2(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3);
   public final static native int BMXGroupService_getBlockList__SWIG_3(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, BMXGroupMemberList jarg3_, boolean jarg4);
   public final static native int BMXGroupService_banMembers__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_, long jarg4, String jarg5);
   public final static native int BMXGroupService_banMembers__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_, long jarg4);
+  public final static native int BMXGroupService_banGroup(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3);
   public final static native int BMXGroupService_unbanMembers(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_);
-  public final static native int BMXGroupService_getBannedMembers__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, String jarg4, int jarg5);
+  public final static native int BMXGroupService_getBannedMembers__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3,ListOfLongLong jarg3_, String jarg4, int jarg5);
+  public final static native int BMXGroupService_unbanGroup(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_);
   public final static native int BMXGroupService_getBannedMembers__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, String jarg4);
   public final static native int BMXGroupService_getBannedMembers__SWIG_2(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3);
   public final static native int BMXGroupService_getBannedMembers__SWIG_3(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, BMXGroupBannedMemberList jarg3_);
@@ -887,7 +896,7 @@ public class flooJNI {
   public final static native int BMXRosterService_setItemExtension(long jarg1, BMXRosterService jarg1_, long jarg2, BMXRosterItem jarg2_, String jarg3);
   public final static native int BMXRosterService_setItemAlias(long jarg1, BMXRosterService jarg1_, long jarg2, BMXRosterItem jarg2_, String jarg3);
   public final static native int BMXRosterService_setItemMuteNotification(long jarg1, BMXRosterService jarg1_, long jarg2, BMXRosterItem jarg2_, boolean jarg3);
-  public final static native int BMXRosterService_getApplicationList__SWIG_0(long jarg1, BMXRosterService jarg1_, long jarg2, ApplicationPage jarg2_, String jarg3, int jarg4);
+  public final static native int BMXRosterService_getApplicationList__SWIG_0(long jarg1, BMXRosterService jarg1_, long jarg2, ListOfLongLong jarg2_, String jarg3, int jarg4);
   public final static native int BMXRosterService_getApplicationList__SWIG_1(long jarg1, BMXRosterService jarg1_, long jarg2, ApplicationPage jarg2_, String jarg3);
   public final static native int BMXRosterService_apply__SWIG_0(long jarg1, BMXRosterService jarg1_, long jarg2, String jarg3, String jarg4);
   public final static native int BMXRosterService_apply__SWIG_1(long jarg1, BMXRosterService jarg1_, long jarg2, String jarg3);

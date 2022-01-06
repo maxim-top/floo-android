@@ -69,6 +69,10 @@ public class floo implements flooConstants {
     return flooJNI.kBadge_get();
   }
 
+  public static String getKUsername() {
+    return flooJNI.kUsername_get();
+  }
+
   public static String encodeBMXMessageConfig(BMXMessageConfig arg0) {
     return flooJNI.encodeBMXMessageConfig(BMXMessageConfig.getCPtr(arg0), arg0);
   }

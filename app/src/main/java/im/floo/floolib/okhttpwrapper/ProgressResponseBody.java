@@ -82,9 +82,14 @@ public class ProgressResponseBody extends ResponseBody {
 
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
-                long bytesRead = super.read(sink, byteCount);
+                long bytesRead = -1;
+                try {
+                    bytesRead = super.read(sink, byteCount);
+                    totalBytesRead += bytesRead != -1 ? bytesRead : 0;
+                }catch (IllegalStateException e){
+                    e.printStackTrace();
+                }
                 //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
-                totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 //回调，如果contentLength()不知道长度，会返回-1
                 if(progressListener != null){
                     progressListener.onResponseProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);

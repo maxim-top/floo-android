@@ -295,15 +295,10 @@ public class BMXGroupService {
    * @return BMXErrorCode
    **/
   public BMXErrorCode getInvitationList(GroupInvitaionPage result, String cursor, int pageSize) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getInvitationList__SWIG_0(swigCPtr, this, GroupInvitaionPage.getCPtr(result), cursor, pageSize));
-  }
-
-  public BMXErrorCode getInvitationList(GroupInvitaionPage result, String cursor) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getInvitationList__SWIG_1(swigCPtr, this, GroupInvitaionPage.getCPtr(result), cursor));
-  }
-
-  public BMXErrorCode getInvitationList(GroupInvitaionPage result) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getInvitationList__SWIG_2(swigCPtr, this, GroupInvitaionPage.getCPtr(result)));
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXGroupService_getInvitationList__SWIG_0(swigCPtr, this, ListOfLongLong.getCPtr(listOfLongLong), listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
   }
 
   /**
@@ -315,15 +310,10 @@ public class BMXGroupService {
    * @return BMXErrorCode
    **/
   public BMXErrorCode getApplicationList(BMXGroupList list, GroupApplicationPage result, String cursor, int pageSize) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getApplicationList__SWIG_0(swigCPtr, this, BMXGroupList.getCPtr(list), list, GroupApplicationPage.getCPtr(result), cursor, pageSize));
-  }
-
-  public BMXErrorCode getApplicationList(BMXGroupList list, GroupApplicationPage result, String cursor) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getApplicationList__SWIG_1(swigCPtr, this, BMXGroupList.getCPtr(list), list, GroupApplicationPage.getCPtr(result), cursor));
-  }
-
-  public BMXErrorCode getApplicationList(BMXGroupList list, GroupApplicationPage result) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getApplicationList__SWIG_2(swigCPtr, this, BMXGroupList.getCPtr(list), list, GroupApplicationPage.getCPtr(result)));
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXGroupService_getApplicationList__SWIG_0(swigCPtr, this, BMXGroupList.getCPtr(list), list, ListOfLongLong.getCPtr(listOfLongLong), listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
   }
 
   /**
@@ -335,15 +325,10 @@ public class BMXGroupService {
    * @return BMXErrorCode
    **/
   public BMXErrorCode getMembers(BMXGroup group, BMXGroupMemberResultPage result, String cursor, int pageSize) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getMembers__SWIG_0(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupMemberResultPage.getCPtr(result), cursor, pageSize));
-  }
-
-  public BMXErrorCode getMembers(BMXGroup group, BMXGroupMemberResultPage result, String cursor) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getMembers__SWIG_1(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupMemberResultPage.getCPtr(result), cursor));
-  }
-
-  public BMXErrorCode getMembers(BMXGroup group, BMXGroupMemberResultPage result) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getMembers__SWIG_2(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupMemberResultPage.getCPtr(result)));
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXGroupService_getMembers__SWIG_0(swigCPtr, this, BMXGroup.getCPtr(group), group, ListOfLongLong.getCPtr(listOfLongLong), listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
   }
 
   /**
@@ -441,15 +426,10 @@ public class BMXGroupService {
    * @return BMXErrorCode
    **/
   public BMXErrorCode getBlockList(BMXGroup group, BMXGroupMemberResultPage result, String cursor, int pageSize) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getBlockList__SWIG_0(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupMemberResultPage.getCPtr(result), cursor, pageSize));
-  }
-
-  public BMXErrorCode getBlockList(BMXGroup group, BMXGroupMemberResultPage result, String cursor) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getBlockList__SWIG_1(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupMemberResultPage.getCPtr(result), cursor));
-  }
-
-  public BMXErrorCode getBlockList(BMXGroup group, BMXGroupMemberResultPage result) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getBlockList__SWIG_2(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupMemberResultPage.getCPtr(result)));
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXGroupService_getBlockList__SWIG_0(swigCPtr, this, BMXGroup.getCPtr(group), group, ListOfLongLong.getCPtr(listOfLongLong), listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
   }
 
   /**
@@ -480,6 +460,16 @@ public class BMXGroupService {
   }
 
   /**
+   * @brief 全员禁言，当前服务器时间加上禁言时长后计算出全员禁言到期时间（只有管理和群主可以发言）
+   * @param group 进行操作的群组
+   * @param duration 禁言时长(分钟)
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode banGroup(BMXGroup group, long duration) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_banGroup(swigCPtr, this, BMXGroup.getCPtr(group), group, duration));
+  }
+
+  /**
    *  解除禁言
    * @param group 进行操作的群组
    * @param members 被解除禁言的群成员id列表
@@ -487,6 +477,15 @@ public class BMXGroupService {
    **/
   public BMXErrorCode unbanMembers(BMXGroup group, ListOfLongLong members) {
     return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_unbanMembers(swigCPtr, this, BMXGroup.getCPtr(group), group, ListOfLongLong.getCPtr(members), members));
+  }
+
+  /**
+   * @brief 全员解除禁言
+   * @param group 进行操作的群组
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode unbanGroup(BMXGroup group) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_unbanGroup(swigCPtr, this, BMXGroup.getCPtr(group), group));
   }
 
   /**
@@ -498,15 +497,10 @@ public class BMXGroupService {
    * @return BMXErrorCode
    **/
   public BMXErrorCode getBannedMembers(BMXGroup group, BMXGroupBannedMemberResultPage result, String cursor, int pageSize) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getBannedMembers__SWIG_0(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupBannedMemberResultPage.getCPtr(result), cursor, pageSize));
-  }
-
-  public BMXErrorCode getBannedMembers(BMXGroup group, BMXGroupBannedMemberResultPage result, String cursor) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getBannedMembers__SWIG_1(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupBannedMemberResultPage.getCPtr(result), cursor));
-  }
-
-  public BMXErrorCode getBannedMembers(BMXGroup group, BMXGroupBannedMemberResultPage result) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getBannedMembers__SWIG_2(swigCPtr, this, BMXGroup.getCPtr(group), group, BMXGroupBannedMemberResultPage.getCPtr(result)));
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXGroupService_getBannedMembers__SWIG_0(swigCPtr, this, BMXGroup.getCPtr(group), group, ListOfLongLong.getCPtr(listOfLongLong), listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
   }
 
   /**

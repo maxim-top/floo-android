@@ -62,7 +62,14 @@ public  class ProgressRequestBody extends RequestBody {
 
         }
         //写入
-        requestBody.writeTo(bufferedSink);
+        try{
+            requestBody.writeTo(bufferedSink);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         //必须调用flush，否则最后一部分数据可能不会被写入
         bufferedSink.flush();
 

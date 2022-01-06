@@ -9,7 +9,7 @@
 package im.floo.floolib;
 
 public class BMXGroupMemberResultPage extends BMXBaseObject {
-  private transient long swigCPtr;
+  public transient long swigCPtr;
 
   protected BMXGroupMemberResultPage(long cPtr, boolean cMemoryOwn) {
     super(flooJNI.BMXGroupMemberResultPage_SWIGUpcast(cPtr), cMemoryOwn);

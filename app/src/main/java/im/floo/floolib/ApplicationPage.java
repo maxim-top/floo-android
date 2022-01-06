@@ -9,7 +9,7 @@
 package im.floo.floolib;
 
 public class ApplicationPage extends BMXBaseObject {
-  private transient long swigCPtr;
+  public transient long swigCPtr;
 
   protected ApplicationPage(long cPtr, boolean cMemoryOwn) {
     super(flooJNI.ApplicationPage_SWIGUpcast(cPtr), cMemoryOwn);

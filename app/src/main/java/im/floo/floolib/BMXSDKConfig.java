@@ -164,6 +164,14 @@ public class BMXSDKConfig {
     return flooJNI.BMXSDKConfig_getUserAgent(swigCPtr, this);
   }
 
+  public boolean carryUsernameInMessage() {
+    return flooJNI.BMXSDKConfig_carryUsernameInMessage(swigCPtr, this);
+  }
+
+  public void setCarryUsernameInMessage(boolean arg0) {
+    flooJNI.BMXSDKConfig_setCarryUsernameInMessage(swigCPtr, this, arg0);
+  }
+
   public boolean enableDeliveryAck() {
     return flooJNI.BMXSDKConfig_enableDeliveryAck(swigCPtr, this);
   }

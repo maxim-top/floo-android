@@ -244,11 +244,10 @@ public class BMXRosterService {
    * @return BMXErrorCode
    **/
   public BMXErrorCode getApplicationList(ApplicationPage result, String cursor, int pageSize) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXRosterService_getApplicationList__SWIG_0(swigCPtr, this, ApplicationPage.getCPtr(result), result, cursor, pageSize));
-  }
-
-  public BMXErrorCode getApplicationList(ApplicationPage result, String cursor) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXRosterService_getApplicationList__SWIG_1(swigCPtr, this, ApplicationPage.getCPtr(result), result, cursor));
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXRosterService_getApplicationList__SWIG_0(swigCPtr, this, ListOfLongLong.getCPtr(listOfLongLong), listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
   }
 
   public BMXErrorCode apply(long rosterId, String message, String authAnswer) {

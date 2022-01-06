@@ -180,6 +180,27 @@ public class BMXChatManager {
     }
 
     /**
+     *  取消下载附件
+     * @param msg 需要下载附件的消息
+     **/
+    public void cancelDownloadAttachment(final BMXMessage msg) {
+        new AsyncExecutor().exec(new AsyncExecutor.SimpleTask() {
+            @Override
+            public void exec() {
+                mService.cancelDownloadAttachment(msg);
+            }
+        });
+    }
+
+    /**
+     *  正在上传或下载中的文件数
+     * @return 传输中的文件数
+     **/
+    public int transferingNum() {
+        return mService.transferingNum();
+    }
+
+    /**
      *  插入消息
      * @param list 插入消息列表
      * @param callBack BMXErrorCode
