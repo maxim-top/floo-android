@@ -1,8 +1,8 @@
-# floo-android
-Floo Android native codes 美信拓扑IM SDK，安卓本地库
+# 蓝莺IM SDK，安卓本地库
 
-美信拓扑IM SDK（代号 floo ）底层使用 C++ 实现，各平台（Android、iOS、Linux等）在此基础上再行封装，
-完成本地库的开发，以达到多平台复用的目的，并保持跨平台协议实现的一致性。
+蓝莺IM，是由[美信拓扑](https://www.maximtop.com/)团队研发的新一代即时通讯云服务，SDK设计简单集成方便，服务采用云原生技术和多云架构，私有云也可按月付费。
+
+蓝莺IM SDK（代号 floo）底层使用 C++ 实现，各平台（Android、iOS、Linux等）在此基础上进行封装成本地库，以达到多平台复用的目的，并保持跨平台协议实现的一致性。
 
 本工程 floo-android 为供安卓使用的本地应用库，主体由 [SWIG](http://www.swig.org/index.php) 框架自动生成。
 
@@ -31,8 +31,8 @@ Floo Android native codes 美信拓扑IM SDK，安卓本地库
 
 包括 BMXClient、BMXSDKConfig、BMXMessage、BMXConversation、BMXUserProfile、BMXGroup、BMXDevice等。
 
-快速集成文档参考[美信拓扑快速集成指南Android版](https://www.maximtop.com/docs/quick/android/)，
-详细文档可参考[floo-android reference](https://www.maximtop.com/docs/android/)
+快速集成文档参考[蓝莺IM快速集成指南Android版](https://docs.maximtop.com/quick-start/floo-android-quick-start.html)，
+详细文档可参考[floo-android reference](https://docs.maximtop.com/reference/floo-android.html)
 
 ## 开发
 
