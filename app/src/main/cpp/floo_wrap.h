@@ -83,6 +83,141 @@ protected:
     Swig::BoolArray<9> swig_override;
 };
 
+class SwigDirector_BMXRTCEngineListener : public floo::BMXRTCEngineListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_BMXRTCEngineListener(JNIEnv *jenv);
+    virtual ~SwigDirector_BMXRTCEngineListener();
+    virtual void onJoinRoom(std::string const &info, int64_t roomId, floo::BMXErrorCode error);
+    virtual void onLeaveRoom(std::string const &info, int64_t roomId, floo::BMXErrorCode error, std::string const &reason);
+    virtual void onRejoining(int64_t roomId, floo::BMXErrorCode error);
+    virtual void onReJoinRoom(std::string const &info, int64_t roomId, floo::BMXErrorCode error);
+    virtual void onMemberJoined(int64_t roomId, int64_t usedId);
+    virtual void onMemberExited(int64_t roomId, int64_t usedId, std::string const &reason);
+    virtual void onLocalPublish(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+    virtual void onLocalUnPublish(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+    virtual void onRemotePublish(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+    virtual void onRemoteUnPublish(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+    virtual void onSubscribe(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+    virtual void onUnSubscribe(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+    virtual void onRemoteTrackNotify(floo::BMXStreamPtr stream, floo::BMXTrackType trackType, std::string const &info, floo::BMXErrorCode error);
+    virtual void onLocalStreamMuteRsp(floo::BMXStreamPtr stream, floo::BMXTrackType trackType, bool mute, std::string const &info, floo::BMXErrorCode error);
+    virtual void onRemoteStreamMuteRsp(floo::BMXStreamPtr stream, floo::BMXTrackType trackType, bool mute, std::string const &info, floo::BMXErrorCode error);
+    virtual void onSendRTCStats(floo::BMXStreamStatsPtr streamStats, std::string const &info, floo::BMXErrorCode error);
+    virtual void onRemoteRTCStats(floo::BMXStreamStatsPtr streamStats, std::string const &info, floo::BMXErrorCode error);
+    virtual void onLocalAudioLevel(int volume);
+    virtual void onRemoteAudioLevel(int64_t userId, int volume);
+    virtual void onKickoff(std::string const &info, floo::BMXErrorCode error);
+    virtual void onWarning(std::string const &info, floo::BMXErrorCode error);
+    virtual void onError(std::string const &info, floo::BMXErrorCode error);
+    virtual void onNetworkQuality(floo::BMXStreamPtr stream, std::string const &info, floo::BMXErrorCode error);
+public:
+    bool swig_overrides(int n) {
+      return (n < 23 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<23> swig_override;
+};
+
+class SwigDirector_BMXRTCEngine : public floo::BMXRTCEngine, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_BMXRTCEngine(JNIEnv *jenv);
+    virtual ~SwigDirector_BMXRTCEngine();
+    virtual void destroy();
+    virtual void addRTCEngineListener(floo::BMXRTCEngineListener *listener);
+    virtual void removeRTCEngineListener(floo::BMXRTCEngineListener *listener);
+    virtual floo::BMXRTCConfigPtr getRTCConfig();
+    virtual floo::BMXErrorCode setRoomType(floo::BMXRoomType type);
+    virtual floo::BMXErrorCode setStreamRole(floo::BMXStreamRole role);
+    virtual floo::BMXErrorCode setVideoCodec(floo::BMXVideoCodec codec);
+    virtual floo::BMXErrorCode setVideoProfile(floo::BMXVideoConfigPtr videoConfig);
+    virtual floo::BMXErrorCode setAudioProfile(floo::BMXAudioProfile profile);
+    virtual floo::BMXErrorCode joinRoom(floo::BMXRoomAuthPtr auth);
+    virtual floo::BMXErrorCode leaveRoom();
+    virtual floo::BMXErrorCode publish(floo::BMXVideoMediaType type, bool hasVideo, bool hasAudio);
+    virtual floo::BMXErrorCode unPublish(floo::BMXVideoMediaType type);
+    virtual floo::BMXErrorCode subscribe(floo::BMXStreamPtr stream);
+    virtual floo::BMXErrorCode unSubscribe(floo::BMXStreamPtr stream);
+    virtual floo::BMXErrorCode startPreview(floo::BMXVideoCanvasPtr canvas);
+    virtual floo::BMXErrorCode stopPreview(floo::BMXVideoCanvasPtr canvas);
+    virtual floo::BMXErrorCode startRemoteView(floo::BMXVideoCanvasPtr canvas);
+    virtual floo::BMXErrorCode stopRemoteView(floo::BMXVideoCanvasPtr canvas);
+    virtual floo::BMXErrorCode muteLocalAudio(bool mute);
+    virtual floo::BMXErrorCode muteLocalVideo(floo::BMXVideoMediaType type, bool mute);
+    virtual floo::BMXErrorCode muteRemoteAudio(floo::BMXStreamPtr stream, bool mute);
+    virtual floo::BMXErrorCode muteRemoteVideo(floo::BMXStreamPtr stream, bool mute);
+    virtual floo::BMXErrorCode switchCamera();
+public:
+    bool swig_overrides(int n) {
+      return (n < 24 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<24> swig_override;
+};
+
+class SwigDirector_BMXRTCSignalServiceListener : public floo::BMXRTCSignalServiceListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_BMXRTCSignalServiceListener(JNIEnv *jenv);
+    virtual ~SwigDirector_BMXRTCSignalServiceListener();
+    virtual void onSessionCreate(floo::BMXRTCSessionPtr session, int error, std::string const reason);
+    virtual void onSessionAttach(floo::BMXRTCSessionPtr session, floo::BMXRTCSignalService::HandlerType type, int error, std::string const reason);
+    virtual void onRoomCreate(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int error, std::string const &reason);
+    virtual void onRoomDestroy(floo::BMXRTCSessionPtr session, int64_t roomId, int error, std::string const &reason);
+    virtual void onRoomEdit(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int error, std::string const &reason);
+    virtual void onRoomExist(floo::BMXRTCSessionPtr session, int64_t roomId, bool exist, int error, std::string const &reason);
+    virtual void onRoomAllowed(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, std::vector< std::string > const &tokens, int error, std::string const &reason);
+    virtual void onRoomKick(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int64_t userId, int error, std::string const &reason);
+    virtual void onRoomModerate(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int64_t userId, int error, std::string const &reason);
+    virtual void onRoomList(floo::BMXRTCSessionPtr session, floo::BMXRTCRooms const &rooms, int error, std::string const &reason);
+    virtual void onRoomListParticipants(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, floo::BMXRTCRoomParticipants const &participants, int error, std::string const &reason);
+    virtual void onPubJoinRoom(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, floo::BMXRTCPublishers const &publishers, int error, std::string const &reason);
+    virtual void onOtherPubJoinRoom(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, floo::BMXRTCPublishers const &publishers);
+    virtual void onPubConfigure(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, floo::BMXRoomSDPInfoPtr sdp, floo::BMXRTCStreams const streams, int error, std::string const &reason);
+    virtual void onPubUnPublish(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int senderId, int error, std::string const &reason);
+    virtual void onPublishWebrtcUp(floo::BMXRTCSessionPtr session);
+    virtual void onSubJoinRoomUpdate(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, floo::BMXRoomSDPInfoPtr sdp, int64_t senderId, floo::BMXRTCStreams const streams, int error, std::string const &reason);
+    virtual void onSubStart(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int error, std::string const &reason);
+    virtual void onSubPause(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int error, std::string const &reason);
+    virtual void onSubUnsubscribe(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, floo::BMXRTCStreams const streams, int error, std::string const &reason);
+    virtual void onSubConfigure(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int error, std::string const &reason);
+    virtual void onSubSwitch(floo::BMXRTCSessionPtr session, floo::BMXRTCRoomPtr room, int64_t publisher, int error, std::string const &reason);
+    virtual void onLeaveRoom(floo::BMXRTCSessionPtr session, int64_t roomId, int64_t senderId, int error, std::string const reason);
+    virtual void onSubscribeWebrtcUp(floo::BMXRTCSessionPtr session, int64_t senderId);
+    virtual void onMediaInfo(floo::BMXRTCSessionPtr session, int64_t senderId, floo::BMXTrackType type, bool receiving, std::string const &mid);
+    virtual void onSlowlink(floo::BMXRTCSessionPtr session, int64_t senderId, bool uplink, int nacks);
+    virtual void onHangup(floo::BMXRTCSessionPtr session, int64_t senderId, std::string const &reason);
+    virtual void onSessionHangup(floo::BMXRTCSessionPtr session, int64_t error, std::string const &reason);
+    virtual void onSessionDetach(floo::BMXRTCSessionPtr session, floo::BMXRTCSignalService::HandlerType type, int error, std::string const reason);
+    virtual void onSessionDestroy(int64_t sessionId, int error, std::string const reason);
+public:
+    bool swig_overrides(int n) {
+      return (n < 30 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<30> swig_override;
+};
+
+class SwigDirector_BMXRTCServiceListener : public floo::BMXRTCServiceListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_BMXRTCServiceListener(JNIEnv *jenv);
+    virtual ~SwigDirector_BMXRTCServiceListener();
+    virtual void onRTCNoticeStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
+    virtual void onRTCNoticeReceive(floo::BMXMessageList const &list);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<2> swig_override;
+};
+
 class SwigDirector_BMXRosterServiceListener : public floo::BMXRosterServiceListener, public Swig::Director {
 
 public:

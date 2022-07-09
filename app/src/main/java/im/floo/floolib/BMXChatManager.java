@@ -193,6 +193,19 @@ public class BMXChatManager {
     }
 
     /**
+     *  取消上传附件
+     * @param msg 需要上传附件的消息
+     **/
+    public void cancelUploadAttachment(final BMXMessage msg) {
+        new AsyncExecutor().exec(new AsyncExecutor.SimpleTask() {
+            @Override
+            public void exec() {
+                mService.cancelUploadAttachment(msg);
+            }
+        });
+    }
+
+    /**
      *  正在上传或下载中的文件数
      * @return 传输中的文件数
      **/

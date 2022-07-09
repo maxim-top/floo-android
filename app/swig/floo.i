@@ -5,11 +5,17 @@
 %feature("director")  BMXRosterServiceListener;
 %feature("director")  BMXUserServiceListener;
 %feature("director")  BMXPushServiceListener;
+%feature("director")  BMXRTCEngine;
+%feature("director")  BMXRTCEngineListener;
+%feature("director")  BMXRTCServiceListener;
+%feature("director")  BMXRTCSignalServiceListener;
 %{
 #include "bmx_error.h"
 #include "bmx_defines.h"
-#include "bmx_device.h"
 #include "bmx_base_object.h"
+#include "bmx_device.h"
+#include "bmx_user_profile.h"
+#include "bmx_push_user_profile.h"
 #include "bmx_message_attachment.h"
 #include "bmx_message_config.h"
 #include "bmx_message.h"
@@ -30,19 +36,28 @@
 #include "bmx_roster_item.h"
 #include "bmx_roster_service.h"
 #include "bmx_roster_service_listener.h"
-#include "bmx_user_profile.h"
 #include "user_profile_impl.h"
 #include "bmx_user_service.h"
 #include "bmx_user_service_listener.h"
 #include "bmx_video_attachment.h"
 #include "bmx_voice_attachment.h"
 #include "bmx_group_service_listener.h"
-#include "bmx_push_user_profile.h"
+#include "bmx_rtc_defines.h"
+#include "bmx_rtc_config.h"
+#include "bmx_rtc_room.h"
+#include "bmx_rtc_session.h"
+#include "bmx_rtc_engine_listener.h"
+#include "bmx_rtc_engine.h"
+#include "bmx_rtc_signal_service.h"
+#include "bmx_rtc_signal_service_listener.h"
+#include "bmx_rtc_service.h"
+#include "bmx_rtc_service_listener.h"
 #include <utility>
 %}
 
 %include "stdint.i"
 %include "enums.swg"
+%include "enumtypesafe.swg"
 %javaconst(1);
 
 
@@ -85,10 +100,37 @@ typedef floo::BMXConversation::Type BMXConversationType;
 %shared_ptr(floo::BMXGroup::Application)
 %shared_ptr(floo::BMXGroup::Invitation)
 %shared_ptr(floo::BMXUserProfile)
+%shared_ptr(floo::BMXPushUserProfile)
 %shared_ptr(floo::UserProfileImpl)
 %shared_ptr(floo::BMXVoiceAttachment)
 %shared_ptr(floo::BMXVideoAttachment)
 %shared_ptr(floo::BMXResultPage<floo::BMXMessage>)
+%shared_ptr(floo::BMXJanusStreamInfo)
+%shared_ptr(floo::BMXRTCRoom)
+%shared_ptr(floo::BMXRTCSession)
+%template(BMXRTCStreams) std::vector<std::shared_ptr<floo::BMXJanusStreamInfo>>;
+%shared_ptr(floo::BMXJanusPublisher)
+%template(BMXRTCPublishers) std::vector<std::shared_ptr<floo::BMXJanusPublisher>>;
+%shared_ptr(floo::BMXRoomParticipant)
+%template(BMXRTCRoomParticipants) std::vector<std::shared_ptr<floo::BMXRoomParticipant>>;
+%shared_ptr(floo::BMXVideoConfig)
+%template(BMXRTCRooms) std::vector<std::shared_ptr<floo::BMXRTCRoom>>;
+%shared_ptr(floo::BMXRoomSDPInfo)
+%shared_ptr(floo::BMXRTCConfig)
+%shared_ptr(floo::BMXRoomAuth)
+%shared_ptr(floo::BMXStream)
+%shared_ptr(floo::BMXVideoCanvas)
+%shared_ptr(floo::BMXStreamStats)
+%shared_ptr(floo::BMXRTCEngine)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomCreateOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomEditOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomAllowdOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomModerateOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXPubRoomJoinOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomPubConfigureOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomSubJoinOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomSubConfigureOptions)
+%shared_ptr(floo::BMXRTCSignalService::BMXRoomSubSwitchOptions)
 
 %template(BMXGroupList) std::vector<std::shared_ptr<floo::BMXGroup>>;
 %template(BMXGroupMemberList) std::vector<std::shared_ptr<floo::BMXGroup::Member>>;
@@ -103,8 +145,10 @@ typedef floo::BMXConversation::Type BMXConversationType;
 
 %include "bmx_error.h"
 %include "bmx_defines.h"
-%include "bmx_device.h"
 %include "bmx_base_object.h"
+%include "bmx_device.h"
+%include "bmx_user_profile.h"
+%include "bmx_push_user_profile.h"
 %include "bmx_message_attachment.h"
 %include "bmx_message_config.h"
 %include "bmx_message.h"
@@ -117,6 +161,16 @@ typedef floo::BMXConversation::Type BMXConversationType;
 %include "bmx_push_service_listener.h"
 %include "bmx_client.h"
 %include "bmx_file_attachment.h"
+%include "bmx_rtc_room.h"
+%include "bmx_rtc_session.h"
+%include "bmx_rtc_defines.h"
+%include "bmx_rtc_config.h"
+%include "bmx_rtc_engine_listener.h"
+%include "bmx_rtc_engine.h"
+%include "bmx_rtc_signal_service.h"
+%include "bmx_rtc_signal_service_listener.h"
+%include "bmx_rtc_service.h"
+%include "bmx_rtc_service_listener.h"
 %exception floo::BMXFileAttachment::dynamic_cast(floo::BMXMessageAttachment *attachment) {
   $action
     if (!result) {
@@ -183,8 +237,6 @@ typedef floo::BMXConversation::Type BMXConversationType;
 %include "bmx_roster_item.h"
 %include "bmx_roster_service.h"
 %include "bmx_roster_service_listener.h"
-%include "bmx_user_profile.h"
-%include "user_profile_impl.h"
 %include "bmx_user_service.h"
 %include "bmx_user_service_listener.h"
 %include "bmx_video_attachment.h"
@@ -222,4 +274,3 @@ typedef floo::BMXConversation::Type BMXConversationType;
 
 
 %include "bmx_group_service_listener.h"
-%include "bmx_push_user_profile.h"

@@ -170,6 +170,14 @@ public class BMXClient extends BMXNetworkListener {
   }
 
   /**
+   *  获取RTC Manager
+   * @return BMXRTCManager
+   **/
+  public BMXRTCService getRTCManager() {
+    return new BMXRTCService(flooJNI.BMXClient_getRTCService(swigCPtr, this), false);
+  }
+
+  /**
    *  注册新用户，username和password是必填参数
    * @param username 用户名
    * @param password 用户密码

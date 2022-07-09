@@ -11,12 +11,13 @@ package im.floo.floolib;
 /**
  *  设备信息
  **/
-public class BMXDevice {
+public class BMXDevice extends BMXBaseObject {
   private transient long swigCPtr;
-  private transient boolean swigCMemOwn;
+  private transient boolean swigCMemOwnDerived;
 
   protected BMXDevice(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+    super(flooJNI.BMXDevice_SWIGSmartPtrUpcast(cPtr), true);
+    swigCMemOwnDerived = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
@@ -30,12 +31,13 @@ public class BMXDevice {
 
   public synchronized void delete() {
     if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
+      if (swigCMemOwnDerived) {
+        swigCMemOwnDerived = false;
         flooJNI.delete_BMXDevice(swigCPtr);
       }
       swigCPtr = 0;
     }
+    super.delete();
   }
 
   /**

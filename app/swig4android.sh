@@ -14,11 +14,23 @@ sed -i.bak 's/SWIGTYPE_p_BMXGroupBannedMemberResultPagePtr/BMXGroupBannedMemberR
 sed -i.bak 's/SWIGTYPE_p_BMXGroupApplicationPagePtr/GroupApplicationPage/g' src/main/java/im/floo/floolib/BMXGroupService.java
 sed -i.bak 's/SWIGTYPE_p_BMXGroupInvitaionPagePtr/GroupInvitaionPage/g' src/main/java/im/floo/floolib/BMXGroupService.java
 sed -i.bak 's/BMXGroup_t/BMXGroup/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/BMXRTCRoom_t/BMXRTCRoom/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/BMXRTCSession_t/BMXRTCSession/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/BMXConversation_t/BMXConversation/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXGroup__Announcement/BMXGroup$Announcement/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXGroup__SharedFile/BMXGroup$SharedFile/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXRTCRoom/BMXRTCRoom/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXMessage/BMXMessage/g' src/main/cpp/floo_wrap.cxx
+sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXRoomSDPInfo/BMXRoomSDPInfo/g' src/main/cpp/floo_wrap.cxx
 sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXGroup__Announcement/BMXGroup.Announcement/g' src/main/java/im/floo/floolib/flooJNI.java
 sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXGroup__SharedFile/BMXGroup.SharedFile/g' src/main/java/im/floo/floolib/flooJNI.java
+sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXRTCRoom/BMXRTCRoom/g' src/main/java/im/floo/floolib/flooJNI.java
+sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXMessage/BMXMessage/g' src/main/java/im/floo/floolib/flooJNI.java
+sed -i.bak 's/SWIGTYPE_p_std__shared_ptrT_floo__BMXRoomSDPInfo/BMXRoomSDPInfo/g' src/main/java/im/floo/floolib/flooJNI.java
 sed -i.bak 's/BMXGroup_t/BMXGroup/g' src/main/java/im/floo/floolib/flooJNI.java
+sed -i.bak 's/BMXRTCRoom_t/BMXRTCRoom/g' src/main/java/im/floo/floolib/flooJNI.java
+sed -i.bak 's/BMXRTCSession_t/BMXRTCSession/g' src/main/java/im/floo/floolib/flooJNI.java
+sed -i.bak 's/BMXConversation_t/BMXConversation/g' src/main/java/im/floo/floolib/flooJNI.java
 sed -i.bak 's/private transient boolean swigCMemOwn/protected transient boolean swigCMemOwn/g' src/main/java/im/floo/floolib/BMXBaseObject.java
 awk 'BEGIN{i=0}{if(/Java_im_floo_floolib_flooJNI_delete_1BMXMessagePage/){i++;}if(i>0){i++;}if(i==4){print "  std::shared_ptr< floo::BMXMessage > *smartarg1 = 0 ;"}if(i==7){print "  smartarg1 = *(std::shared_ptr<  floo::BMXMessage > **)&jarg1;"} print $0;}'  src/main/cpp/floo_wrap.cxx  > ttt
 mv ttt src/main/cpp/floo_wrap.cxx

@@ -9,10 +9,6 @@
 package im.floo.floolib;
 
 public class floo implements flooConstants {
-  public static String getErrorMessage(BMXErrorCode errorCode) {
-    return flooJNI.getErrorMessage(errorCode.swigValue());
-  }
-
   public static String getKMentionAll() {
     return flooJNI.kMentionAll_get();
   }

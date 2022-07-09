@@ -20,7 +20,7 @@ add_library(crypto
 
 set_target_properties(crypto
         PROPERTIES IMPORTED_LOCATION
-        ${PROJECT_SOURCE_DIR}/floo/deps/openssl/libs/android/${ANDROID_ABI}/libcrypto.a )
+        ${PROJECT_SOURCE_DIR}/floo/deps/openssl/libs/${OPENSSL_LIB_DIR}/${ANDROID_ABI}/libcrypto.a )
 
 
 add_library( # Sets the name of the library.
@@ -33,6 +33,10 @@ add_library( # Sets the name of the library.
         src/main/cpp/my_jni.cpp
         floo/src/push_user_profile_impl.cc
         floo/src/bmx_push_service_impl.cc
+        floo/src/bmx_rtc_service_impl.cc
+        floo/src/bmx_rtc_signal_service_impl.cc
+        floo/src/bmx_rtc_config.cc
+        floo/src/bmx_rtc_dummy_engine_impl.cc
         floo/src/cluster_service.cc
         floo/src/base64Encode.cc
         floo/src/base64Decode.cc
@@ -97,6 +101,7 @@ add_library( # Sets the name of the library.
         floo/src/protocol/bmx_xsync_parser.cc
         floo/src/protocol/bmx_conversation_unread.cc
         floo/src/protocol/bmx_zlib_compression.cc
+        floo/src/protocol/bmx_rtc_message.cc
         floo/src/protocol/generated/groupnotice.pb.cc
         floo/src/protocol/generated/info.pb.cc
         floo/src/protocol/generated/messagebody.pb.cc
@@ -105,6 +110,7 @@ add_library( # Sets the name of the library.
         floo/src/protocol/generated/xid.pb.cc
         floo/src/protocol/generated/xsync.pb.cc
         floo/src/protocol/generated/conversation.pb.cc
+        floo/src/protocol/generated/rtc_message.pb.cc
         floo/deps/protobuf/google/protobuf/any.cc
         floo/deps/protobuf/google/protobuf/any.pb.cc
         floo/deps/protobuf/google/protobuf/api.pb.cc
@@ -185,7 +191,7 @@ target_link_libraries( # Specifies the target library.
         # included in the NDK.
         ${z-lib}
         ${log-lib} crypto)
-LINK_DIRECTORIES("/usr/local/lib" "/Users/lhr/maxim/floo-android/app/floo/deps/openssl/android")
+#LINK_DIRECTORIES("/usr/local/lib" "/Users/lhr/maxim/floo-android/app/floo/deps/openssl/android")
 include_directories(
         floo/include
         floo/android_include
@@ -194,7 +200,7 @@ include_directories(
         floo/deps/sqlite3/include
         floo/deps/rapidjson/include
         floo/deps/protobuf
-        floo/deps/openssl/include
+        floo/deps/openssl/${OPENSSL_INC_DIR}
         floo/src/protocol
         floo/src
         floo/src/protocol/generated

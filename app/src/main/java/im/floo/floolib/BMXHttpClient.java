@@ -6,9 +6,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +21,7 @@ import im.floo.floolib.okhttpwrapper.OkHttpClientHelper;
 import im.floo.floolib.okhttpwrapper.ProgressRequestListener;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dns;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -37,14 +42,39 @@ public class BMXHttpClient {
 
     private static final int TIME_OUT = 10*10000000; //超时时间
     private static final String CHARSET = "utf-8"; //设置编码
-
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-                    .readTimeout(40, TimeUnit.SECONDS)
-                    .build();
-
     private static HashSet<String> sPathSet = new HashSet<>();
     private static ConcurrentHashMap<Long, Call> sCallMap = new ConcurrentHashMap<>();
+
+    private static OkHttpClient getOkHttpClient(final List<String> ipList){
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(40, TimeUnit.SECONDS);
+        if (ipList.isEmpty()){
+            return builder.build();
+        } else {
+            return builder.dns(new Dns() {
+                @Override
+                public List<InetAddress> lookup(String hostname) throws UnknownHostException {
+                    List<InetAddress> addrList = new ArrayList<>();
+                    try {
+                        for(String ip: ipList){
+                            String host = ip.replaceAll(":.*", "");
+                            if (host.equals(hostname)){
+                                ip = ip.replaceAll(".*:", "");
+                                addrList.add(InetAddress.getByName(ip));
+                            }
+                        }
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                    if (addrList.isEmpty()){
+                        addrList.add(InetAddress.getByName(hostname));
+                    }
+                    return addrList;
+                }
+            }).build();
+        }
+    }
 
     private static boolean addPath (String path){
         synchronized (sPathSet){
@@ -113,7 +143,7 @@ public class BMXHttpClient {
     }
 
     public static int sendRequest(String strUrl, String method, Map<String, String> headers,
-                                  String body, final StringBuilder strResponse) {
+                                  String body, final StringBuilder strResponse, List<String> ipList) {
         int retCode = 0;
         try {
             Request.Builder builder = addHeaders(headers);
@@ -132,7 +162,9 @@ public class BMXHttpClient {
                         .build();
             }
 
-            final Call call = okHttpClient.newCall(request);
+            OkHttpClient client = getOkHttpClient(ipList);
+
+            final Call call = client.newCall(request);
             Response response = call.execute();
             retCode = response.code();
             strResponse.append( new String(response.body().bytes(), "utf-8") );
@@ -153,7 +185,8 @@ public class BMXHttpClient {
 
     public static int sendDownloadRequest(final String strUrl,
                                           String method, Map<String, String> headers, String body,
-                                          final String filePath, final Long callbackAddr, final Long msgId)
+                                          final String filePath, final Long callbackAddr,
+                                          final Long msgId, List<String> ipList)
     {
         if (isProcessing(filePath)){
             return 0;
@@ -161,7 +194,7 @@ public class BMXHttpClient {
         addPath(filePath);
         try {
             return realSendDownloadRequest(strUrl, method, headers, body, filePath,
-                    callbackAddr, msgId);
+                    callbackAddr, msgId, ipList);
         } finally {
             removePath(filePath);
             removeCall(msgId);
@@ -180,8 +213,9 @@ public class BMXHttpClient {
     private static class MyCallback implements Callback {
         public void deleteFile(FileOutputStream fos, String path){
             try {
-                fos.close();
-                fos = null;
+                if(fos != null){
+                    fos.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -213,7 +247,8 @@ public class BMXHttpClient {
 
     private static int realSendDownloadRequest(final String strUrl,
                                                String method, Map<String, String> headers, String body,
-                                               final String filePath, final Long callbackAddr, final Long msgId)
+                                               final String filePath, final Long callbackAddr,
+                                               final Long msgId, List<String> ipList)
     {
         Log.d(TAG, "sendDownloadRequest begin:" + strUrl);
         if (isFileExist(filePath)){
@@ -245,7 +280,9 @@ public class BMXHttpClient {
                     .build();
         }
 
-        final Call call = okHttpClient.newCall(request);
+        OkHttpClient client = getOkHttpClient(ipList);
+
+        final Call call = client.newCall(request);
         addCall(msgId, call);
         final Object fileLock = new Object();
         final StringBuffer percent = new StringBuffer("0");
@@ -354,14 +391,14 @@ public class BMXHttpClient {
     public static int sendUploadRequest(final String strUrl, final String strUploadMethod,
                                         Map<String, Object> formdatas, Map<String, Object> headers,
                                         String body, String filePath, StringBuilder strResponse,
-                                        Long callbackAddr, final Long msgId) {
+                                        Long callbackAddr, final Long msgId, List<String> ipList) {
         if (isProcessing(filePath)){
             return 0;
         }
         addPath(filePath);
         try {
             return realSendUploadRequest(strUrl, strUploadMethod, formdatas, headers, body, filePath,
-                    strResponse, callbackAddr, msgId);
+                    strResponse, callbackAddr, msgId, ipList);
         } finally {
             removePath(filePath);
             removeCall(msgId);
@@ -371,7 +408,7 @@ public class BMXHttpClient {
     private static int realSendUploadRequest(final String strUrl, final String strUploadMethod,
                                              Map<String, Object> formdatas, Map<String, Object> headers,
                                              String body, String filePath, StringBuilder strResponse,
-                                             Long callbackAddr, final Long msgId) {
+                                             Long callbackAddr, final Long msgId, final List<String> ipList) {
         final Object fileLock = new Object();
         final StringBuffer percent = new StringBuffer("0");
         try {
@@ -393,7 +430,7 @@ public class BMXHttpClient {
                         changePercent(current_percent);
                     }
                 }
-            });
+            }, ipList);
             MultipartBody.Builder builder = new MultipartBody.Builder();
             builder.setType(MultipartBody.FORM);
 

@@ -10,14 +10,17 @@ package im.floo.floolib;
 
 public class BMXPushUserProfile extends BMXBaseObject {
   public transient long swigCPtr;
+  private transient boolean swigCMemOwnDerived;
 
   protected BMXPushUserProfile(long cPtr, boolean cMemoryOwn) {
-    super(flooJNI.BMXPushUserProfile_SWIGUpcast(cPtr), cMemoryOwn);
+    super(flooJNI.BMXPushUserProfile_SWIGSmartPtrUpcast(cPtr), true);
+    swigCMemOwnDerived = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
   public BMXPushUserProfile() {
-    super(flooJNI.BMXPushUserProfile_SWIGUpcast(0), true);
+    super(flooJNI.BMXPushUserProfile_SWIGSmartPtrUpcast(0), true);
+    swigCMemOwnDerived = false;
     swigCPtr = 0;
   }
 
@@ -31,8 +34,8 @@ public class BMXPushUserProfile extends BMXBaseObject {
 
   public synchronized void delete() {
     if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
+      if (swigCMemOwnDerived) {
+        swigCMemOwnDerived = false;
         flooJNI.delete_BMXPushUserProfile(swigCPtr);
       }
       swigCPtr = 0;
