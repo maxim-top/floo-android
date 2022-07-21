@@ -310,27 +310,11 @@ public class BMXMessage extends BMXBaseObject {
   }
 
   /**
-   *  设置消息已读groupAckCount数目(SDK 内部调用接口，上层不应该调用)
-   * @param count 设置群消息已读数目
-   */
-  public void setGroupAckCount(int count) {
-    flooJNI.BMXMessage_setGroupAckCount(swigCPtr, this, count);
-  }
-
-  /**
    *  群消息未读AckCount数目
    * @return int
    */
   public int groupAckUnreadCount() {
     return flooJNI.BMXMessage_groupAckUnreadCount(swigCPtr, this);
-  }
-
-  /**
-   *  设置消息未读groupAckCount数目(SDK 内部调用接口，上层不应该调用)
-   * @param count 设置群消息未读数目
-   */
-  public void setGroupAckUnreadCount(int count) {
-    flooJNI.BMXMessage_setGroupAckUnreadCount(swigCPtr, this, count);
   }
 
   /**

@@ -70,7 +70,7 @@ public class BMXGroupManager {
      * @param forceUpdate 设置为true强制从服务器获取，本地获取失败的情况sdk会自动从服务器获取
      * @param callBack BMXErrorCode,搜索返回的群组信息
      **/
-    public void getGroupList(final long groupId, final  boolean forceUpdate,final BMXDataCallBack<BMXGroup> callBack) {
+    public void getGroupInfo(final long groupId, final  boolean forceUpdate,final BMXDataCallBack<BMXGroup> callBack) {
         final BMXGroup group = new BMXGroup();
         new AsyncExecutor().exec(new AsyncExecutor.Task() {
             @Override
