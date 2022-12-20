@@ -1038,6 +1038,39 @@ JavaVM *g_VM;
 
 #define PUSH_INT_INTO_VECTOR argX->push_back((long)jPtr)
 
+std::string getStdString(JNIEnv* env,jstring src) {
+  std::string  ret;
+  const jclass stringClass = env->GetObjectClass(src);
+  const jmethodID getBytes = env->GetMethodID(stringClass,"getBytes","(Ljava/lang/String;)[B");
+  const jstring charsetName = env->NewStringUTF("UTF-8");
+  const jbyteArray stringJbytes = (jbyteArray) env->CallObjectMethod(src, getBytes, charsetName);
+  env->DeleteLocalRef(charsetName);
+  int len = env->GetArrayLength(stringJbytes);
+  if (len > 0){
+    ret.assign((char*)env->GetByteArrayElements(stringJbytes,JNI_FALSE),len);
+  }
+  env->DeleteLocalRef(stringJbytes);
+  return ret;
+}
+
+jstring NewStringUTF(JNIEnv *env, const char * src){
+  jobject bb = env->NewDirectByteBuffer((void *)src, strlen(src));
+
+  jclass cls_Charset = env->FindClass("java/nio/charset/Charset");
+  jmethodID mid_Charset_forName = env->GetStaticMethodID(cls_Charset, "forName", "(Ljava/lang/String;)Ljava/nio/charset/Charset;");
+  jobject charset = env->CallStaticObjectMethod(cls_Charset, mid_Charset_forName, env->NewStringUTF("UTF-8"));
+
+  jmethodID mid_Charset_decode = env->GetMethodID(cls_Charset, "decode", "(Ljava/nio/ByteBuffer;)Ljava/nio/CharBuffer;");
+  jobject cb = env->CallObjectMethod(charset, mid_Charset_decode, bb);
+  env->DeleteLocalRef(bb);
+
+  jclass cls_CharBuffer = env->FindClass("java/nio/CharBuffer");
+  jmethodID mid_CharBuffer_toString = env->GetMethodID(cls_CharBuffer, "toString", "()Ljava/lang/String;");
+  jstring ret = (jstring)env->CallObjectMethod(cb, mid_CharBuffer_toString);
+  env->DeleteLocalRef(charset);
+  env->DeleteLocalRef(cb);
+  return ret;
+}
 
 typedef std::function<void(int percent)> Callback;
 
@@ -1056,7 +1089,7 @@ Callback createCallback(JNIEnv *jenv, jobject jarg){
       }
       std::stringstream ss;
       ss<<percent;
-      jstring sPercent = jenv->NewStringUTF(ss.str().c_str());
+      jstring sPercent = NewStringUTF(jenv, ss.str().c_str());
       Swig::LocalRefGuard refguard(jenv, sPercent);
 
       //执行回调
@@ -1803,7 +1836,7 @@ void SwigDirector_BMXPushServiceListener::onPushStart(std::string const bmxToken
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jbmxToken = jenv->NewStringUTF((&bmxToken)->c_str());
+    jbmxToken = NewStringUTF(jenv, (&bmxToken)->c_str());
     Swig::LocalRefGuard bmxToken_refguard(jenv, jbmxToken); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[21], swigjobj, jbmxToken);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -1854,7 +1887,7 @@ void SwigDirector_BMXPushServiceListener::onCertRetrieved(std::string const cert
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jcert = jenv->NewStringUTF((&cert)->c_str());
+    jcert = NewStringUTF(jenv, (&cert)->c_str());
     Swig::LocalRefGuard cert_refguard(jenv, jcert); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[23], swigjobj, jcert);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -1881,7 +1914,7 @@ void SwigDirector_BMXPushServiceListener::onSetTags(std::string const &operation
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    joperationId = jenv->NewStringUTF((&operationId)->c_str());
+    joperationId = NewStringUTF(jenv, (&operationId)->c_str());
     Swig::LocalRefGuard operationId_refguard(jenv, joperationId); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[24], swigjobj, joperationId);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -1908,7 +1941,7 @@ void SwigDirector_BMXPushServiceListener::onGetTags(std::string const &operation
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    joperationId = jenv->NewStringUTF((&operationId)->c_str());
+    joperationId = NewStringUTF(jenv, (&operationId)->c_str());
     Swig::LocalRefGuard operationId_refguard(jenv, joperationId); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[25], swigjobj, joperationId);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -1935,7 +1968,7 @@ void SwigDirector_BMXPushServiceListener::onDeleteTags(std::string const &operat
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    joperationId = jenv->NewStringUTF((&operationId)->c_str());
+    joperationId = NewStringUTF(jenv, (&operationId)->c_str());
     Swig::LocalRefGuard operationId_refguard(jenv, joperationId); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[26], swigjobj, joperationId);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -1962,7 +1995,7 @@ void SwigDirector_BMXPushServiceListener::onClearTags(std::string const &operati
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    joperationId = jenv->NewStringUTF((&operationId)->c_str());
+    joperationId = NewStringUTF(jenv, (&operationId)->c_str());
     Swig::LocalRefGuard operationId_refguard(jenv, joperationId); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[27], swigjobj, joperationId);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -2114,7 +2147,7 @@ void SwigDirector_BMXRTCEngineListener::onJoinRoom(std::string const &info, int6
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jroomId = (jlong) roomId;
     jerror = (jint) error;
@@ -2146,11 +2179,11 @@ void SwigDirector_BMXRTCEngineListener::onLeaveRoom(std::string const &info, int
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jroomId = (jlong) roomId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[31], swigjobj, jinfo, jroomId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -2207,7 +2240,7 @@ void SwigDirector_BMXRTCEngineListener::onReJoinRoom(std::string const &info, in
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jroomId = (jlong) roomId;
     jerror = (jint) error;
@@ -2268,7 +2301,7 @@ void SwigDirector_BMXRTCEngineListener::onMemberExited(int64_t roomId, int64_t u
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jroomId = (jlong) roomId;
     jusedId = (jlong) usedId;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[35], swigjobj, jroomId, jusedId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -2299,7 +2332,7 @@ void SwigDirector_BMXRTCEngineListener::onLocalPublish(floo::BMXStreamPtr stream
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[36], swigjobj, jstream, jinfo, jerror);
@@ -2331,7 +2364,7 @@ void SwigDirector_BMXRTCEngineListener::onLocalUnPublish(floo::BMXStreamPtr stre
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[37], swigjobj, jstream, jinfo, jerror);
@@ -2363,7 +2396,7 @@ void SwigDirector_BMXRTCEngineListener::onRemotePublish(floo::BMXStreamPtr strea
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[38], swigjobj, jstream, jinfo, jerror);
@@ -2395,7 +2428,7 @@ void SwigDirector_BMXRTCEngineListener::onRemoteUnPublish(floo::BMXStreamPtr str
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[39], swigjobj, jstream, jinfo, jerror);
@@ -2427,7 +2460,7 @@ void SwigDirector_BMXRTCEngineListener::onSubscribe(floo::BMXStreamPtr stream, s
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[40], swigjobj, jstream, jinfo, jerror);
@@ -2459,7 +2492,7 @@ void SwigDirector_BMXRTCEngineListener::onUnSubscribe(floo::BMXStreamPtr stream,
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[41], swigjobj, jstream, jinfo, jerror);
@@ -2493,7 +2526,7 @@ void SwigDirector_BMXRTCEngineListener::onRemoteTrackNotify(floo::BMXStreamPtr s
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
     jtrackType = (jint) trackType;
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[42], swigjobj, jstream, jtrackType, jinfo, jerror);
@@ -2529,7 +2562,7 @@ void SwigDirector_BMXRTCEngineListener::onLocalStreamMuteRsp(floo::BMXStreamPtr 
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
     jtrackType = (jint) trackType;
     jmute = (jboolean) mute;
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[43], swigjobj, jstream, jtrackType, jmute, jinfo, jerror);
@@ -2565,7 +2598,7 @@ void SwigDirector_BMXRTCEngineListener::onRemoteStreamMuteRsp(floo::BMXStreamPtr
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
     jtrackType = (jint) trackType;
     jmute = (jboolean) mute;
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[44], swigjobj, jstream, jtrackType, jmute, jinfo, jerror);
@@ -2597,7 +2630,7 @@ void SwigDirector_BMXRTCEngineListener::onSendRTCStats(floo::BMXStreamStatsPtr s
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstreamStats = 0;
     *((floo::BMXStreamStatsPtr **)&jstreamStats) = new floo::BMXStreamStatsPtr((const floo::BMXStreamStatsPtr &)streamStats); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[45], swigjobj, jstreamStats, jinfo, jerror);
@@ -2629,7 +2662,7 @@ void SwigDirector_BMXRTCEngineListener::onRemoteRTCStats(floo::BMXStreamStatsPtr
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstreamStats = 0;
     *((floo::BMXStreamStatsPtr **)&jstreamStats) = new floo::BMXStreamStatsPtr((const floo::BMXStreamStatsPtr &)streamStats); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[46], swigjobj, jstreamStats, jinfo, jerror);
@@ -2712,7 +2745,7 @@ void SwigDirector_BMXRTCEngineListener::onKickoff(std::string const &info, floo:
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[49], swigjobj, jinfo, jerror);
@@ -2741,7 +2774,7 @@ void SwigDirector_BMXRTCEngineListener::onWarning(std::string const &info, floo:
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[50], swigjobj, jinfo, jerror);
@@ -2770,7 +2803,7 @@ void SwigDirector_BMXRTCEngineListener::onError(std::string const &info, floo::B
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[51], swigjobj, jinfo, jerror);
@@ -2802,7 +2835,7 @@ void SwigDirector_BMXRTCEngineListener::onNetworkQuality(floo::BMXStreamPtr stre
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstream = 0;
     *((floo::BMXStreamPtr **)&jstream) = new floo::BMXStreamPtr((const floo::BMXStreamPtr &)stream); 
-    jinfo = jenv->NewStringUTF((&info)->c_str());
+    jinfo = NewStringUTF(jenv, (&info)->c_str());
     Swig::LocalRefGuard info_refguard(jenv, jinfo); 
     jerror = (jint) error;
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[52], swigjobj, jstream, jinfo, jerror);
@@ -3172,7 +3205,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSessionCreate(floo::BMXRTCSessi
     jsession = 0;
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[77], swigjobj, jsession, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3206,7 +3239,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSessionAttach(floo::BMXRTCSessi
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     jtype = (jint) type;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[78], swigjobj, jsession, jtype, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3241,7 +3274,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomCreate(floo::BMXRTCSessionP
     jroom = 0;
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[79], swigjobj, jsession, jroom, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3275,7 +3308,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomDestroy(floo::BMXRTCSession
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     jroomId = (jlong) roomId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[80], swigjobj, jsession, jroomId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3310,7 +3343,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomEdit(floo::BMXRTCSessionPtr
     jroom = 0;
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[81], swigjobj, jsession, jroom, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3346,7 +3379,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomExist(floo::BMXRTCSessionPt
     jroomId = (jlong) roomId;
     jexist = (jboolean) exist;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[82], swigjobj, jsession, jroomId, jexist, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3383,7 +3416,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomAllowed(floo::BMXRTCSession
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     *(std::vector< std::string > **)&jtokens = (std::vector< std::string > *) &tokens; 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[83], swigjobj, jsession, jroom, jtokens, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3420,7 +3453,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomKick(floo::BMXRTCSessionPtr
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     juserId = (jlong) userId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[84], swigjobj, jsession, jroom, juserId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3457,7 +3490,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomModerate(floo::BMXRTCSessio
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     juserId = (jlong) userId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[85], swigjobj, jsession, jroom, juserId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3491,7 +3524,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomList(floo::BMXRTCSessionPtr
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     *(floo::BMXRTCRooms **)&jrooms = (floo::BMXRTCRooms *) &rooms; 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[86], swigjobj, jsession, jrooms, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3528,7 +3561,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onRoomListParticipants(floo::BMXR
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     *(floo::BMXRTCRoomParticipants **)&jparticipants = (floo::BMXRTCRoomParticipants *) &participants; 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[87], swigjobj, jsession, jroom, jparticipants, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3565,7 +3598,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onPubJoinRoom(floo::BMXRTCSession
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     *(floo::BMXRTCPublishers **)&jpublishers = (floo::BMXRTCPublishers *) &publishers; 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[88], swigjobj, jsession, jroom, jpublishers, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3638,7 +3671,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onPubConfigure(floo::BMXRTCSessio
     jstreams = 0;
     *((floo::BMXRTCStreams **)&jstreams) = new floo::BMXRTCStreams((const floo::BMXRTCStreams &)streams); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[90], swigjobj, jsession, jroom, jsdp, jstreams, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3675,7 +3708,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onPubUnPublish(floo::BMXRTCSessio
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jsenderId = (jint) senderId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[91], swigjobj, jsession, jroom, jsenderId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3745,7 +3778,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSubJoinRoomUpdate(floo::BMXRTCS
     jstreams = 0;
     *((floo::BMXRTCStreams **)&jstreams) = new floo::BMXRTCStreams((const floo::BMXRTCStreams &)streams); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[93], swigjobj, jsession, jroom, jsdp, jsenderId, jstreams, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3780,7 +3813,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSubStart(floo::BMXRTCSessionPtr
     jroom = 0;
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[94], swigjobj, jsession, jroom, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3815,7 +3848,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSubPause(floo::BMXRTCSessionPtr
     jroom = 0;
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[95], swigjobj, jsession, jroom, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3853,7 +3886,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSubUnsubscribe(floo::BMXRTCSess
     jstreams = 0;
     *((floo::BMXRTCStreams **)&jstreams) = new floo::BMXRTCStreams((const floo::BMXRTCStreams &)streams); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[96], swigjobj, jsession, jroom, jstreams, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3888,7 +3921,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSubConfigure(floo::BMXRTCSessio
     jroom = 0;
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[97], swigjobj, jsession, jroom, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3925,7 +3958,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSubSwitch(floo::BMXRTCSessionPt
     *((floo::BMXRTCRoomPtr **)&jroom) = new floo::BMXRTCRoomPtr((const floo::BMXRTCRoomPtr &)room); 
     jpublisher = (jlong) publisher;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[98], swigjobj, jsession, jroom, jpublisher, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -3961,7 +3994,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onLeaveRoom(floo::BMXRTCSessionPt
     jroomId = (jlong) roomId;
     jsenderId = (jlong) senderId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[99], swigjobj, jsession, jroomId, jsenderId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4026,7 +4059,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onMediaInfo(floo::BMXRTCSessionPt
     jsenderId = (jlong) senderId;
     jtype = (jint) type;
     jreceiving = (jboolean) receiving;
-    jmid = jenv->NewStringUTF((&mid)->c_str());
+    jmid = NewStringUTF(jenv, (&mid)->c_str());
     Swig::LocalRefGuard mid_refguard(jenv, jmid); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[101], swigjobj, jsession, jsenderId, jtype, jreceiving, jmid);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4091,7 +4124,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onHangup(floo::BMXRTCSessionPtr s
     jsession = 0;
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     jsenderId = (jlong) senderId;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[103], swigjobj, jsession, jsenderId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4123,7 +4156,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSessionHangup(floo::BMXRTCSessi
     jsession = 0;
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     jerror = (jlong) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[104], swigjobj, jsession, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4157,7 +4190,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSessionDetach(floo::BMXRTCSessi
     *((floo::BMXRTCSessionPtr **)&jsession) = new floo::BMXRTCSessionPtr((const floo::BMXRTCSessionPtr &)session); 
     jtype = (jint) type;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[105], swigjobj, jsession, jtype, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4188,7 +4221,7 @@ void SwigDirector_BMXRTCSignalServiceListener::onSessionDestroy(int64_t sessionI
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsessionId = (jlong) sessionId;
     jerror = (jint) error;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[106], swigjobj, jsessionId, jerror, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4508,7 +4541,7 @@ void SwigDirector_BMXRosterServiceListener::onApplied(int64_t sponsorId, int64_t
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jmessage = jenv->NewStringUTF((&message)->c_str());
+    jmessage = NewStringUTF(jenv, (&message)->c_str());
     Swig::LocalRefGuard message_refguard(jenv, jmessage); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[111], swigjobj, jsponsorId, jrecipientId, jmessage);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -4567,7 +4600,7 @@ void SwigDirector_BMXRosterServiceListener::onApplicationDeclined(int64_t sponso
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[113], swigjobj, jsponsorId, jrecipientId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5071,7 +5104,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupLeft(floo::BMXGroupPtr group, 
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[127], swigjobj, jgroup, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5102,7 +5135,7 @@ void SwigDirector_BMXGroupServiceListener::onInvitated(int64_t groupId, int64_t 
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jgroupId = (jlong) groupId;
     jinviter = (jlong) inviter;
-    jmessage = jenv->NewStringUTF((&message)->c_str());
+    jmessage = NewStringUTF(jenv, (&message)->c_str());
     Swig::LocalRefGuard message_refguard(jenv, jmessage); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[128], swigjobj, jgroupId, jinviter, jmessage);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5163,7 +5196,7 @@ void SwigDirector_BMXGroupServiceListener::onInvitationDeclined(floo::BMXGroupPt
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jinviteeId = (jlong) inviteeId;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[130], swigjobj, jgroup, jinviteeId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5195,7 +5228,7 @@ void SwigDirector_BMXGroupServiceListener::onApplied(floo::BMXGroupPtr group, in
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     japplicantId = (jlong) applicantId;
-    jmessage = jenv->NewStringUTF((&message)->c_str());
+    jmessage = NewStringUTF(jenv, (&message)->c_str());
     Swig::LocalRefGuard message_refguard(jenv, jmessage); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[131], swigjobj, jgroup, japplicantId, jmessage);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5256,7 +5289,7 @@ void SwigDirector_BMXGroupServiceListener::onApplicationDeclined(floo::BMXGroupP
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     japprover = (jlong) approver;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[133], swigjobj, jgroup, japprover, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5379,7 +5412,7 @@ void SwigDirector_BMXGroupServiceListener::onMemberLeft(floo::BMXGroupPtr group,
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jmemberId = (jlong) memberId;
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[137], swigjobj, jgroup, jmemberId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5440,7 +5473,7 @@ void SwigDirector_BMXGroupServiceListener::onAdminsRemoved(floo::BMXGroupPtr gro
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
-    jreason = jenv->NewStringUTF((&reason)->c_str());
+    jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[139], swigjobj, jgroup, jmembers, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -5528,7 +5561,7 @@ void SwigDirector_BMXGroupServiceListener::onMemberChangeNickName(floo::BMXGroup
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jmemberId = (jlong) memberId;
-    jnickName = jenv->NewStringUTF((&nickName)->c_str());
+    jnickName = NewStringUTF(jenv, (&nickName)->c_str());
     Swig::LocalRefGuard nickName_refguard(jenv, jnickName); 
     jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[142], swigjobj, jgroup, jmemberId, jnickName);
     jthrowable swigerror = jenv->ExceptionOccurred();
@@ -6136,11 +6169,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_TagList_1add(JNIEnv *jenv, 
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::vector< std::string >::value_type arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->push_back((std::vector< std::string >::value_type const &)*arg2);
 }
 
@@ -6164,7 +6194,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_TagList_1get(JNIEnv *jen
     return 0;
   }
   
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -6183,11 +6213,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_TagList_1set(JNIEnv *jenv, 
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::vector< std::string >::value_type arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   try {
     std_vector_Sl_std_string_Sg__set(arg1,arg2,(std::string const &)*arg3);
   }
@@ -8932,7 +8959,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXError_1description(JN
   (void)jarg1_;
   arg1 = *(floo::BMXError **)&jarg1; 
   result = (arg1)->description();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -9044,7 +9071,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXDevice_1userAgent(JNI
   smartarg1 = *(std::shared_ptr<  floo::BMXDevice > **)&jarg1;
   arg1 = (floo::BMXDevice *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->userAgent();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -9064,11 +9091,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXDevice_1setUserAgent(JNI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setUserAgent((std::string const &)*arg2);
 }
 
@@ -9115,11 +9139,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1AuthQuestio
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mQuestion = *arg2;
 }
 
@@ -9134,7 +9155,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1AuthQues
   (void)jarg1_;
   arg1 = *(floo::BMXUserProfile::AuthQuestion **)&jarg1; 
   result = (std::string *) & ((arg1)->mQuestion);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9151,11 +9172,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1AuthQuestio
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mAnswer = *arg2;
 }
 
@@ -9170,7 +9188,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1AuthQues
   (void)jarg1_;
   arg1 = *(floo::BMXUserProfile::AuthQuestion **)&jarg1; 
   result = (std::string *) & ((arg1)->mAnswer);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9265,11 +9283,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1MessageSett
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mPushNickname = *arg2;
 }
 
@@ -9284,7 +9299,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1MessageS
   (void)jarg1_;
   arg1 = *(floo::BMXUserProfile::MessageSetting **)&jarg1; 
   result = (std::string *) & ((arg1)->mPushNickname);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9557,7 +9572,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1username
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->username();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9575,7 +9590,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1nickname
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->nickname();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9593,7 +9608,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1avatarRa
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarRatelUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -9611,7 +9626,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1avatarUr
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -9629,7 +9644,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1avatarPa
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarPath();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -9647,7 +9662,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1avatarTh
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarThumbnailPath();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -9665,7 +9680,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1mobilePh
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->mobilePhone();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9683,7 +9698,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1email(JN
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->email();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9701,7 +9716,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1publicIn
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->publicInfo();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -9719,7 +9734,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXUserProfile_1privateI
   smartarg1 = *(std::shared_ptr<  floo::BMXUserProfile > **)&jarg1;
   arg1 = (floo::BMXUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->privateInfo();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10002,7 +10017,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushUserProfile_1push
   smartarg1 = *(std::shared_ptr<  floo::BMXPushUserProfile > **)&jarg1;
   arg1 = (floo::BMXPushUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->pushAlias();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10020,7 +10035,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushUserProfile_1push
   smartarg1 = *(std::shared_ptr<  floo::BMXPushUserProfile > **)&jarg1;
   arg1 = (floo::BMXPushUserProfile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->pushToken();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10207,7 +10222,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kMentionAll_1get(JNIEnv 
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kMentionAll;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10219,7 +10234,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kMentionList_1get(JNIEnv
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kMentionList;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10231,7 +10246,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kMentionedMessage_1get(J
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kMentionedMessage;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10243,7 +10258,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kPushMessage_1get(JNIEnv
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kPushMessage;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10255,7 +10270,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kSenderNickname_1get(JNI
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kSenderNickname;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10267,7 +10282,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kGroupAck_1get(JNIEnv *j
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kGroupAck;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10279,7 +10294,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kGroupMemberList_1get(JN
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kGroupMemberList;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10291,7 +10306,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kIOSConfig_1get(JNIEnv *
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kIOSConfig;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10303,7 +10318,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kAndroidConfig_1get(JNIE
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kAndroidConfig;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10315,7 +10330,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kPushShowBeginTime_1get(
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kPushShowBeginTime;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10327,7 +10342,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kPushShowEndTime_1get(JN
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kPushShowEndTime;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10339,7 +10354,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kPushTitle_1get(JNIEnv *
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kPushTitle;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10351,7 +10366,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kSilence_1get(JNIEnv *je
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kSilence;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10363,7 +10378,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kBadge_1get(JNIEnv *jenv
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kBadge;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10375,7 +10390,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_kUsername_1get(JNIEnv *j
   (void)jenv;
   (void)jcls;
   result = (std::string *) &floo::kUsername;
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -10481,11 +10496,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setMentio
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setMentionedMessage((std::string const &)*arg2);
 }
 
@@ -10503,7 +10515,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getMen
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getMentionedMessage();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10523,11 +10535,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushMe
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setPushMessage((std::string const &)*arg2);
 }
 
@@ -10545,7 +10554,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPus
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getPushMessage();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10565,11 +10574,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setSender
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setSenderNickname((std::string const &)*arg2);
 }
 
@@ -10587,7 +10593,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getSen
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getSenderNickname();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10692,11 +10698,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setIOSCon
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setIOSConfig((std::string const &)*arg2);
 }
 
@@ -10714,7 +10717,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getIOS
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getIOSConfig();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10734,11 +10737,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setAndroi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setAndroidConfig((std::string const &)*arg2);
 }
 
@@ -10756,7 +10756,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getAnd
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getAndroidConfig();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10844,11 +10844,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushTi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setPushTitle((std::string const &)*arg2);
 }
 
@@ -10866,7 +10863,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPus
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getPushTitle();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10942,11 +10939,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setUserna
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setUsername((std::string const &)*arg2);
 }
 
@@ -10964,7 +10958,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getUse
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getUsername();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -10982,7 +10976,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1serial
   smartarg1 = *(std::shared_ptr< const floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = ((floo::BMXMessageConfig const *)arg1)->serialize();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -11013,7 +11007,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_encodeBMXMessageConfig(J
   argp1 = *(floo::BMXMessageConfigPtr **)&jarg1; 
   if (argp1) arg1 = *argp1; 
   result = floo::encodeBMXMessageConfig(arg1);
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -11029,11 +11023,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_decodeBMXMessageConfig(JNI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   result = floo::decodeBMXMessageConfig((std::string const &)*arg1);
   *(floo::BMXMessageConfigPtr **)&jresult = result ? new floo::BMXMessageConfigPtr(result) : 0; 
   return jresult;
@@ -11480,7 +11471,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1content(JNIE
   smartarg1 = *(std::shared_ptr<  floo::BMXMessage > **)&jarg1;
   arg1 = (floo::BMXMessage *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->content();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -11500,11 +11491,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1setContent(JNIE
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setContent((std::string const &)*arg2);
 }
 
@@ -11595,7 +11583,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1extension(JN
   smartarg1 = *(std::shared_ptr<  floo::BMXMessage > **)&jarg1;
   arg1 = (floo::BMXMessage *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->extension();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -11615,11 +11603,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1setExtension(JN
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  floo::JSON arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setExtension((floo::JSON const &)*arg2);
 }
 
@@ -11671,7 +11656,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1senderName(J
   smartarg1 = *(std::shared_ptr<  floo::BMXMessage > **)&jarg1;
   arg1 = (floo::BMXMessage *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->senderName();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -11691,11 +11676,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1setSenderName(J
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setSenderName((std::string const &)*arg2);
 }
 
@@ -11959,11 +11941,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createMessage_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   result = floo::BMXMessage::createMessage(arg1,arg2,arg3,arg4,(std::string const &)*arg5);
   *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
   return jresult;
@@ -12014,11 +11993,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createCommandM
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   result = floo::BMXMessage::createCommandMessage(arg1,arg2,arg3,arg4,(std::string const &)*arg5);
   *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
   return jresult;
@@ -12047,11 +12023,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createMessage_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return 0;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   arg7 = (int64_t)jarg7; 
   result = floo::BMXMessage::createMessage(arg1,arg2,arg3,arg4,arg5,(std::string const &)*arg6,arg7);
   *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
@@ -12110,11 +12083,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createCommandM
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return 0;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   arg7 = (int64_t)jarg7; 
   result = floo::BMXMessage::createCommandMessage(arg1,arg2,arg3,arg4,arg5,(std::string const &)*arg6,arg7);
   *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
@@ -12281,7 +12251,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1extensi
   smartarg1 = *(std::shared_ptr<  floo::BMXConversation > **)&jarg1;
   arg1 = (floo::BMXConversation *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->extension();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -12303,11 +12273,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1setExtensi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setExtension((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -12327,7 +12294,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1editMes
   smartarg1 = *(std::shared_ptr<  floo::BMXConversation > **)&jarg1;
   arg1 = (floo::BMXConversation *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->editMessage();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -12349,11 +12316,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1setEditMes
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setEditMessage((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -12594,11 +12558,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1searchMess
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(floo::BMXMessageList **)&jarg5;
@@ -12634,11 +12595,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1searchMess
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(floo::BMXMessageList **)&jarg5;
@@ -12674,11 +12632,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1searchMess
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(floo::BMXMessageList **)&jarg5;
@@ -12714,11 +12669,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1searchMess
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(floo::BMXMessageList **)&jarg5;
@@ -12903,21 +12855,15 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1HostCon
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXSDKConfig::HostConfig *)new floo::BMXSDKConfig::HostConfig((std::string const &)*arg1,arg2,(std::string const &)*arg3);
   *(floo::BMXSDKConfig::HostConfig **)&jresult = result; 
   return jresult;
@@ -12936,11 +12882,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig_1i
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->imHost = *arg2;
 }
 
@@ -12955,7 +12898,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig
   (void)jarg1_;
   arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
   result = (std::string *) & ((arg1)->imHost);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13000,11 +12943,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig_1r
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->restHost = *arg2;
 }
 
@@ -13019,7 +12959,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig
   (void)jarg1_;
   arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
   result = (std::string *) & ((arg1)->restHost);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13053,56 +12993,38 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1_1SWIG_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   if(!jarg6) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return 0;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   if(!jarg7) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg7_pstr = (const char *)jenv->GetStringUTFChars(jarg7, 0); 
-  if (!arg7_pstr) return 0;
-  std::string arg7_str(arg7_pstr);
+  std::string arg7_str = getStdString(jenv, jarg7);
   arg7 = &arg7_str;
-  jenv->ReleaseStringUTFChars(jarg7, arg7_pstr); 
   arg8 = jarg8 ? true : false; 
   result = (floo::BMXSDKConfig *)new floo::BMXSDKConfig(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5,(std::string const &)*arg6,(std::string const &)*arg7,arg8);
   
@@ -13130,56 +13052,38 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1_1SWIG_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   if(!jarg6) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return 0;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   if(!jarg7) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg7_pstr = (const char *)jenv->GetStringUTFChars(jarg7, 0); 
-  if (!arg7_pstr) return 0;
-  std::string arg7_str(arg7_pstr);
+  std::string arg7_str = getStdString(jenv, jarg7);
   arg7 = &arg7_str;
-  jenv->ReleaseStringUTFChars(jarg7, arg7_pstr); 
   result = (floo::BMXSDKConfig *)new floo::BMXSDKConfig(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5,(std::string const &)*arg6,(std::string const &)*arg7);
   
   *(std::shared_ptr<  floo::BMXSDKConfig > **)&jresult = result ? new std::shared_ptr<  floo::BMXSDKConfig >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -13209,74 +13113,50 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1_1SWIG_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   if(!jarg6) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return 0;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   if(!jarg7) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg7_pstr = (const char *)jenv->GetStringUTFChars(jarg7, 0); 
-  if (!arg7_pstr) return 0;
-  std::string arg7_str(arg7_pstr);
+  std::string arg7_str = getStdString(jenv, jarg7);
   arg7 = &arg7_str;
-  jenv->ReleaseStringUTFChars(jarg7, arg7_pstr); 
   if(!jarg8) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg8_pstr = (const char *)jenv->GetStringUTFChars(jarg8, 0); 
-  if (!arg8_pstr) return 0;
-  std::string arg8_str(arg8_pstr);
+  std::string arg8_str = getStdString(jenv, jarg8);
   arg8 = &arg8_str;
-  jenv->ReleaseStringUTFChars(jarg8, arg8_pstr); 
   if(!jarg9) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg9_pstr = (const char *)jenv->GetStringUTFChars(jarg9, 0); 
-  if (!arg9_pstr) return 0;
-  std::string arg9_str(arg9_pstr);
+  std::string arg9_str = getStdString(jenv, jarg9);
   arg9 = &arg9_str;
-  jenv->ReleaseStringUTFChars(jarg9, arg9_pstr); 
   arg10 = jarg10 ? true : false; 
   result = (floo::BMXSDKConfig *)new floo::BMXSDKConfig(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5,(std::string const &)*arg6,(std::string const &)*arg7,(std::string const &)*arg8,(std::string const &)*arg9,arg10);
   
@@ -13306,74 +13186,50 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1_1SWIG_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   if(!jarg6) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return 0;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   if(!jarg7) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg7_pstr = (const char *)jenv->GetStringUTFChars(jarg7, 0); 
-  if (!arg7_pstr) return 0;
-  std::string arg7_str(arg7_pstr);
+  std::string arg7_str = getStdString(jenv, jarg7);
   arg7 = &arg7_str;
-  jenv->ReleaseStringUTFChars(jarg7, arg7_pstr); 
   if(!jarg8) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg8_pstr = (const char *)jenv->GetStringUTFChars(jarg8, 0); 
-  if (!arg8_pstr) return 0;
-  std::string arg8_str(arg8_pstr);
+  std::string arg8_str = getStdString(jenv, jarg8);
   arg8 = &arg8_str;
-  jenv->ReleaseStringUTFChars(jarg8, arg8_pstr); 
   if(!jarg9) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg9_pstr = (const char *)jenv->GetStringUTFChars(jarg9, 0); 
-  if (!arg9_pstr) return 0;
-  std::string arg9_str(arg9_pstr);
+  std::string arg9_str = getStdString(jenv, jarg9);
   arg9 = &arg9_str;
-  jenv->ReleaseStringUTFChars(jarg9, arg9_pstr); 
   result = (floo::BMXSDKConfig *)new floo::BMXSDKConfig(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5,(std::string const &)*arg6,(std::string const &)*arg7,(std::string const &)*arg8,(std::string const &)*arg9);
   
   *(std::shared_ptr<  floo::BMXSDKConfig > **)&jresult = result ? new std::shared_ptr<  floo::BMXSDKConfig >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -13408,7 +13264,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getDataDir
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getDataDir();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13426,7 +13282,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getCacheDi
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getCacheDir();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13462,7 +13318,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getVsn(JNI
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getVsn();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13480,7 +13336,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getSDKVers
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getSDKVersion();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13498,7 +13354,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getPushCer
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getPushCertName();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13518,11 +13374,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setPushCertNa
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setPushCertName((std::string const &)*arg2);
 }
 
@@ -13540,7 +13393,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getUserAge
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getUserAgent();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13781,7 +13634,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getDeviceU
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getDeviceUuid();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13801,11 +13654,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setDeviceUuid
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setDeviceUuid((std::string const &)*arg2);
 }
 
@@ -13823,7 +13673,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getDBCrypt
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->getDBCryptoKey();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -13843,11 +13693,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setDBCryptoKe
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setDBCryptoKey((std::string const &)*arg2);
 }
 
@@ -13961,7 +13808,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getUserDNS
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getUserDNSAddress();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -13981,11 +13828,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setUserDNSAdd
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setUserDNSAddress((std::string const &)*arg2);
 }
 
@@ -14003,7 +13847,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getAppID(J
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getAppID();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -14023,11 +13867,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setAppID(JNIE
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setAppID((std::string const &)*arg2);
 }
 
@@ -14045,7 +13886,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getAppSecr
   smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
   arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getAppSecret();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -14065,11 +13906,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setAppSecret(
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setAppSecret((std::string const &)*arg2);
 }
 
@@ -14527,20 +14365,14 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1downloadAtt
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->downloadAttachmentByUrl(arg2,(std::string const &)*arg3,(std::string const &)*arg4);
 }
 
@@ -14709,7 +14541,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1attachme
   (void)jarg1_;
   arg1 = *(floo::BMXChatService **)&jarg1; 
   result = (arg1)->attachmentDir();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -14726,7 +14558,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1attachme
   arg1 = *(floo::BMXChatService **)&jarg1; 
   arg2 = (int64_t)jarg2; 
   result = (arg1)->attachmentDirForConversation(arg2);
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -14811,11 +14643,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1searchMessa
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(std::vector< floo::BMXMessageList > **)&jarg5;
@@ -14848,11 +14677,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1searchMessa
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(std::vector< floo::BMXMessageList > **)&jarg5;
@@ -14885,11 +14711,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1searchMessa
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(std::vector< floo::BMXMessageList > **)&jarg5;
@@ -14922,11 +14745,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXChatService_1searchMessa
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(std::vector< floo::BMXMessageList > **)&jarg5;
@@ -15851,20 +15671,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1start_1_1SW
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->start((std::string const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -15885,11 +15699,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1start_1_1SW
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->start((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -15955,11 +15766,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1unbindAlias
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->unbindAlias((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -15976,7 +15784,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getToken
   (void)jarg1_;
   arg1 = *(floo::BMXPushService **)&jarg1; 
   result = (std::string *) &(arg1)->getToken();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -15991,7 +15799,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getCert(
   (void)jarg1_;
   arg1 = *(floo::BMXPushService **)&jarg1; 
   result = (std::string *) &(arg1)->getCert();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -16025,11 +15833,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1bindDeviceT
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->bindDeviceToken((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -16050,11 +15855,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1bindVoipTok
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->bindVoipToken((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -16109,11 +15911,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1setTags(JNI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setTags((std::vector< std::string > const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -16141,11 +15940,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getTags(JNI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->getTags(*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -16173,11 +15969,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1deleteTags(
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->deleteTags((std::vector< std::string > const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -16198,11 +15991,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1clearTags(J
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->clearTags((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -16415,11 +16205,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1sendMessage
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->sendMessage((std::string const &)*arg2);
 }
 
@@ -16540,10 +16327,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onP
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   (arg1)->onPushStart(arg2);
 }
 
@@ -16560,10 +16344,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onP
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   (arg1)->floo::BMXPushServiceListener::onPushStart(arg2);
 }
 
@@ -16602,10 +16383,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onC
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   (arg1)->onCertRetrieved(arg2);
 }
 
@@ -16622,10 +16400,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onC
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   (arg1)->floo::BMXPushServiceListener::onCertRetrieved(arg2);
 }
 
@@ -16642,11 +16417,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onS
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->onSetTags((std::string const &)*arg2);
 }
 
@@ -16663,11 +16435,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onS
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->floo::BMXPushServiceListener::onSetTags((std::string const &)*arg2);
 }
 
@@ -16684,11 +16453,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onG
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->onGetTags((std::string const &)*arg2);
 }
 
@@ -16705,11 +16471,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onG
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->floo::BMXPushServiceListener::onGetTags((std::string const &)*arg2);
 }
 
@@ -16726,11 +16489,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onD
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->onDeleteTags((std::string const &)*arg2);
 }
 
@@ -16747,11 +16507,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onD
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->floo::BMXPushServiceListener::onDeleteTags((std::string const &)*arg2);
 }
 
@@ -16768,11 +16525,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onC
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->onClearTags((std::string const &)*arg2);
 }
 
@@ -16789,11 +16543,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXPushServiceListener_1onC
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->floo::BMXPushServiceListener::onClearTags((std::string const &)*arg2);
 }
 
@@ -17080,20 +16831,14 @@ jint jresult = 0 ;
   SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
   return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0);
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr);
   if(!jarg3) {
   SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
   return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0);
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr);
   floo::BMXUserProfilePtr bmxUserProfilePtr = floo::BMXUserProfilePtr();
   result = (floo::BMXErrorCode)(arg1)->signUpNewUser((std::string const &)*arg2,(std::string const &)*arg3,bmxUserProfilePtr);
 
@@ -17125,20 +16870,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1signInByName(JNI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->signInByName((std::string const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -17164,11 +16903,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1signInById(JNIEn
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->signInById(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -17193,20 +16929,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1fastSignInByName
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->fastSignInByName((std::string const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -17232,11 +16962,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1fastSignInById(J
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->fastSignInById(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -17403,20 +17130,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1changeAppId_1_1S
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->changeAppId((std::string const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -17440,11 +17161,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1changeAppId_1_1S
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->changeAppId((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -17502,20 +17220,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXFileAttachment_1_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXFileAttachment *)new floo::BMXFileAttachment((std::string const &)*arg1,(std::string const &)*arg2);
   
   *(std::shared_ptr<  floo::BMXFileAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXFileAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -17535,11 +17247,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXFileAttachment_1_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   result = (floo::BMXFileAttachment *)new floo::BMXFileAttachment((std::string const &)*arg1);
   
   *(std::shared_ptr<  floo::BMXFileAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXFileAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -17561,20 +17270,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXFileAttachment_1_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   result = (floo::BMXFileAttachment *)new floo::BMXFileAttachment((std::string const &)*arg1,(std::string const &)*arg2,arg3);
   
@@ -17646,7 +17349,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXFileAttachment_1path(
   smartarg1 = *(std::shared_ptr< const floo::BMXFileAttachment > **)&jarg1;
   arg1 = (floo::BMXFileAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXFileAttachment const *)arg1)->path();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -17664,7 +17367,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXFileAttachment_1displ
   smartarg1 = *(std::shared_ptr< const floo::BMXFileAttachment > **)&jarg1;
   arg1 = (floo::BMXFileAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXFileAttachment const *)arg1)->displayName();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -17682,7 +17385,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXFileAttachment_1ratel
   smartarg1 = *(std::shared_ptr< const floo::BMXFileAttachment > **)&jarg1;
   arg1 = (floo::BMXFileAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXFileAttachment const *)arg1)->ratelUrl();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -17700,7 +17403,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXFileAttachment_1url(J
   smartarg1 = *(std::shared_ptr< const floo::BMXFileAttachment > **)&jarg1;
   arg1 = (floo::BMXFileAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXFileAttachment const *)arg1)->url();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -17815,11 +17518,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCRoom_1setRoomSecret(J
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setRoomSecret((std::string const &)*arg2);
 }
 
@@ -17837,7 +17537,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCRoom_1roomSecret(J
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCRoom > **)&jarg1;
   arg1 = (floo::BMXRTCRoom *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->roomSecret();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -17857,11 +17557,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCRoom_1setPin(JNIEnv *
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setPin((std::string const &)*arg2);
 }
 
@@ -17879,7 +17576,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCRoom_1pin(JNIEnv *
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCRoom > **)&jarg1;
   arg1 = (floo::BMXRTCRoom *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->pin();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -17933,7 +17630,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCRoom_1roomDescript
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCRoom > **)&jarg1;
   arg1 = (floo::BMXRTCRoom *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->roomDescription();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -18235,11 +17932,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRoomAuth_1mToken_1set(JN
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mToken = *arg2;
 }
 
@@ -18257,7 +17951,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRoomAuth_1mToken_1get
   smartarg1 = *(std::shared_ptr<  floo::BMXRoomAuth > **)&jarg1;
   arg1 = (floo::BMXRoomAuth *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mToken);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -18277,11 +17971,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRoomAuth_1mOptionalInfo_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mOptionalInfo = *arg2;
 }
 
@@ -18299,7 +17990,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRoomAuth_1mOptionalIn
   smartarg1 = *(std::shared_ptr<  floo::BMXRoomAuth > **)&jarg1;
   arg1 = (floo::BMXRoomAuth *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mOptionalInfo);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -18414,11 +18105,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXStream_1mStreamId_1set(J
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mStreamId = *arg2;
 }
 
@@ -18436,7 +18124,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXStream_1mStreamId_1ge
   smartarg1 = *(std::shared_ptr<  floo::BMXStream > **)&jarg1;
   arg1 = (floo::BMXStream *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mStreamId);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -18920,11 +18608,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXStreamStats_1mStreamId_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mStreamId = *arg2;
 }
 
@@ -18942,7 +18627,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXStreamStats_1mStreamI
   smartarg1 = *(std::shared_ptr<  floo::BMXStreamStats > **)&jarg1;
   arg1 = (floo::BMXStreamStats *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mStreamId);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19309,11 +18994,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mFeedDi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mFeedDisplay = *arg2;
 }
 
@@ -19331,7 +19013,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mFee
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusStreamInfo > **)&jarg1;
   arg1 = (floo::BMXJanusStreamInfo *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mFeedDisplay);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19351,11 +19033,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mFeedMi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mFeedMid = *arg2;
 }
 
@@ -19373,7 +19052,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mFee
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusStreamInfo > **)&jarg1;
   arg1 = (floo::BMXJanusStreamInfo *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mFeedMid);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19393,11 +19072,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mType_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mType = *arg2;
 }
 
@@ -19415,7 +19091,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mTyp
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusStreamInfo > **)&jarg1;
   arg1 = (floo::BMXJanusStreamInfo *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mType);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19435,11 +19111,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mMid_1s
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mMid = *arg2;
 }
 
@@ -19457,7 +19130,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mMid
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusStreamInfo > **)&jarg1;
   arg1 = (floo::BMXJanusStreamInfo *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mMid);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19477,11 +19150,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mCodec_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mCodec = *arg2;
 }
 
@@ -19499,7 +19169,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusStreamInfo_1mCod
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusStreamInfo > **)&jarg1;
   arg1 = (floo::BMXJanusStreamInfo *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mCodec);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19750,11 +19420,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRoomParticipant_1mDispla
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDisplay = *arg2;
 }
 
@@ -19772,7 +19439,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRoomParticipant_1mDis
   smartarg1 = *(std::shared_ptr<  floo::BMXRoomParticipant > **)&jarg1;
   arg1 = (floo::BMXRoomParticipant *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDisplay);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19923,11 +19590,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusPublisher_1mDisplay
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDisplay = *arg2;
 }
 
@@ -19945,7 +19609,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusPublisher_1mDisp
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusPublisher > **)&jarg1;
   arg1 = (floo::BMXJanusPublisher *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDisplay);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -19965,11 +19629,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusPublisher_1mAudioCo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mAudioCodec = *arg2;
 }
 
@@ -19987,7 +19648,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusPublisher_1mAudi
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusPublisher > **)&jarg1;
   arg1 = (floo::BMXJanusPublisher *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mAudioCodec);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -20007,11 +19668,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXJanusPublisher_1mVideoCo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mVideoCodec = *arg2;
 }
 
@@ -20029,7 +19687,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXJanusPublisher_1mVide
   smartarg1 = *(std::shared_ptr<  floo::BMXJanusPublisher > **)&jarg1;
   arg1 = (floo::BMXJanusPublisher *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mVideoCodec);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -20179,11 +19837,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRoomSDPInfo_1sdp_1set(JN
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->sdp = *arg2;
 }
 
@@ -20201,7 +19856,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRoomSDPInfo_1sdp_1get
   smartarg1 = *(std::shared_ptr<  floo::BMXRoomSDPInfo > **)&jarg1;
   arg1 = (floo::BMXRoomSDPInfo *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->sdp);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -20293,7 +19948,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCConfig_1getVersion
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCConfig > **)&jarg1;
   arg1 = (floo::BMXRTCConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getVersion();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -20560,11 +20215,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onJoi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onJoinRoom((std::string const &)*arg2,arg3,arg4);
@@ -20585,11 +20237,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onJoi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onJoinRoom((std::string const &)*arg2,arg3,arg4);
@@ -20611,22 +20260,16 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLea
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (floo::BMXErrorCode)jarg4; 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onLeaveRoom((std::string const &)*arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -20646,22 +20289,16 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLea
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (floo::BMXErrorCode)jarg4; 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCEngineListener::onLeaveRoom((std::string const &)*arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -20710,11 +20347,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onReJ
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onReJoinRoom((std::string const &)*arg2,arg3,arg4);
@@ -20735,11 +20369,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onReJ
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onReJoinRoom((std::string const &)*arg2,arg3,arg4);
@@ -20792,11 +20423,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onMem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onMemberExited(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -20817,11 +20445,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onMem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXRTCEngineListener::onMemberExited(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -20844,11 +20469,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLoc
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onLocalPublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -20872,11 +20494,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLoc
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onLocalPublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -20900,11 +20519,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLoc
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onLocalUnPublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -20928,11 +20544,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLoc
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onLocalUnPublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -20956,11 +20569,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onRemotePublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -20984,11 +20594,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onRemotePublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21012,11 +20619,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onRemoteUnPublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21040,11 +20644,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onRemoteUnPublish(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21068,11 +20669,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onSub
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onSubscribe(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21096,11 +20694,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onSub
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onSubscribe(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21124,11 +20719,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onUnS
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onUnSubscribe(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21152,11 +20744,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onUnS
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onUnSubscribe(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21182,11 +20771,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (floo::BMXErrorCode)jarg5; 
   (arg1)->onRemoteTrackNotify(arg2,arg3,(std::string const &)*arg4,arg5);
 }
@@ -21212,11 +20798,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (floo::BMXErrorCode)jarg5; 
   (arg1)->floo::BMXRTCEngineListener::onRemoteTrackNotify(arg2,arg3,(std::string const &)*arg4,arg5);
 }
@@ -21244,11 +20827,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLoc
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   arg6 = (floo::BMXErrorCode)jarg6; 
   (arg1)->onLocalStreamMuteRsp(arg2,arg3,arg4,(std::string const &)*arg5,arg6);
 }
@@ -21276,11 +20856,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onLoc
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   arg6 = (floo::BMXErrorCode)jarg6; 
   (arg1)->floo::BMXRTCEngineListener::onLocalStreamMuteRsp(arg2,arg3,arg4,(std::string const &)*arg5,arg6);
 }
@@ -21308,11 +20885,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   arg6 = (floo::BMXErrorCode)jarg6; 
   (arg1)->onRemoteStreamMuteRsp(arg2,arg3,arg4,(std::string const &)*arg5,arg6);
 }
@@ -21340,11 +20914,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   arg6 = (floo::BMXErrorCode)jarg6; 
   (arg1)->floo::BMXRTCEngineListener::onRemoteStreamMuteRsp(arg2,arg3,arg4,(std::string const &)*arg5,arg6);
 }
@@ -21368,11 +20939,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onSen
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onSendRTCStats(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21396,11 +20964,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onSen
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onSendRTCStats(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21424,11 +20989,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onRemoteRTCStats(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21452,11 +21014,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onRem
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onRemoteRTCStats(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21531,11 +21090,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onKic
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (floo::BMXErrorCode)jarg3; 
   (arg1)->onKickoff((std::string const &)*arg2,arg3);
 }
@@ -21554,11 +21110,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onKic
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (floo::BMXErrorCode)jarg3; 
   (arg1)->floo::BMXRTCEngineListener::onKickoff((std::string const &)*arg2,arg3);
 }
@@ -21577,11 +21130,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onWar
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (floo::BMXErrorCode)jarg3; 
   (arg1)->onWarning((std::string const &)*arg2,arg3);
 }
@@ -21600,11 +21150,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onWar
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (floo::BMXErrorCode)jarg3; 
   (arg1)->floo::BMXRTCEngineListener::onWarning((std::string const &)*arg2,arg3);
 }
@@ -21623,11 +21170,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onErr
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (floo::BMXErrorCode)jarg3; 
   (arg1)->onError((std::string const &)*arg2,arg3);
 }
@@ -21646,11 +21190,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onErr
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (floo::BMXErrorCode)jarg3; 
   (arg1)->floo::BMXRTCEngineListener::onError((std::string const &)*arg2,arg3);
 }
@@ -21674,11 +21215,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onNet
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->onNetworkQuality(arg2,(std::string const &)*arg3,arg4);
 }
@@ -21702,11 +21240,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCEngineListener_1onNet
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (floo::BMXErrorCode)jarg4; 
   (arg1)->floo::BMXRTCEngineListener::onNetworkQuality(arg2,(std::string const &)*arg3,arg4);
 }
@@ -22312,29 +21847,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = jarg5 ? true : false; 
   arg6 = jarg6 ? true : false; 
   result = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)new floo::BMXRTCSignalService::BMXRoomCreateOptions(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,arg5,arg6);
@@ -22361,29 +21887,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = jarg5 ? true : false; 
   result = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)new floo::BMXRTCSignalService::BMXRoomCreateOptions(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,arg5);
   
@@ -22408,29 +21925,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)new floo::BMXRTCSignalService::BMXRoomCreateOptions(arg1,(std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -22453,20 +21961,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)new floo::BMXRTCSignalService::BMXRoomCreateOptions(arg1,(std::string const &)*arg2,(std::string const &)*arg3);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -22488,11 +21990,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)new floo::BMXRTCSignalService::BMXRoomCreateOptions(arg1,(std::string const &)*arg2);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -22580,11 +22079,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDescription = *arg2;
 }
 
@@ -22602,7 +22098,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDescription);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -22622,11 +22118,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mSecret = *arg2;
 }
 
@@ -22644,7 +22137,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mSecret);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -22664,11 +22157,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mPin = *arg2;
 }
 
@@ -22686,7 +22176,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomCreateOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomCreateOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mPin);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -22787,29 +22277,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = jarg4 ? true : false; 
   arg5 = jarg5 ? true : false; 
   result = (floo::BMXRTCSignalService::BMXRoomEditOptions *)new floo::BMXRTCSignalService::BMXRoomEditOptions((std::string const &)*arg1,(std::string const &)*arg2,(std::string const &)*arg3,arg4,arg5);
@@ -22834,29 +22315,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = jarg4 ? true : false; 
   result = (floo::BMXRTCSignalService::BMXRoomEditOptions *)new floo::BMXRTCSignalService::BMXRoomEditOptions((std::string const &)*arg1,(std::string const &)*arg2,(std::string const &)*arg3,arg4);
   
@@ -22879,29 +22351,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXRTCSignalService::BMXRoomEditOptions *)new floo::BMXRTCSignalService::BMXRoomEditOptions((std::string const &)*arg1,(std::string const &)*arg2,(std::string const &)*arg3);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -22922,20 +22385,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXRTCSignalService::BMXRoomEditOptions *)new floo::BMXRTCSignalService::BMXRoomEditOptions((std::string const &)*arg1,(std::string const &)*arg2);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -22955,11 +22412,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   result = (floo::BMXRTCSignalService::BMXRoomEditOptions *)new floo::BMXRTCSignalService::BMXRoomEditOptions((std::string const &)*arg1);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -22997,11 +22451,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mNewDescription = *arg2;
 }
 
@@ -23019,7 +22470,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomEditOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mNewDescription);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -23039,11 +22490,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mNewSecret = *arg2;
 }
 
@@ -23061,7 +22509,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomEditOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mNewSecret);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -23081,11 +22529,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mNewPin = *arg2;
 }
 
@@ -23103,7 +22548,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomEditOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomEditOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mNewPin);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -23555,29 +23000,20 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   result = (floo::BMXRTCSignalService::BMXPubRoomJoinOptions *)new floo::BMXRTCSignalService::BMXPubRoomJoinOptions(arg1,arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -23602,20 +23038,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXRTCSignalService::BMXPubRoomJoinOptions *)new floo::BMXRTCSignalService::BMXPubRoomJoinOptions(arg1,arg2,(std::string const &)*arg3,(std::string const &)*arg4);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -23639,11 +23069,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXRTCSignalService::BMXPubRoomJoinOptions *)new floo::BMXRTCSignalService::BMXPubRoomJoinOptions(arg1,arg2,(std::string const &)*arg3);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -23753,11 +23180,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXPub
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mRoomPin = *arg2;
 }
 
@@ -23775,7 +23199,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXPubRoomJoinOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mRoomPin);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -23795,11 +23219,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXPub
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDescription = *arg2;
 }
 
@@ -23817,7 +23238,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXPubRoomJoinOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDescription);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -23837,11 +23258,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXPub
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mToken = *arg2;
 }
 
@@ -23859,7 +23277,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXPubRoomJoinOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXPubRoomJoinOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mToken);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -24092,11 +23510,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDisplay = *arg2;
 }
 
@@ -24114,7 +23529,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDisplay);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -24385,11 +23800,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mRoomPin = *arg2;
 }
 
@@ -24407,7 +23819,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomSubJoinOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomSubJoinOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mRoomPin);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -24427,11 +23839,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDescription = *arg2;
 }
 
@@ -24449,7 +23858,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomSubJoinOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomSubJoinOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDescription);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -24469,11 +23878,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mToken = *arg2;
 }
 
@@ -24491,7 +23897,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomSubJoinOptions > **)&jarg1;
   arg1 = (floo::BMXRTCSignalService::BMXRoomSubJoinOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mToken);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -25413,21 +24819,15 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1trickl
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (int32_t)jarg5; 
   if(!jarg6) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->trickle(arg2,arg3,(std::string const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -25811,10 +25211,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  (&arg4)->assign(arg4_pstr);
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
+  arg4 = getStdString(jenv, jarg4); 
   (arg1)->onSessionCreate(arg2,arg3,arg4);
 }
 
@@ -25838,10 +25235,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  (&arg4)->assign(arg4_pstr);
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
+  arg4 = getStdString(jenv, jarg4); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSessionCreate(arg2,arg3,arg4);
 }
 
@@ -25867,10 +25261,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  (&arg5)->assign(arg5_pstr);
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
+  arg5 = getStdString(jenv, jarg5); 
   (arg1)->onSessionAttach(arg2,arg3,arg4,arg5);
 }
 
@@ -25896,10 +25287,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  (&arg5)->assign(arg5_pstr);
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
+  arg5 = getStdString(jenv, jarg5); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSessionAttach(arg2,arg3,arg4,arg5);
 }
 
@@ -25928,11 +25316,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onRoomCreate(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -25961,11 +25346,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomCreate(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -25991,11 +25373,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onRoomDestroy(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -26021,11 +25400,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomDestroy(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -26054,11 +25430,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onRoomEdit(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -26087,11 +25460,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomEdit(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -26119,11 +25489,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onRoomExist(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26151,11 +25518,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomExist(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26191,11 +25555,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onRoomAllowed(arg2,arg3,(std::vector< std::string > const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26231,11 +25592,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomAllowed(arg2,arg3,(std::vector< std::string > const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26266,11 +25624,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onRoomKick(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26301,11 +25656,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomKick(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26336,11 +25688,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onRoomModerate(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26371,11 +25720,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomModerate(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26406,11 +25752,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onRoomList(arg2,(floo::BMXRTCRooms const &)*arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -26441,11 +25784,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomList(arg2,(floo::BMXRTCRooms const &)*arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -26481,11 +25821,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onRoomListParticipants(arg2,arg3,(floo::BMXRTCRoomParticipants const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26521,11 +25858,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onRoomListParticipants(arg2,arg3,(floo::BMXRTCRoomParticipants const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26561,11 +25895,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onPubJoinRoom(arg2,arg3,(floo::BMXRTCPublishers const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26601,11 +25932,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onPubJoinRoom(arg2,arg3,(floo::BMXRTCPublishers const &)*arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26704,11 +26032,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg7_pstr = (const char *)jenv->GetStringUTFChars(jarg7, 0); 
-  if (!arg7_pstr) return ;
-  std::string arg7_str(arg7_pstr);
+  std::string arg7_str = getStdString(jenv, jarg7);
   arg7 = &arg7_str;
-  jenv->ReleaseStringUTFChars(jarg7, arg7_pstr); 
   (arg1)->onPubConfigure(arg2,arg3,arg4,arg5,arg6,(std::string const &)*arg7);
 }
 
@@ -26751,11 +26076,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg7_pstr = (const char *)jenv->GetStringUTFChars(jarg7, 0); 
-  if (!arg7_pstr) return ;
-  std::string arg7_str(arg7_pstr);
+  std::string arg7_str = getStdString(jenv, jarg7);
   arg7 = &arg7_str;
-  jenv->ReleaseStringUTFChars(jarg7, arg7_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onPubConfigure(arg2,arg3,arg4,arg5,arg6,(std::string const &)*arg7);
 }
 
@@ -26786,11 +26108,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onPubUnPublish(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26821,11 +26140,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onPubUnPublish(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -26902,11 +26218,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg8_pstr = (const char *)jenv->GetStringUTFChars(jarg8, 0); 
-  if (!arg8_pstr) return ;
-  std::string arg8_str(arg8_pstr);
+  std::string arg8_str = getStdString(jenv, jarg8);
   arg8 = &arg8_str;
-  jenv->ReleaseStringUTFChars(jarg8, arg8_pstr); 
   (arg1)->onSubJoinRoomUpdate(arg2,arg3,arg4,arg5,arg6,arg7,(std::string const &)*arg8);
 }
 
@@ -26951,11 +26264,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg8_pstr = (const char *)jenv->GetStringUTFChars(jarg8, 0); 
-  if (!arg8_pstr) return ;
-  std::string arg8_str(arg8_pstr);
+  std::string arg8_str = getStdString(jenv, jarg8);
   arg8 = &arg8_str;
-  jenv->ReleaseStringUTFChars(jarg8, arg8_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSubJoinRoomUpdate(arg2,arg3,arg4,arg5,arg6,arg7,(std::string const &)*arg8);
 }
 
@@ -26984,11 +26294,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onSubStart(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -27017,11 +26324,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSubStart(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -27050,11 +26354,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onSubPause(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -27083,11 +26384,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSubPause(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -27125,11 +26423,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onSubUnsubscribe(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -27167,11 +26462,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSubUnsubscribe(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -27200,11 +26492,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->onSubConfigure(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -27233,11 +26522,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSubConfigure(arg2,arg3,arg4,(std::string const &)*arg5);
 }
 
@@ -27268,11 +26554,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onSubSwitch(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -27303,11 +26586,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSubSwitch(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -27335,10 +26615,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  (&arg6)->assign(arg6_pstr);
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
+  arg6 = getStdString(jenv, jarg6); 
   (arg1)->onLeaveRoom(arg2,arg3,arg4,arg5,arg6);
 }
 
@@ -27366,10 +26643,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  (&arg6)->assign(arg6_pstr);
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
+  arg6 = getStdString(jenv, jarg6); 
   (arg1)->floo::BMXRTCSignalServiceListener::onLeaveRoom(arg2,arg3,arg4,arg5,arg6);
 }
 
@@ -27433,11 +26707,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->onMediaInfo(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -27465,11 +26736,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg6_pstr = (const char *)jenv->GetStringUTFChars(jarg6, 0); 
-  if (!arg6_pstr) return ;
-  std::string arg6_str(arg6_pstr);
+  std::string arg6_str = getStdString(jenv, jarg6);
   arg6 = &arg6_str;
-  jenv->ReleaseStringUTFChars(jarg6, arg6_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onMediaInfo(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
 }
 
@@ -27537,11 +26805,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onHangup(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -27565,11 +26830,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onHangup(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -27593,11 +26855,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onSessionHangup(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -27621,11 +26880,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSessionHangup(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -27651,10 +26907,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  (&arg5)->assign(arg5_pstr);
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
+  arg5 = getStdString(jenv, jarg5); 
   (arg1)->onSessionDetach(arg2,arg3,arg4,arg5);
 }
 
@@ -27680,10 +26933,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return ;
-  (&arg5)->assign(arg5_pstr);
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
+  arg5 = getStdString(jenv, jarg5); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSessionDetach(arg2,arg3,arg4,arg5);
 }
 
@@ -27704,10 +26954,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  (&arg4)->assign(arg4_pstr);
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
+  arg4 = getStdString(jenv, jarg4); 
   (arg1)->onSessionDestroy(arg2,arg3,arg4);
 }
 
@@ -27728,10 +26975,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalServiceListener
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   } 
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  (&arg4)->assign(arg4_pstr);
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
+  arg4 = getStdString(jenv, jarg4); 
   (arg1)->floo::BMXRTCSignalServiceListener::onSessionDestroy(arg2,arg3,arg4);
 }
 
@@ -28016,11 +27260,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroup_1Member(JNIE
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int64_t)jarg3; 
   result = (floo::BMXGroup::Member *)new floo::BMXGroup::Member(arg1,(std::string const &)*arg2,arg3);
   
@@ -28092,11 +27333,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mGroupNic
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mGroupNickname = *arg2;
 }
 
@@ -28114,7 +27352,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mGroup
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::Member > **)&jarg1;
   arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mGroupNickname);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28229,11 +27467,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1BannedMember_1mGr
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mGroupNickname = *arg2;
 }
 
@@ -28251,7 +27486,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1BannedMember_1
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::BannedMember > **)&jarg1;
   arg1 = (floo::BMXGroup::BannedMember *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mGroupNickname);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28570,11 +27805,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mRate
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mRatelUrl = *arg2;
 }
 
@@ -28592,7 +27824,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mR
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::SharedFile > **)&jarg1;
   arg1 = (floo::BMXGroup::SharedFile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mRatelUrl);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28612,11 +27844,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mUrl_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mUrl = *arg2;
 }
 
@@ -28634,7 +27863,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mU
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::SharedFile > **)&jarg1;
   arg1 = (floo::BMXGroup::SharedFile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mUrl);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28654,11 +27883,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mPath
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mPath = *arg2;
 }
 
@@ -28676,7 +27902,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mP
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::SharedFile > **)&jarg1;
   arg1 = (floo::BMXGroup::SharedFile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mPath);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28696,11 +27922,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mDisp
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDisplayName = *arg2;
 }
 
@@ -28718,7 +27941,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mD
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::SharedFile > **)&jarg1;
   arg1 = (floo::BMXGroup::SharedFile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDisplayName);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28738,11 +27961,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mType
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mType = *arg2;
 }
 
@@ -28760,7 +27980,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1SharedFile_1mT
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::SharedFile > **)&jarg1;
   arg1 = (floo::BMXGroup::SharedFile *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mType);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28807,11 +28027,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Announcement_1mTi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mTitle = *arg2;
 }
 
@@ -28829,7 +28046,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Announcement_1
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::Announcement > **)&jarg1;
   arg1 = (floo::BMXGroup::Announcement *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mTitle);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -28849,11 +28066,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Announcement_1mCo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mContent = *arg2;
 }
 
@@ -28871,7 +28085,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Announcement_1
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::Announcement > **)&jarg1;
   arg1 = (floo::BMXGroup::Announcement *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mContent);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29088,11 +28302,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Invitation_1mReas
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mReason = *arg2;
 }
 
@@ -29110,7 +28321,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Invitation_1mR
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::Invitation > **)&jarg1;
   arg1 = (floo::BMXGroup::Invitation *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mReason);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29293,11 +28504,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Application_1mRea
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mReason = *arg2;
 }
 
@@ -29315,7 +28523,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Application_1m
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup::Application > **)&jarg1;
   arg1 = (floo::BMXGroup::Application *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mReason);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29450,7 +28658,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1myNickname(JNI
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->myNickname();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29468,7 +28676,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1name(JNIEnv *j
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->name();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29486,7 +28694,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1description(JN
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->description();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29504,7 +28712,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1avatarRatelUrl
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarRatelUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -29522,7 +28730,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1avatarUrl(JNIE
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -29540,7 +28748,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1avatarPath(JNI
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarPath();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -29558,7 +28766,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1avatarThumbnai
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarThumbnailUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -29576,7 +28784,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1avatarThumbnai
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarThumbnailPath();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -29612,7 +28820,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1extension(JNIE
   smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
   arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->extension();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -29985,20 +29193,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1Crea
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = jarg3 ? true : false; 
   arg4 = jarg4 ? true : false; 
   result = (floo::BMXGroupService::CreateGroupOptions *)new floo::BMXGroupService::CreateGroupOptions((std::string const &)*arg1,(std::string const &)*arg2,arg3,arg4);
@@ -30020,20 +29222,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1Crea
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = jarg3 ? true : false; 
   result = (floo::BMXGroupService::CreateGroupOptions *)new floo::BMXGroupService::CreateGroupOptions((std::string const &)*arg1,(std::string const &)*arg2,arg3);
   *(floo::BMXGroupService::CreateGroupOptions **)&jresult = result; 
@@ -30053,20 +29249,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupService_1Crea
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXGroupService::CreateGroupOptions *)new floo::BMXGroupService::CreateGroupOptions((std::string const &)*arg1,(std::string const &)*arg2);
   *(floo::BMXGroupService::CreateGroupOptions **)&jresult = result; 
   return jresult;
@@ -30085,11 +29275,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateGrou
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mName = *arg2;
 }
 
@@ -30104,7 +29291,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateG
   (void)jarg1_;
   arg1 = *(floo::BMXGroupService::CreateGroupOptions **)&jarg1; 
   result = (std::string *) & ((arg1)->mName);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -30121,11 +29308,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateGrou
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mDescription = *arg2;
 }
 
@@ -30140,7 +29324,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateG
   (void)jarg1_;
   arg1 = *(floo::BMXGroupService::CreateGroupOptions **)&jarg1; 
   result = (std::string *) & ((arg1)->mDescription);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -30213,11 +29397,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateGrou
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mMessage = *arg2;
 }
 
@@ -30232,7 +29413,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1CreateG
   (void)jarg1_;
   arg1 = *(floo::BMXGroupService::CreateGroupOptions **)&jarg1; 
   result = (std::string *) & ((arg1)->mMessage);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -30475,11 +29656,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1fetchLocal
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->fetchLocalGroupsByName(*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -30507,11 +29685,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1search_1_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->search(*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -30590,11 +29765,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1join(JNIEn
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->join(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -30691,11 +29863,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getInvitat
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (int)jarg4;
 
   floo::BMXGroupInvitationPagePtr tmpPtr = floo::BMXGroupInvitationPagePtr();
@@ -30731,11 +29900,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getInvitat
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->getInvitationList(*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -30788,11 +29954,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getApplica
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (int)jarg5;
 
   floo::BMXGroupApplicationPagePtr tmpPtr = floo::BMXGroupApplicationPagePtr();
@@ -30837,11 +30000,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getApplica
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->getApplicationList(arg2,*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -30899,11 +30059,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getMembers
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (int)jarg5;
 
   floo::BMXGroupMemberResultPagePtr tmpPtr = floo::BMXGroupMemberResultPagePtr();
@@ -30944,11 +30101,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getMembers
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->getMembers(arg2,*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31036,11 +30190,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1addMembers
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->addMembers(arg2,(std::vector< int64_t > const &)*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31073,11 +30224,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1removeMemb
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->removeMembers(arg2,(std::vector< int64_t > const &)*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31110,11 +30258,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1addAdmins(
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->addAdmins(arg2,(std::vector< int64_t > const &)*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31147,11 +30292,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1removeAdmi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->removeAdmins(arg2,(std::vector< int64_t > const &)*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31262,11 +30404,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getBlockLi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (int)jarg5;
 
   floo::BMXGroupMemberResultPagePtr tmpPtr = floo::BMXGroupMemberResultPagePtr();
@@ -31307,11 +30446,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getBlockLi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->getBlockList(arg2,*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31401,11 +30537,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1banMembers
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   result = (floo::BMXErrorCode)(arg1)->banMembers(arg2,(std::vector< int64_t > const &)*arg3,arg4,(std::string const &)*arg5);
   jresult = (jint)result; 
   return jresult;
@@ -31531,11 +30664,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getBannedM
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (int)jarg5;
 
   floo::BMXGroupBannedMemberResultPagePtr tmpPtr = floo::BMXGroupBannedMemberResultPagePtr();
@@ -31576,11 +30706,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getBannedM
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->getBannedMembers(arg2,*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31705,11 +30832,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1declineApp
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->declineApplication(arg2,arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31781,11 +30905,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1declineInv
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->declineInvitation(arg2,arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -31858,29 +30979,20 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1uploadShar
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   if(!jarg5) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
 //  argp6 = *(floo::BMXGroupService::Callback **)&jarg6;
 //  if (!argp6) {
 //    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null floo::BMXGroupService::Callback");
@@ -31913,11 +31025,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1cancelUplo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->cancelUploadSharedFile(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -32056,11 +31165,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1changeShar
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->changeSharedFileName(arg2,arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -32141,20 +31247,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1editAnnoun
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->editAnnouncement(arg2,(std::string const &)*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -32202,11 +31302,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setName(JN
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setName(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -32232,11 +31329,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setDescrip
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setDescription(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -32262,11 +31356,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setExtensi
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setExtension(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -32292,11 +31383,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setMyNickn
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setMyNickname(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -32456,11 +31544,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setAvatar(
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
 //  argp4 = *(floo::BMXGroupService::Callback **)&jarg4;
 //  if (!argp4) {
 //    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null floo::BMXGroupService::Callback");
@@ -32546,11 +31631,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXImageAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = *(floo::BMXMessageAttachment::Size **)&jarg2;
   if (!arg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "floo::BMXMessageAttachment::Size const & reference is null");
@@ -32560,11 +31642,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXImageAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXImageAttachment *)new floo::BMXImageAttachment((std::string const &)*arg1,(floo::BMXMessageAttachment::Size const &)*arg2,(std::string const &)*arg3);
   
   *(std::shared_ptr<  floo::BMXImageAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXImageAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -32586,11 +31665,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXImageAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = *(floo::BMXMessageAttachment::Size **)&jarg2;
   if (!arg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "floo::BMXMessageAttachment::Size const & reference is null");
@@ -32619,11 +31695,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXImageAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = *(floo::BMXMessageAttachment::Size **)&jarg2;
   if (!arg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "floo::BMXMessageAttachment::Size const & reference is null");
@@ -32633,11 +31706,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXImageAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (int64_t)jarg4; 
   result = (floo::BMXImageAttachment *)new floo::BMXImageAttachment((std::string const &)*arg1,(floo::BMXMessageAttachment::Size const &)*arg2,(std::string const &)*arg3,arg4);
   
@@ -32727,7 +31797,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXImageAttachment_1thum
   smartarg1 = *(std::shared_ptr< const floo::BMXImageAttachment > **)&jarg1;
   arg1 = (floo::BMXImageAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXImageAttachment const *)arg1)->thumbnailUrl();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -32747,11 +31817,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXImageAttachment_1setThum
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setThumbnail((std::string const &)*arg2);
 }
 
@@ -32769,7 +31836,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXImageAttachment_1thum
   smartarg1 = *(std::shared_ptr< const floo::BMXImageAttachment > **)&jarg1;
   arg1 = (floo::BMXImageAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXImageAttachment const *)arg1)->thumbnailPath();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -32835,11 +31902,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXLocationAttachment
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXLocationAttachment *)new floo::BMXLocationAttachment(arg1,arg2,(std::string const &)*arg3);
   
   *(std::shared_ptr<  floo::BMXLocationAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXLocationAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -32946,7 +32010,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXLocationAttachment_1a
   smartarg1 = *(std::shared_ptr< const floo::BMXLocationAttachment > **)&jarg1;
   arg1 = (floo::BMXLocationAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXLocationAttachment const *)arg1)->address();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -33030,10 +32094,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXMessagePage_1_1SWI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   result = (floo::BMXResultPage< std::shared_ptr< floo::BMXMessage > > *)new floo::BMXResultPage< std::shared_ptr< floo::BMXMessage > >((std::vector< std::shared_ptr< floo::BMXMessage > > const &)*arg1,arg2);
   *(floo::BMXResultPage< std::shared_ptr< floo::BMXMessage > > **)&jresult = result; 
   return jresult;
@@ -33111,7 +32172,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessagePage_1cursor(J
   (void)jarg1_;
   arg1 = *(std::shared_ptr< floo::BMXResultPage< std::shared_ptr< floo::BMXMessage > >>**)&jarg1; 
   result = (std::string *) &(arg1)->get()->cursor();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -33182,10 +32243,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupMemberResultP
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   result = (floo::BMXResultPage< floo::BMXGroup::MemberPtr > *)new floo::BMXResultPage< floo::BMXGroup::MemberPtr >((std::vector< std::shared_ptr< floo::BMXGroup::Member > > const &)*arg1,arg2);
   *(floo::BMXResultPage< floo::BMXGroup::MemberPtr > **)&jresult = result; 
   return jresult;
@@ -33263,7 +32321,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroupMemberResultPage
   (void)jarg1_;
   arg1 = *(std::shared_ptr< floo::BMXResultPage< floo::BMXGroup::MemberPtr >>**)&jarg1; 
   result = (std::string *) &(arg1)->get()->cursor();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -33334,10 +32392,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroupBannedMemberR
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   result = (floo::BMXResultPage< floo::BMXGroup::BannedMemberPtr > *)new floo::BMXResultPage< floo::BMXGroup::BannedMemberPtr >((std::vector< std::shared_ptr< floo::BMXGroup::BannedMember > > const &)*arg1,arg2);
   *(floo::BMXResultPage< floo::BMXGroup::BannedMemberPtr > **)&jresult = result; 
   return jresult;
@@ -33415,7 +32470,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroupBannedMemberResu
   (void)jarg1_;
   arg1 = *(std::shared_ptr< floo::BMXResultPage< floo::BMXGroup::BannedMemberPtr >>**)&jarg1; 
   result = (std::string *) &(arg1)->get()->cursor();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -33486,10 +32541,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1ApplicationPage_1_1SW
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   result = (floo::BMXResultPage< std::shared_ptr< floo::BMXRosterService::Application > > *)new floo::BMXResultPage< std::shared_ptr< floo::BMXRosterService::Application > >((std::vector< std::shared_ptr< floo::BMXRosterService::Application > > const &)*arg1,arg2);
   *(floo::BMXResultPage< std::shared_ptr< floo::BMXRosterService::Application > > **)&jresult = result; 
   return jresult;
@@ -33567,7 +32619,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_ApplicationPage_1cursor(
   (void)jarg1_;
   arg1 = *(std::shared_ptr< floo::BMXResultPage< std::shared_ptr< floo::BMXRosterService::Application > >>**)&jarg1; 
   result = (std::string *) &(arg1)->get()->cursor();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -33638,10 +32690,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1GroupApplicationPage_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   result = (floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Application > > *)new floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Application > >((std::vector< std::shared_ptr< floo::BMXGroup::Application > > const &)*arg1,arg2);
   *(floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Application > > **)&jresult = result; 
   return jresult;
@@ -33720,7 +32769,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_GroupApplicationPage_1cu
   (void)jarg1_;
   arg1 = *(std::shared_ptr< floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Application > >>**)&jarg1; 
   result = (std::string *) &(arg1)->get()->cursor();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -33791,10 +32840,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1GroupInvitaionPage_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   } 
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  (&arg2)->assign(arg2_pstr);
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
+  arg2 = getStdString(jenv, jarg2); 
   result = (floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Invitation > > *)new floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Invitation > >((std::vector< std::shared_ptr< floo::BMXGroup::Invitation > > const &)*arg1,arg2);
   *(floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Invitation > > **)&jresult = result; 
   return jresult;
@@ -33873,7 +32919,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_GroupInvitaionPage_1curs
   (void)jarg1_;
   arg1 = *(std::shared_ptr< floo::BMXResultPage< std::shared_ptr< floo::BMXGroup::Invitation > >>**)&jarg1; 
   result = (std::string *) &(arg1)->get()->cursor();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34111,7 +33157,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1username(
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->username();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34129,7 +33175,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1nickname(
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->nickname();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34147,7 +33193,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1avatarRat
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarRatelUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -34165,7 +33211,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1avatarUrl
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -34183,7 +33229,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1avatarPat
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarPath();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -34201,7 +33247,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1avatarThu
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarThumbnailUrl();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -34219,7 +33265,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1avatarThu
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->avatarThumbnailPath();
-  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
 
@@ -34237,7 +33283,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1publicInf
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->publicInfo();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34255,7 +33301,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1alias(JNI
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->alias();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34273,7 +33319,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1ext(JNIEn
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->ext();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34291,7 +33337,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1localExt(
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (floo::JSON *) &(arg1)->localExt();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34363,7 +33409,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterItem_1authQuest
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterItem > **)&jarg1;
   arg1 = (floo::BMXRosterItem *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &(arg1)->authQuestion();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34444,11 +33490,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1Applicati
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if (arg1) (arg1)->mReason = *arg2;
 }
 
@@ -34466,7 +33509,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1Applic
   smartarg1 = *(std::shared_ptr<  floo::BMXRosterService::Application > **)&jarg1;
   arg1 = (floo::BMXRosterService::Application *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mReason);
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -34649,11 +33692,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1fetchRost
   SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
   return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0);
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr);
   arg3 = jarg3 ? true : false;
   floo::BMXRosterItemPtr tmpPtr = floo::BMXRosterItemPtr();
   result = (floo::BMXErrorCode)(arg1)->fetchRosterByName((std::string const &)*arg2,arg3,tmpPtr);
@@ -34686,11 +33726,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1search_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0);
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr);
   arg3 = jarg3 ? true : false;
   floo::BMXRosterItemPtr tmpPtr = floo::BMXRosterItemPtr();
   result = (floo::BMXErrorCode)(arg1)->search((std::string const &)*arg2,arg3,tmpPtr);
@@ -34786,11 +33823,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1setItemLo
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  floo::JSON arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setItemLocalExtension(arg2,(floo::JSON const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -34816,11 +33850,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1setItemEx
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  floo::JSON arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setItemExtension(arg2,(floo::JSON const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -34846,11 +33877,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1setItemAl
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  floo::JSON arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setItemAlias(arg2,(floo::JSON const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -34894,11 +33922,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1getApplic
   (void)jarg2_;
   arg1 = *(floo::BMXRosterService **)&jarg1; 
 
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0);
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr);
 
   arg4 = (int)jarg4;
 
@@ -34933,11 +33958,6 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1getApplic
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-//  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0);
-//  if (!arg3_pstr) return 0;
-//  std::string arg3_str(arg3_pstr);
-//  arg3 = &arg3_str;
-//  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr);
   std::string cursor;
   result = (floo::BMXErrorCode)(arg1)->getApplicationList(*arg2,cursor);
   jresult = (jint)result; 
@@ -34962,20 +33982,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1apply_1_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   if(!jarg4) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXErrorCode)(arg1)->apply(arg2,(std::string const &)*arg3,(std::string const &)*arg4);
   jresult = (jint)result; 
   return jresult;
@@ -34998,11 +34012,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1apply_1_1
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->apply(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -35059,11 +34070,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRosterService_1decline(J
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->decline(arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -35285,11 +34293,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRosterServiceListener_1o
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onApplied(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -35310,11 +34315,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRosterServiceListener_1o
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXRosterServiceListener::onApplied(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -35365,11 +34367,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRosterServiceListener_1o
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onApplicationDeclined(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -35390,11 +34389,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRosterServiceListener_1o
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXRosterServiceListener::onApplicationDeclined(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -35571,11 +34567,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1bindDevice(
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->bindDevice((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -35662,11 +34655,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1setNickname
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setNickname((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -35688,11 +34678,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1uploadAvata
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
 //  argp3 = *(floo::BMXUserService::Callback **)&jarg3;
 //  if (!argp3) {
 //    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null floo::BMXUserService::Callback");
@@ -35750,11 +34737,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1setPublicIn
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setPublicInfo((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -35775,11 +34759,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1setPrivateI
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setPrivateInfo((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -35873,11 +34854,8 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1setPushNick
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setPushNickname((std::string const &)*arg2);
   jresult = (jint)result; 
   return jresult;
@@ -35899,20 +34877,14 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXUserService_1setPushAlia
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXErrorCode)(arg1)->setPushAlias((std::string const &)*arg2,(std::string const &)*arg3);
   jresult = (jint)result; 
   return jresult;
@@ -36258,11 +35230,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   arg3 = *(floo::BMXMessageAttachment::Size **)&jarg3;
   if (!arg3) {
@@ -36273,11 +35242,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   result = (floo::BMXVideoAttachment *)new floo::BMXVideoAttachment((std::string const &)*arg1,arg2,(floo::BMXMessageAttachment::Size const &)*arg3,(std::string const &)*arg4);
   
   *(std::shared_ptr<  floo::BMXVideoAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXVideoAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -36300,11 +35266,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   arg3 = *(floo::BMXMessageAttachment::Size **)&jarg3;
   if (!arg3) {
@@ -36335,20 +35298,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int)jarg3; 
   arg4 = *(floo::BMXMessageAttachment::Size **)&jarg4;
   if (!arg4) {
@@ -36359,11 +35316,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   result = (floo::BMXVideoAttachment *)new floo::BMXVideoAttachment((std::string const &)*arg1,(std::string const &)*arg2,arg3,(floo::BMXMessageAttachment::Size const &)*arg4,(std::string const &)*arg5);
   
   *(std::shared_ptr<  floo::BMXVideoAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXVideoAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -36387,20 +35341,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int)jarg3; 
   arg4 = *(floo::BMXMessageAttachment::Size **)&jarg4;
   if (!arg4) {
@@ -36431,11 +35379,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   arg3 = *(floo::BMXMessageAttachment::Size **)&jarg3;
   if (!arg3) {
@@ -36446,11 +35391,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   arg5 = (int64_t)jarg5; 
   result = (floo::BMXVideoAttachment *)new floo::BMXVideoAttachment((std::string const &)*arg1,arg2,(floo::BMXMessageAttachment::Size const &)*arg3,(std::string const &)*arg4,arg5);
   
@@ -36477,20 +35419,14 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   if(!jarg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return 0;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   arg3 = (int)jarg3; 
   arg4 = *(floo::BMXMessageAttachment::Size **)&jarg4;
   if (!arg4) {
@@ -36501,11 +35437,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVideoAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg5_pstr = (const char *)jenv->GetStringUTFChars(jarg5, 0); 
-  if (!arg5_pstr) return 0;
-  std::string arg5_str(arg5_pstr);
+  std::string arg5_str = getStdString(jenv, jarg5);
   arg5 = &arg5_str;
-  jenv->ReleaseStringUTFChars(jarg5, arg5_pstr); 
   arg6 = (int64_t)jarg6; 
   result = (floo::BMXVideoAttachment *)new floo::BMXVideoAttachment((std::string const &)*arg1,(std::string const &)*arg2,arg3,(floo::BMXMessageAttachment::Size const &)*arg4,(std::string const &)*arg5,arg6);
   
@@ -36615,11 +35548,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXVideoAttachment_1setThum
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setThumbnail((std::string const &)*arg2);
 }
 
@@ -36637,7 +35567,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXVideoAttachment_1thum
   smartarg1 = *(std::shared_ptr< const floo::BMXVideoAttachment > **)&jarg1;
   arg1 = (floo::BMXVideoAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXVideoAttachment const *)arg1)->thumbnailPath();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -36655,7 +35585,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXVideoAttachment_1thum
   smartarg1 = *(std::shared_ptr< const floo::BMXVideoAttachment > **)&jarg1;
   arg1 = (floo::BMXVideoAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXVideoAttachment const *)arg1)->thumbnailUrl();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -36675,11 +35605,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXVideoAttachment_1setThum
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg2_pstr = (const char *)jenv->GetStringUTFChars(jarg2, 0); 
-  if (!arg2_pstr) return ;
-  std::string arg2_str(arg2_pstr);
+  std::string arg2_str = getStdString(jenv, jarg2);
   arg2 = &arg2_str;
-  jenv->ReleaseStringUTFChars(jarg2, arg2_pstr); 
   (arg1)->setThumbnailRatelUrl((std::string const &)*arg2);
 }
 
@@ -36697,7 +35624,7 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXVideoAttachment_1thum
   smartarg1 = *(std::shared_ptr< const floo::BMXVideoAttachment > **)&jarg1;
   arg1 = (floo::BMXVideoAttachment *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) &((floo::BMXVideoAttachment const *)arg1)->thumbnailRatelUrl();
-  jresult = jenv->NewStringUTF(result->c_str()); 
+  jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
 
@@ -36761,21 +35688,15 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVoiceAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   result = (floo::BMXVoiceAttachment *)new floo::BMXVoiceAttachment((std::string const &)*arg1,arg2,(std::string const &)*arg3);
   
   *(std::shared_ptr<  floo::BMXVoiceAttachment > **)&jresult = result ? new std::shared_ptr<  floo::BMXVoiceAttachment >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -36796,11 +35717,8 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVoiceAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   result = (floo::BMXVoiceAttachment *)new floo::BMXVoiceAttachment((std::string const &)*arg1,arg2);
   
@@ -36824,21 +35742,15 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXVoiceAttachment_1_
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg1_pstr = (const char *)jenv->GetStringUTFChars(jarg1, 0); 
-  if (!arg1_pstr) return 0;
-  std::string arg1_str(arg1_pstr);
+  std::string arg1_str = getStdString(jenv, jarg1);
   arg1 = &arg1_str;
-  jenv->ReleaseStringUTFChars(jarg1, arg1_pstr); 
   arg2 = (int)jarg2; 
   if(!jarg3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return 0;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   arg4 = (int64_t)jarg4; 
   result = (floo::BMXVoiceAttachment *)new floo::BMXVoiceAttachment((std::string const &)*arg1,arg2,(std::string const &)*arg3,arg4);
   
@@ -37082,11 +35994,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   (arg1)->onGroupLeft(arg2,(std::string const &)*arg3);
 }
 
@@ -37108,11 +36017,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg3_pstr = (const char *)jenv->GetStringUTFChars(jarg3, 0); 
-  if (!arg3_pstr) return ;
-  std::string arg3_str(arg3_pstr);
+  std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  jenv->ReleaseStringUTFChars(jarg3, arg3_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onGroupLeft(arg2,(std::string const &)*arg3);
 }
 
@@ -37133,11 +36039,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onInvitated(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37158,11 +36061,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onInvitated(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37222,11 +36122,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onInvitationDeclined(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37250,11 +36147,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onInvitationDeclined(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37278,11 +36172,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onApplied(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37306,11 +36197,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onApplied(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37370,11 +36258,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onApplicationDeclined(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37398,11 +36283,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onApplicationDeclined(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37562,11 +36444,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onMemberLeft(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37590,11 +36469,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onMemberLeft(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37669,11 +36545,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onAdminsRemoved(arg2,(std::vector< int64_t > const &)*arg3,(std::string const &)*arg4);
 }
 
@@ -37702,11 +36575,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onAdminsRemoved(arg2,(std::vector< int64_t > const &)*arg3,(std::string const &)*arg4);
 }
 
@@ -37798,11 +36668,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->onMemberChangeNickName(arg2,arg3,(std::string const &)*arg4);
 }
 
@@ -37826,11 +36693,8 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroupServiceListener_1on
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return ;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return ;
-  std::string arg4_str(arg4_pstr);
+  std::string arg4_str = getStdString(jenv, jarg4);
   arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
   (arg1)->floo::BMXGroupServiceListener::onMemberChangeNickName(arg2,arg3,(std::string const &)*arg4);
 }
 
