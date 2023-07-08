@@ -101,7 +101,7 @@ add_library( # Sets the name of the library.
         floo/src/protocol/bmx_xsync_parser.cc
         floo/src/protocol/bmx_conversation_unread.cc
         floo/src/protocol/bmx_zlib_compression.cc
-        floo/src/protocol/bmx_rtc_message.cc
+        floo/src/protocol/bmx_rtc_signal.cc
         floo/src/protocol/generated/groupnotice.pb.cc
         floo/src/protocol/generated/info.pb.cc
         floo/src/protocol/generated/messagebody.pb.cc
@@ -110,7 +110,7 @@ add_library( # Sets the name of the library.
         floo/src/protocol/generated/xid.pb.cc
         floo/src/protocol/generated/xsync.pb.cc
         floo/src/protocol/generated/conversation.pb.cc
-        floo/src/protocol/generated/rtc_message.pb.cc
+        floo/src/protocol/generated/rtcsignal.pb.cc
         floo/deps/protobuf/google/protobuf/any.cc
         floo/deps/protobuf/google/protobuf/any.pb.cc
         floo/deps/protobuf/google/protobuf/api.pb.cc

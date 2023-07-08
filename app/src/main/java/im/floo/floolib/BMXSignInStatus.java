@@ -13,7 +13,8 @@ package im.floo.floolib;
  **/
 public enum BMXSignInStatus {
   SignOut,
-  SignIn;
+  SignIn,
+  SigningIn;
 
   public final int swigValue() {
     return swigValue;

@@ -169,10 +169,11 @@ public class BMXConversation extends BMXBaseObject {
   /**
    *  插入一条消息
    * @param msg 插入的消息
+   * @param isHistory 历史消息
    * @return BMXErrorCode
    **/
-  private BMXErrorCode insertMessage(BMXMessage msg) {
-    return BMXErrorCode.swigToEnum(flooJNI.BMXConversation_insertMessage(swigCPtr, this, BMXMessage.getCPtr(msg), msg));
+  public BMXErrorCode insertMessage(BMXMessage msg, boolean isHistory) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXConversation_insertMessage__SWIG_0(swigCPtr, this, BMXMessage.getCPtr(msg), msg, isHistory));
   }
 
   /**
@@ -471,11 +472,11 @@ public class BMXConversation extends BMXBaseObject {
    * @param msg 插入的消息
    * @param callBack 回调
    **/
-  public void insertMessage(final BMXMessage msg,final BMXCallBack callBack) {
+  public void insertMessage(final BMXMessage msg, final boolean isHistory, final BMXCallBack callBack) {
     new AsyncExecutor().exec(new AsyncExecutor.Task() {
       @Override
       public BMXErrorCode exec() {
-        return insertMessage(msg);
+        return insertMessage(msg, isHistory);
       }
 
       @Override

@@ -12,6 +12,8 @@ public class BMXRTCEngine {
   private transient long swigCPtr;
   private transient boolean swigCMemOwn;
 
+  public boolean isOnCall;
+  public long otherId;
   protected BMXRTCEngine(long cPtr, boolean cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;

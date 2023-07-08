@@ -33,6 +33,7 @@ public enum BMXErrorCode {
   UserAbnormal,
   UserCancel,
   UserOldPasswordNotMatch,
+  UserSigningIn,
   PushTokenInvalid(200),
   PushAliasBindByOtherUser,
   PushAliasTokenNotMatch,
@@ -53,9 +54,12 @@ public enum BMXErrorCode {
   MessageRecallDisabled,
   MessageCensored,
   MessageInvalidType,
+  MessageBadArg,
+  MessageRateLimitExceeded,
   RosterNotFriend(500),
   RosterBlockListExist,
   RosterRejectApplication,
+  RosterHasDeletedFromSystem,
   GroupServerDbError(600),
   GroupNotExist,
   GroupNotMemberFound,
@@ -110,7 +114,10 @@ public enum BMXErrorCode {
   ServerAppNotifierNotExist,
   ServerNoClusterInfoForClusterId,
   ServerFileDownloadFailure,
-  ServerAppStatusNotNormal;
+  ServerAppStatusNotNormal,
+  ServerPlatformNotAllowed,
+  ServerCannotCreateDeviceSn,
+  ServerRtcNotOpen;
 
   public final int swigValue() {
     return swigValue;

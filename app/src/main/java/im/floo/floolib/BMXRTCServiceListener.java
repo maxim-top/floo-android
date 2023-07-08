@@ -55,12 +55,20 @@ public class BMXRTCServiceListener {
     flooJNI.BMXRTCServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
-  public void onRTCNoticeStatusChanged(BMXMessage msg, BMXErrorCode error) {
-    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCNoticeStatusChanged(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue()); else flooJNI.BMXRTCServiceListener_onRTCNoticeStatusChangedSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue());
+  public void onRTCMessageStatusChanged(BMXMessage msg, BMXErrorCode error) {
+    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCMessageStatusChanged(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue()); else flooJNI.BMXRTCServiceListener_onRTCMessageStatusChangedSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue());
   }
 
-  public void onRTCNoticeReceive(BMXMessageList list) {
-    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCNoticeReceive(swigCPtr, this, BMXMessageList.getCPtr(list), list); else flooJNI.BMXRTCServiceListener_onRTCNoticeReceiveSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessageList.getCPtr(list), list);
+  public void onRTCCallMessageReceive(BMXMessage msg) {
+    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCCallMessageReceive(swigCPtr, this, BMXMessage.getCPtr(msg), msg); else flooJNI.BMXRTCServiceListener_onRTCCallMessageReceiveSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  public void onRTCPickupMessageReceive(BMXMessage msg) {
+    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCPickupMessageReceive(swigCPtr, this, BMXMessage.getCPtr(msg), msg); else flooJNI.BMXRTCServiceListener_onRTCPickupMessageReceiveSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  public void onRTCHangupMessageReceive(BMXMessage msg) {
+    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCHangupMessageReceive(swigCPtr, this, BMXMessage.getCPtr(msg), msg); else flooJNI.BMXRTCServiceListener_onRTCHangupMessageReceiveSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
   }
 
   public void registerRTCService(BMXRTCService service) {

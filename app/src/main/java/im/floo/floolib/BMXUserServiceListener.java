@@ -101,6 +101,13 @@ public class BMXUserServiceListener {
     if (getClass() == BMXUserServiceListener.class) flooJNI.BMXUserServiceListener_onOtherDeviceSingOut(swigCPtr, this, deviceSN); else flooJNI.BMXUserServiceListener_onOtherDeviceSingOutSwigExplicitBMXUserServiceListener(swigCPtr, this, deviceSN);
   }
 
+  /**
+   *  用户被限流
+   **/
+  public void onTrafficLimitExceeded() {
+    if (getClass() == BMXUserServiceListener.class) flooJNI.BMXUserServiceListener_onTrafficLimitExceeded(swigCPtr, this); else flooJNI.BMXUserServiceListener_onTrafficLimitExceededSwigExplicitBMXUserServiceListener(swigCPtr, this);
+  }
+
   public BMXUserServiceListener() {
     this(flooJNI.new_BMXUserServiceListener(), true);
     flooJNI.BMXUserServiceListener_director_connect(this, swigCPtr, swigCMemOwn, true);

@@ -15,10 +15,10 @@ with open(sys.argv[1], 'r') as f:
     m2 = re.match(r'(.*arg.[ ]*= \*\()(floo::BMXResultPage\< .*) (\*\*.*)',str(line))
     m3 = re.match(r'(.*result[ ]*=[ ]*.*)\(floo::BMXResultPage<.*\*\)(arg.\))(.*;)',str(line))
     if m1 and new_delete_block == 0:
-      print m1.group(1) + "std::shared_ptr< " + m1.group(2) + ">" + m1.group(3) + " = 0 ;"
+      print(m1.group(1) + "std::shared_ptr< " + m1.group(2) + ">" + m1.group(3) + " = 0 ;")
     elif m2 and new_delete_block == 0:
-      print m2.group(1) + "std::shared_ptr< " + m2.group(2) + ">" + m2.group(3)
+      print(m2.group(1) + "std::shared_ptr< " + m2.group(2) + ">" + m2.group(3))
     elif m3 and new_delete_block == 0:
-      print m3.group(1) + m3.group(2) + "->get()" + m3.group(3)
+      print(m3.group(1) + m3.group(2) + "->get()" + m3.group(3))
     else :
-      print line,
+      print(line, end='')

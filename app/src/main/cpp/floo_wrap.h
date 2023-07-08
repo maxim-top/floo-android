@@ -208,14 +208,16 @@ public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
     SwigDirector_BMXRTCServiceListener(JNIEnv *jenv);
     virtual ~SwigDirector_BMXRTCServiceListener();
-    virtual void onRTCNoticeStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
-    virtual void onRTCNoticeReceive(floo::BMXMessageList const &list);
+    virtual void onRTCMessageStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
+    virtual void onRTCCallMessageReceive(floo::BMXMessagePtr msg);
+    virtual void onRTCPickupMessageReceive(floo::BMXMessagePtr msg);
+    virtual void onRTCHangupMessageReceive(floo::BMXMessagePtr msg);
 public:
     bool swig_overrides(int n) {
-      return (n < 2 ? swig_override[n] : false);
+      return (n < 4 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<2> swig_override;
+    Swig::BoolArray<4> swig_override;
 };
 
 class SwigDirector_BMXRosterServiceListener : public floo::BMXRosterServiceListener, public Swig::Director {
@@ -253,12 +255,13 @@ public:
     virtual void onInfoUpdated(floo::BMXUserProfilePtr profile);
     virtual void onOtherDeviceSingIn(int deviceSN);
     virtual void onOtherDeviceSingOut(int deviceSN);
+    virtual void onTrafficLimitExceeded();
 public:
     bool swig_overrides(int n) {
-      return (n < 6 ? swig_override[n] : false);
+      return (n < 7 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<6> swig_override;
+    Swig::BoolArray<7> swig_override;
 };
 
 class SwigDirector_BMXGroupServiceListener : public floo::BMXGroupServiceListener, public Swig::Director {

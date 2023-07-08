@@ -250,6 +250,15 @@ public class BMXClient extends BMXNetworkListener {
   }
 
   /**
+   *  删除当前账号及其所有数据
+   *  @param password 当前账号的登录密码
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode deleteAccount(String password) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXClient_deleteAccount(swigCPtr, this, password));
+  }
+
+  /**
    *  获取当前和服务器的连接状态
    * @return BMXConnectStatus
    **/

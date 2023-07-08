@@ -49,8 +49,8 @@ public class BMXRTCService {
     return new BMXRTCSignalService(flooJNI.BMXRTCService_getBMXRTCSignalService(swigCPtr, this), false);
   }
 
-  public void sendRTCNotice(BMXMessage msg) {
-    flooJNI.BMXRTCService_sendRTCNotice(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  public void sendRTCMessage(BMXMessage msg) {
+    flooJNI.BMXRTCService_sendRTCMessage(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
   }
 
   public void addRTCServiceListener(BMXRTCServiceListener listener) {

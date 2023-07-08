@@ -662,7 +662,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_flooJNI = NULL;
-    jmethodID director_method_ids[150];
+    jmethodID director_method_ids[153];
   }
 }
 
@@ -4367,7 +4367,7 @@ SwigDirector_BMXRTCServiceListener::~SwigDirector_BMXRTCServiceListener() {
 }
 
 
-void SwigDirector_BMXRTCServiceListener::onRTCNoticeStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error) {
+void SwigDirector_BMXRTCServiceListener::onRTCMessageStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
@@ -4375,7 +4375,7 @@ void SwigDirector_BMXRTCServiceListener::onRTCNoticeStatusChanged(floo::BMXMessa
   jint jerror  ;
   
   if (!swig_override[0]) {
-    floo::BMXRTCServiceListener::onRTCNoticeStatusChanged(msg,error);
+    floo::BMXRTCServiceListener::onRTCMessageStatusChanged(msg,error);
     return;
   }
   swigjobj = swig_get_self(jenv);
@@ -4391,25 +4391,26 @@ void SwigDirector_BMXRTCServiceListener::onRTCNoticeStatusChanged(floo::BMXMessa
     }
     
   } else {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXRTCServiceListener::onRTCNoticeStatusChanged ");
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXRTCServiceListener::onRTCMessageStatusChanged ");
   }
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
 
-void SwigDirector_BMXRTCServiceListener::onRTCNoticeReceive(floo::BMXMessageList const &list) {
+void SwigDirector_BMXRTCServiceListener::onRTCCallMessageReceive(floo::BMXMessagePtr msg) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jlist = 0 ;
+  jlong jmsg  ;
   
   if (!swig_override[1]) {
-    floo::BMXRTCServiceListener::onRTCNoticeReceive(list);
+    floo::BMXRTCServiceListener::onRTCCallMessageReceive(msg);
     return;
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(floo::BMXMessageList **)&jlist = (floo::BMXMessageList *) &list; 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[108], swigjobj, jlist);
+    jmsg = 0;
+    *((floo::BMXMessagePtr **)&jmsg) = new floo::BMXMessagePtr((const floo::BMXMessagePtr &)msg); 
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[108], swigjobj, jmsg);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4417,7 +4418,61 @@ void SwigDirector_BMXRTCServiceListener::onRTCNoticeReceive(floo::BMXMessageList
     }
     
   } else {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXRTCServiceListener::onRTCNoticeReceive ");
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXRTCServiceListener::onRTCCallMessageReceive ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
+void SwigDirector_BMXRTCServiceListener::onRTCPickupMessageReceive(floo::BMXMessagePtr msg) {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong jmsg  ;
+  
+  if (!swig_override[2]) {
+    floo::BMXRTCServiceListener::onRTCPickupMessageReceive(msg);
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jmsg = 0;
+    *((floo::BMXMessagePtr **)&jmsg) = new floo::BMXMessagePtr((const floo::BMXMessagePtr &)msg); 
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[109], swigjobj, jmsg);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXRTCServiceListener::onRTCPickupMessageReceive ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
+void SwigDirector_BMXRTCServiceListener::onRTCHangupMessageReceive(floo::BMXMessagePtr msg) {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong jmsg  ;
+  
+  if (!swig_override[3]) {
+    floo::BMXRTCServiceListener::onRTCHangupMessageReceive(msg);
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jmsg = 0;
+    *((floo::BMXMessagePtr **)&jmsg) = new floo::BMXMessagePtr((const floo::BMXMessagePtr &)msg); 
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[110], swigjobj, jmsg);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXRTCServiceListener::onRTCHangupMessageReceive ");
   }
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
@@ -4429,10 +4484,16 @@ void SwigDirector_BMXRTCServiceListener::swig_connect_director(JNIEnv *jenv, job
     jmethodID base_methid;
   } methods[] = {
     {
-      "onRTCNoticeStatusChanged", "(Lim/floo/floolib/BMXMessage;Lim/floo/floolib/BMXErrorCode;)V", NULL 
+      "onRTCMessageStatusChanged", "(Lim/floo/floolib/BMXMessage;Lim/floo/floolib/BMXErrorCode;)V", NULL 
     },
     {
-      "onRTCNoticeReceive", "(Lim/floo/floolib/BMXMessageList;)V", NULL 
+      "onRTCCallMessageReceive", "(Lim/floo/floolib/BMXMessage;)V", NULL 
+    },
+    {
+      "onRTCPickupMessageReceive", "(Lim/floo/floolib/BMXMessage;)V", NULL 
+    },
+    {
+      "onRTCHangupMessageReceive", "(Lim/floo/floolib/BMXMessage;)V", NULL 
     }
   };
   
@@ -4445,7 +4506,7 @@ void SwigDirector_BMXRTCServiceListener::swig_connect_director(JNIEnv *jenv, job
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 4; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -4484,7 +4545,7 @@ void SwigDirector_BMXRosterServiceListener::onFriendAdded(int64_t sponsorId, int
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[109], swigjobj, jsponsorId, jrecipientId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[111], swigjobj, jsponsorId, jrecipientId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4512,7 +4573,7 @@ void SwigDirector_BMXRosterServiceListener::onFriendRemoved(int64_t sponsorId, i
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[110], swigjobj, jsponsorId, jrecipientId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[112], swigjobj, jsponsorId, jrecipientId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4543,7 +4604,7 @@ void SwigDirector_BMXRosterServiceListener::onApplied(int64_t sponsorId, int64_t
     jrecipientId = (jlong) recipientId;
     jmessage = NewStringUTF(jenv, (&message)->c_str());
     Swig::LocalRefGuard message_refguard(jenv, jmessage); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[111], swigjobj, jsponsorId, jrecipientId, jmessage);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[113], swigjobj, jsponsorId, jrecipientId, jmessage);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4571,7 +4632,7 @@ void SwigDirector_BMXRosterServiceListener::onApplicationAccepted(int64_t sponso
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[112], swigjobj, jsponsorId, jrecipientId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[114], swigjobj, jsponsorId, jrecipientId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4602,7 +4663,7 @@ void SwigDirector_BMXRosterServiceListener::onApplicationDeclined(int64_t sponso
     jrecipientId = (jlong) recipientId;
     jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[113], swigjobj, jsponsorId, jrecipientId, jreason);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[115], swigjobj, jsponsorId, jrecipientId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4630,7 +4691,7 @@ void SwigDirector_BMXRosterServiceListener::onBlockListAdded(int64_t sponsorId, 
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[114], swigjobj, jsponsorId, jrecipientId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[116], swigjobj, jsponsorId, jrecipientId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4658,7 +4719,7 @@ void SwigDirector_BMXRosterServiceListener::onBlockListRemoved(int64_t sponsorId
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jsponsorId = (jlong) sponsorId;
     jrecipientId = (jlong) recipientId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[115], swigjobj, jsponsorId, jrecipientId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[117], swigjobj, jsponsorId, jrecipientId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4685,7 +4746,7 @@ void SwigDirector_BMXRosterServiceListener::onRosterInfoUpdate(floo::BMXRosterIt
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jitem = 0;
     *((floo::BMXRosterItemPtr **)&jitem) = new floo::BMXRosterItemPtr((const floo::BMXRosterItemPtr &)item); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[116], swigjobj, jitem);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[118], swigjobj, jitem);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4709,7 +4770,7 @@ void SwigDirector_BMXRosterServiceListener::onRosterListUpdate() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[117], swigjobj);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[119], swigjobj);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4803,7 +4864,7 @@ void SwigDirector_BMXUserServiceListener::onConnectStatusChanged(floo::BMXConnec
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jstatus = (jint) status;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[118], swigjobj, jstatus);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[120], swigjobj, jstatus);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4830,7 +4891,7 @@ void SwigDirector_BMXUserServiceListener::onUserSignIn(floo::BMXUserProfilePtr p
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jprofile = 0;
     *((floo::BMXUserProfilePtr **)&jprofile) = new floo::BMXUserProfilePtr((const floo::BMXUserProfilePtr &)profile); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[119], swigjobj, jprofile);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[121], swigjobj, jprofile);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4858,7 +4919,7 @@ void SwigDirector_BMXUserServiceListener::onUserSignOut(floo::BMXErrorCode error
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jerror = (jint) error;
     juserId = (jlong) userId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[120], swigjobj, jerror, juserId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[122], swigjobj, jerror, juserId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4885,7 +4946,7 @@ void SwigDirector_BMXUserServiceListener::onInfoUpdated(floo::BMXUserProfilePtr 
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jprofile = 0;
     *((floo::BMXUserProfilePtr **)&jprofile) = new floo::BMXUserProfilePtr((const floo::BMXUserProfilePtr &)profile); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[121], swigjobj, jprofile);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[123], swigjobj, jprofile);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4911,7 +4972,7 @@ void SwigDirector_BMXUserServiceListener::onOtherDeviceSingIn(int deviceSN) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jdeviceSN = (jint) deviceSN;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[122], swigjobj, jdeviceSN);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[124], swigjobj, jdeviceSN);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4937,7 +4998,7 @@ void SwigDirector_BMXUserServiceListener::onOtherDeviceSingOut(int deviceSN) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jdeviceSN = (jint) deviceSN;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[123], swigjobj, jdeviceSN);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[125], swigjobj, jdeviceSN);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4946,6 +5007,30 @@ void SwigDirector_BMXUserServiceListener::onOtherDeviceSingOut(int deviceSN) {
     
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXUserServiceListener::onOtherDeviceSingOut ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
+void SwigDirector_BMXUserServiceListener::onTrafficLimitExceeded() {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  
+  if (!swig_override[6]) {
+    floo::BMXUserServiceListener::onTrafficLimitExceeded();
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[126], swigjobj);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in floo::BMXUserServiceListener::onTrafficLimitExceeded ");
   }
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
@@ -4973,6 +5058,9 @@ void SwigDirector_BMXUserServiceListener::swig_connect_director(JNIEnv *jenv, jo
     },
     {
       "onOtherDeviceSingOut", "(I)V", NULL 
+    },
+    {
+      "onTrafficLimitExceeded", "()V", NULL 
     }
   };
   
@@ -4985,7 +5073,7 @@ void SwigDirector_BMXUserServiceListener::swig_connect_director(JNIEnv *jenv, jo
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 7; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -5023,7 +5111,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupCreate(floo::BMXGroupPtr group
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[124], swigjobj, jgroup);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[127], swigjobj, jgroup);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5049,7 +5137,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupListUpdate(floo::BMXGroupList 
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *(floo::BMXGroupList **)&jlist = (floo::BMXGroupList *) &list; 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[125], swigjobj, jlist);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[128], swigjobj, jlist);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5076,7 +5164,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupJoined(floo::BMXGroupPtr group
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[126], swigjobj, jgroup);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[129], swigjobj, jgroup);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5106,7 +5194,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupLeft(floo::BMXGroupPtr group, 
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[127], swigjobj, jgroup, jreason);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[130], swigjobj, jgroup, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5137,7 +5225,7 @@ void SwigDirector_BMXGroupServiceListener::onInvitated(int64_t groupId, int64_t 
     jinviter = (jlong) inviter;
     jmessage = NewStringUTF(jenv, (&message)->c_str());
     Swig::LocalRefGuard message_refguard(jenv, jmessage); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[128], swigjobj, jgroupId, jinviter, jmessage);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[131], swigjobj, jgroupId, jinviter, jmessage);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5166,7 +5254,7 @@ void SwigDirector_BMXGroupServiceListener::onInvitationAccepted(floo::BMXGroupPt
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jinviteeId = (jlong) inviteeId;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[129], swigjobj, jgroup, jinviteeId);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[132], swigjobj, jgroup, jinviteeId);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5198,7 +5286,7 @@ void SwigDirector_BMXGroupServiceListener::onInvitationDeclined(floo::BMXGroupPt
     jinviteeId = (jlong) inviteeId;
     jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[130], swigjobj, jgroup, jinviteeId, jreason);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[133], swigjobj, jgroup, jinviteeId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5230,7 +5318,7 @@ void SwigDirector_BMXGroupServiceListener::onApplied(floo::BMXGroupPtr group, in
     japplicantId = (jlong) applicantId;
     jmessage = NewStringUTF(jenv, (&message)->c_str());
     Swig::LocalRefGuard message_refguard(jenv, jmessage); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[131], swigjobj, jgroup, japplicantId, jmessage);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[134], swigjobj, jgroup, japplicantId, jmessage);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5259,7 +5347,7 @@ void SwigDirector_BMXGroupServiceListener::onApplicationAccepted(floo::BMXGroupP
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     japprover = (jlong) approver;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[132], swigjobj, jgroup, japprover);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[135], swigjobj, jgroup, japprover);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5291,7 +5379,7 @@ void SwigDirector_BMXGroupServiceListener::onApplicationDeclined(floo::BMXGroupP
     japprover = (jlong) approver;
     jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[133], swigjobj, jgroup, japprover, jreason);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[136], swigjobj, jgroup, japprover, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5322,7 +5410,7 @@ void SwigDirector_BMXGroupServiceListener::onMembersBanned(floo::BMXGroupPtr gro
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
     jduration = (jlong) duration;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[134], swigjobj, jgroup, jmembers, jduration);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[137], swigjobj, jgroup, jmembers, jduration);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5351,7 +5439,7 @@ void SwigDirector_BMXGroupServiceListener::onMembersUnbanned(floo::BMXGroupPtr g
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[135], swigjobj, jgroup, jmembers);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[138], swigjobj, jgroup, jmembers);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5382,7 +5470,7 @@ void SwigDirector_BMXGroupServiceListener::onMemberJoined(floo::BMXGroupPtr grou
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jmemberId = (jlong) memberId;
     jinviter = (jlong) inviter;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[136], swigjobj, jgroup, jmemberId, jinviter);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[139], swigjobj, jgroup, jmemberId, jinviter);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5414,7 +5502,7 @@ void SwigDirector_BMXGroupServiceListener::onMemberLeft(floo::BMXGroupPtr group,
     jmemberId = (jlong) memberId;
     jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[137], swigjobj, jgroup, jmemberId, jreason);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[140], swigjobj, jgroup, jmemberId, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5443,7 +5531,7 @@ void SwigDirector_BMXGroupServiceListener::onAdminsAdded(floo::BMXGroupPtr group
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[138], swigjobj, jgroup, jmembers);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[141], swigjobj, jgroup, jmembers);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5475,7 +5563,7 @@ void SwigDirector_BMXGroupServiceListener::onAdminsRemoved(floo::BMXGroupPtr gro
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
     jreason = NewStringUTF(jenv, (&reason)->c_str());
     Swig::LocalRefGuard reason_refguard(jenv, jreason); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[139], swigjobj, jgroup, jmembers, jreason);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[142], swigjobj, jgroup, jmembers, jreason);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5502,7 +5590,7 @@ void SwigDirector_BMXGroupServiceListener::onOwnerAssigned(floo::BMXGroupPtr gro
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[140], swigjobj, jgroup);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[143], swigjobj, jgroup);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5531,7 +5619,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupInfoUpdate(floo::BMXGroupPtr g
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jtype = (jint) type;
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[141], swigjobj, jgroup, jtype);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[144], swigjobj, jgroup, jtype);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5563,7 +5651,7 @@ void SwigDirector_BMXGroupServiceListener::onMemberChangeNickName(floo::BMXGroup
     jmemberId = (jlong) memberId;
     jnickName = NewStringUTF(jenv, (&nickName)->c_str());
     Swig::LocalRefGuard nickName_refguard(jenv, jnickName); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[142], swigjobj, jgroup, jmemberId, jnickName);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[145], swigjobj, jgroup, jmemberId, jnickName);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5593,7 +5681,7 @@ void SwigDirector_BMXGroupServiceListener::onAnnouncementUpdate(floo::BMXGroupPt
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jannouncement = 0;
     *((floo::BMXGroup::AnnouncementPtr **)&jannouncement) = new floo::BMXGroup::AnnouncementPtr((const floo::BMXGroup::AnnouncementPtr &)announcement); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[143], swigjobj, jgroup, jannouncement);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[146], swigjobj, jgroup, jannouncement);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5623,7 +5711,7 @@ void SwigDirector_BMXGroupServiceListener::onSharedFileUploaded(floo::BMXGroupPt
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jsharedFile = 0;
     *((floo::BMXGroup::SharedFilePtr **)&jsharedFile) = new floo::BMXGroup::SharedFilePtr((const floo::BMXGroup::SharedFilePtr &)sharedFile); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[144], swigjobj, jgroup, jsharedFile);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[147], swigjobj, jgroup, jsharedFile);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5653,7 +5741,7 @@ void SwigDirector_BMXGroupServiceListener::onSharedFileDeleted(floo::BMXGroupPtr
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jsharedFile = 0;
     *((floo::BMXGroup::SharedFilePtr **)&jsharedFile) = new floo::BMXGroup::SharedFilePtr((const floo::BMXGroup::SharedFilePtr &)sharedFile); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[145], swigjobj, jgroup, jsharedFile);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[148], swigjobj, jgroup, jsharedFile);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5683,7 +5771,7 @@ void SwigDirector_BMXGroupServiceListener::onSharedFileUpdated(floo::BMXGroupPtr
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     jsharedFile = 0;
     *((floo::BMXGroup::SharedFilePtr **)&jsharedFile) = new floo::BMXGroup::SharedFilePtr((const floo::BMXGroup::SharedFilePtr &)sharedFile); 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[146], swigjobj, jgroup, jsharedFile);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[149], swigjobj, jgroup, jsharedFile);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5712,7 +5800,7 @@ void SwigDirector_BMXGroupServiceListener::onBlockListAdded(floo::BMXGroupPtr gr
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[147], swigjobj, jgroup, jmembers);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[150], swigjobj, jgroup, jmembers);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5741,7 +5829,7 @@ void SwigDirector_BMXGroupServiceListener::onBlockListRemoved(floo::BMXGroupPtr 
     jgroup = 0;
     *((floo::BMXGroupPtr **)&jgroup) = new floo::BMXGroupPtr((const floo::BMXGroupPtr &)group); 
     *(std::vector< int64_t > **)&jmembers = (std::vector< int64_t > *) &members; 
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[148], swigjobj, jgroup, jmembers);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[151], swigjobj, jgroup, jmembers);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5765,7 +5853,7 @@ void SwigDirector_BMXGroupServiceListener::onGroupListUpdate() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[149], swigjobj);
+    jenv->CallStaticVoidMethod(Swig::jclass_flooJNI, Swig::director_method_ids[152], swigjobj);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -10850,6 +10938,90 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushTi
 }
 
 
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushTitleLocKey(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setPushTitleLocKey((std::string const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushTitleLocArgs(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setPushTitleLocArgs((std::string const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushMessageLocKey(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setPushMessageLocKey((std::string const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setPushMessageLocArgs(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setPushMessageLocArgs((std::string const &)*arg2);
+}
+
+
 SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPushTitle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jstring jresult = 0 ;
   floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
@@ -10864,6 +11036,78 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPus
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getPushTitle();
   jresult = NewStringUTF(jenv, (&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPushTitleLocKey(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getPushTitleLocKey();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPushTitleLocArgs(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getPushTitleLocArgs();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPushMessageLocKey(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getPushMessageLocKey();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getPushMessageLocArgs(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getPushMessageLocArgs();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
   return jresult;
 }
 
@@ -10958,6 +11202,203 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getUse
   smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
   arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
   result = (arg1)->getUsername();
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setRTCCallInfo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jlong jarg4, jint jarg5, jstring jarg6) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  floo::BMXMessageConfig::RTCCallType arg2 ;
+  int64_t arg3 ;
+  int64_t arg4 ;
+  floo::BMXMessageConfig::RTCRoomType arg5 ;
+  std::string *arg6 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  arg2 = (floo::BMXMessageConfig::RTCCallType)jarg2; 
+  arg3 = (int64_t)jarg3; 
+  arg4 = (int64_t)jarg4; 
+  arg5 = (floo::BMXMessageConfig::RTCRoomType)jarg5; 
+  if(!jarg6) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg6_str = getStdString(jenv, jarg6);
+  arg6 = &arg6_str;
+  (arg1)->setRTCCallInfo(arg2,arg3,arg4,arg5,(std::string const &)*arg6);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setRTCPickupInfo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setRTCPickupInfo((std::string const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setRTCHangupInfo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setRTCHangupInfo((std::string const &)*arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCAction(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (arg1)->getRTCAction();
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCCallType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  floo::BMXMessageConfig::RTCCallType result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (floo::BMXMessageConfig::RTCCallType)(arg1)->getRTCCallType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCRoomId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  int64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (int64_t)(arg1)->getRTCRoomId();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCInitiator(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  int64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (int64_t)(arg1)->getRTCInitiator();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCCallId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (arg1)->getRTCCallId();
+  jresult = NewStringUTF(jenv, (&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCRoomType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  floo::BMXMessageConfig::RTCRoomType result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (floo::BMXMessageConfig::RTCRoomType)(arg1)->getRTCRoomType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getRTCPin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (arg1)->getRTCPin();
   jresult = NewStringUTF(jenv, (&result)->c_str()); 
   return jresult;
 }
@@ -12001,6 +12442,33 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createCommandM
 }
 
 
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createRTCMessage_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jint jarg3, jlong jarg4, jstring jarg5) {
+  jlong jresult = 0 ;
+  int64_t arg1 ;
+  int64_t arg2 ;
+  floo::BMXMessage::MessageType arg3 ;
+  int64_t arg4 ;
+  std::string *arg5 = 0 ;
+  floo::BMXMessagePtr result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int64_t)jarg1; 
+  arg2 = (int64_t)jarg2; 
+  arg3 = (floo::BMXMessage::MessageType)jarg3; 
+  arg4 = (int64_t)jarg4; 
+  if(!jarg5) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  std::string arg5_str = getStdString(jenv, jarg5);
+  arg5 = &arg5_str;
+  result = floo::BMXMessage::createRTCMessage(arg1,arg2,arg3,arg4,(std::string const &)*arg5);
+  *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createMessage_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jint jarg4, jlong jarg5, jstring jarg6, jlong jarg7) {
   jlong jresult = 0 ;
   int64_t arg1 ;
@@ -12087,6 +12555,37 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createCommandM
   arg6 = &arg6_str;
   arg7 = (int64_t)jarg7; 
   result = floo::BMXMessage::createCommandMessage(arg1,arg2,arg3,arg4,arg5,(std::string const &)*arg6,arg7);
+  *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXMessage_1createRTCMessage_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jint jarg4, jlong jarg5, jstring jarg6, jlong jarg7) {
+  jlong jresult = 0 ;
+  int64_t arg1 ;
+  int64_t arg2 ;
+  int64_t arg3 ;
+  floo::BMXMessage::MessageType arg4 ;
+  int64_t arg5 ;
+  std::string *arg6 = 0 ;
+  int64_t arg7 ;
+  floo::BMXMessagePtr result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int64_t)jarg1; 
+  arg2 = (int64_t)jarg2; 
+  arg3 = (int64_t)jarg3; 
+  arg4 = (floo::BMXMessage::MessageType)jarg4; 
+  arg5 = (int64_t)jarg5; 
+  if(!jarg6) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  std::string arg6_str = getStdString(jenv, jarg6);
+  arg6 = &arg6_str;
+  arg7 = (int64_t)jarg7; 
+  result = floo::BMXMessage::createRTCMessage(arg1,arg2,arg3,arg4,arg5,(std::string const &)*arg6,arg7);
   *(floo::BMXMessagePtr **)&jresult = result ? new floo::BMXMessagePtr(result) : 0; 
   return jresult;
 }
@@ -12415,7 +12914,32 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1updateMess
 }
 
 
-SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1insertMessage(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1insertMessage_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jboolean jarg3) {
+  jint jresult = 0 ;
+  floo::BMXConversation *arg1 = (floo::BMXConversation *) 0 ;
+  floo::BMXMessagePtr arg2 ;
+  bool arg3 ;
+  std::shared_ptr< floo::BMXConversation > *smartarg1 = 0 ;
+  floo::BMXMessagePtr *argp2 ;
+  floo::BMXErrorCode result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXConversation > **)&jarg1;
+  arg1 = (floo::BMXConversation *)(smartarg1 ? smartarg1->get() : 0); 
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  arg3 = jarg3 ? true : false; 
+  result = (floo::BMXErrorCode)(arg1)->insertMessage(arg2,arg3);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXConversation_1insertMessage_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   floo::BMXConversation *arg1 = (floo::BMXConversation *) 0 ;
   floo::BMXMessagePtr arg2 ;
@@ -12842,11 +13366,12 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1HostCon
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1HostConfig_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jstring jarg1, jint jarg2, jstring jarg3) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1HostConfig_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jstring jarg1, jint jarg2, jstring jarg3, jstring jarg4) {
   jlong jresult = 0 ;
   std::string *arg1 = 0 ;
   int arg2 ;
   std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
   floo::BMXSDKConfig::HostConfig *result = 0 ;
   
   (void)jenv;
@@ -12864,7 +13389,32 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1HostCon
   }
   std::string arg3_str = getStdString(jenv, jarg3);
   arg3 = &arg3_str;
-  result = (floo::BMXSDKConfig::HostConfig *)new floo::BMXSDKConfig::HostConfig((std::string const &)*arg1,arg2,(std::string const &)*arg3);
+  if(!jarg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  std::string arg4_str = getStdString(jenv, jarg4);
+  arg4 = &arg4_str;
+  result = (floo::BMXSDKConfig::HostConfig *)new floo::BMXSDKConfig::HostConfig((std::string const &)*arg1,arg2,(std::string const &)*arg3,(std::string const &)*arg4);
+  *(floo::BMXSDKConfig::HostConfig **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXSDKConfig_1HostConfig_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jstring jarg1) {
+  jlong jresult = 0 ;
+  std::string *arg1 = 0 ;
+  floo::BMXSDKConfig::HostConfig *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  if(!jarg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  std::string arg1_str = getStdString(jenv, jarg1);
+  arg1 = &arg1_str;
+  result = (floo::BMXSDKConfig::HostConfig *)new floo::BMXSDKConfig::HostConfig((std::string const &)*arg1);
   *(floo::BMXSDKConfig::HostConfig **)&jresult = result; 
   return jresult;
 }
@@ -12959,6 +13509,72 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig
   (void)jarg1_;
   arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
   result = (std::string *) & ((arg1)->restHost);
+  jresult = NewStringUTF(jenv, result->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig_1rtcHost_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXSDKConfig::HostConfig *arg1 = (floo::BMXSDKConfig::HostConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  if (arg1) (arg1)->rtcHost = *arg2;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig_1rtcHost_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXSDKConfig::HostConfig *arg1 = (floo::BMXSDKConfig::HostConfig *) 0 ;
+  std::string *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
+  result = (std::string *) & ((arg1)->rtcHost);
+  jresult = NewStringUTF(jenv, result->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig_1config_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXSDKConfig::HostConfig *arg1 = (floo::BMXSDKConfig::HostConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  if (arg1) (arg1)->config = *arg2;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1HostConfig_1config_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXSDKConfig::HostConfig *arg1 = (floo::BMXSDKConfig::HostConfig *) 0 ;
+  std::string *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXSDKConfig::HostConfig **)&jarg1; 
+  result = (std::string *) & ((arg1)->config);
   jresult = NewStringUTF(jenv, result->c_str()); 
   return jresult;
 }
@@ -17030,6 +17646,30 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1signOut_1_1SWIG_
 }
 
 
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1deleteAccount(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jint jresult = 0 ;
+  floo::BMXClient *arg1 = (floo::BMXClient *) 0 ;
+  std::string arg2 ;
+  std::shared_ptr< floo::BMXClient > *smartarg1 = 0 ;
+  floo::BMXErrorCode result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXClient > **)&jarg1;
+  arg1 = (floo::BMXClient *)(smartarg1 ? smartarg1->get() : 0); 
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  } 
+  arg2 = getStdString(jenv, jarg2); 
+  result = (floo::BMXErrorCode)(arg1)->deleteAccount(arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1connectStatus(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jint jresult = 0 ;
   floo::BMXClient *arg1 = (floo::BMXClient *) 0 ;
@@ -17894,7 +18534,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRoomAuth_1mRoomId_1set(J
   
   smartarg1 = *(std::shared_ptr<  floo::BMXRoomAuth > **)&jarg1;
   arg1 = (floo::BMXRoomAuth *)(smartarg1 ? smartarg1->get() : 0); 
-  arg2 = (int64_t)jarg2;
+  arg2 = (int64_t)jarg2; 
   if (arg1) (arg1)->mRoomId = arg2;
 }
 
@@ -17903,7 +18543,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXRoomAuth_1mRoomId_1get(
   jlong jresult = 0 ;
   floo::BMXRoomAuth *arg1 = (floo::BMXRoomAuth *) 0 ;
   std::shared_ptr< floo::BMXRoomAuth > *smartarg1 = 0 ;
-  int64_t result = 0 ;
+  int64_t result;
   
   (void)jenv;
   (void)jcls;
@@ -23295,29 +23935,32 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_delete_1BMXRTCSignalService
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jboolean jarg3, jstring jarg4) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jint jarg3, jint jarg4, jint jarg5, jboolean jarg6, jstring jarg7) {
   jlong jresult = 0 ;
   bool arg1 ;
   bool arg2 ;
-  bool arg3 ;
-  std::string *arg4 = 0 ;
+  int arg3 ;
+  int arg4 ;
+  int arg5 ;
+  bool arg6 ;
+  std::string *arg7 = 0 ;
   floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   arg1 = jarg1 ? true : false; 
   arg2 = jarg2 ? true : false; 
-  arg3 = jarg3 ? true : false; 
-  if(!jarg4) {
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (int)jarg5; 
+  arg6 = jarg6 ? true : false; 
+  if(!jarg7) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
     return 0;
   }
-  const char *arg4_pstr = (const char *)jenv->GetStringUTFChars(jarg4, 0); 
-  if (!arg4_pstr) return 0;
-  std::string arg4_str(arg4_pstr);
-  arg4 = &arg4_str;
-  jenv->ReleaseStringUTFChars(jarg4, arg4_pstr); 
-  result = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)new floo::BMXRTCSignalService::BMXRoomPubConfigureOptions(arg1,arg2,arg3,(std::string const &)*arg4);
+  std::string arg7_str = getStdString(jenv, jarg7);
+  arg7 = &arg7_str;
+  result = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)new floo::BMXRTCSignalService::BMXRoomPubConfigureOptions(arg1,arg2,arg3,arg4,arg5,arg6,(std::string const &)*arg7);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
   
@@ -23325,18 +23968,90 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jboolean jarg3) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jint jarg3, jint jarg4, jint jarg5, jboolean jarg6) {
   jlong jresult = 0 ;
   bool arg1 ;
   bool arg2 ;
-  bool arg3 ;
+  int arg3 ;
+  int arg4 ;
+  int arg5 ;
+  bool arg6 ;
   floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   arg1 = jarg1 ? true : false; 
   arg2 = jarg2 ? true : false; 
-  arg3 = jarg3 ? true : false; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (int)jarg5; 
+  arg6 = jarg6 ? true : false; 
+  result = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)new floo::BMXRTCSignalService::BMXRoomPubConfigureOptions(arg1,arg2,arg3,arg4,arg5,arg6);
+  
+  *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
+  
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jint jarg3, jint jarg4, jint jarg5) {
+  jlong jresult = 0 ;
+  bool arg1 ;
+  bool arg2 ;
+  int arg3 ;
+  int arg4 ;
+  int arg5 ;
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  arg2 = jarg2 ? true : false; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (int)jarg5; 
+  result = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)new floo::BMXRTCSignalService::BMXRoomPubConfigureOptions(arg1,arg2,arg3,arg4,arg5);
+  
+  *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
+  
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jint jarg3, jint jarg4) {
+  jlong jresult = 0 ;
+  bool arg1 ;
+  bool arg2 ;
+  int arg3 ;
+  int arg4 ;
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  arg2 = jarg2 ? true : false; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)new floo::BMXRTCSignalService::BMXRoomPubConfigureOptions(arg1,arg2,arg3,arg4);
+  
+  *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
+  
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_14(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2, jint jarg3) {
+  jlong jresult = 0 ;
+  bool arg1 ;
+  bool arg2 ;
+  int arg3 ;
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  arg2 = jarg2 ? true : false; 
+  arg3 = (int)jarg3; 
   result = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)new floo::BMXRTCSignalService::BMXRoomPubConfigureOptions(arg1,arg2,arg3);
   
   *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jresult = result ? new std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions >(result SWIG_NO_NULL_DELETER_1) : 0;
@@ -23345,7 +24060,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_15(JNIEnv *jenv, jclass jcls, jboolean jarg1, jboolean jarg2) {
   jlong jresult = 0 ;
   bool arg1 ;
   bool arg2 ;
@@ -23363,7 +24078,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_16(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
   jlong jresult = 0 ;
   bool arg1 ;
   floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
@@ -23379,7 +24094,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1
 }
 
 
-SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_14(JNIEnv *jenv, jclass jcls) {
+SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXRTCSignalService_1BMXRoomPubConfigureOptions_1_1SWIG_17(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *result = 0 ;
   
@@ -23530,6 +24245,108 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMX
   arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
   result = (std::string *) & ((arg1)->mDisplay);
   jresult = NewStringUTF(jenv, result->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoomPubConfigureOptions_1mWidth_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *) 0 ;
+  int arg2 ;
+  std::shared_ptr< floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
+  arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->mWidth = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoomPubConfigureOptions_1mWidth_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *) 0 ;
+  std::shared_ptr< floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > *smartarg1 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
+  arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (int) ((arg1)->mWidth);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoomPubConfigureOptions_1mHeight_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *) 0 ;
+  int arg2 ;
+  std::shared_ptr< floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
+  arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->mHeight = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoomPubConfigureOptions_1mHeight_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *) 0 ;
+  std::shared_ptr< floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > *smartarg1 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
+  arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (int) ((arg1)->mHeight);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoomPubConfigureOptions_1mBitrate_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *) 0 ;
+  int arg2 ;
+  std::shared_ptr< floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > *smartarg1 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
+  arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->mBitrate = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXRTCSignalService_1BMXRoomPubConfigureOptions_1mBitrate_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *) 0 ;
+  std::shared_ptr< floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > *smartarg1 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  
+  smartarg1 = *(std::shared_ptr<  floo::BMXRTCSignalService::BMXRoomPubConfigureOptions > **)&jarg1;
+  arg1 = (floo::BMXRTCSignalService::BMXRoomPubConfigureOptions *)(smartarg1 ? smartarg1->get() : 0); 
+  result = (int) ((arg1)->mBitrate);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -27074,7 +27891,7 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXRTCService_1getBMXRTCSi
 }
 
 
-SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCService_1sendRTCNotice(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCService_1sendRTCMessage(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   floo::BMXRTCService *arg1 = (floo::BMXRTCService *) 0 ;
   floo::BMXMessagePtr arg2 ;
   floo::BMXMessagePtr *argp2 ;
@@ -27086,7 +27903,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCService_1sendRTCNotic
   arg1 = *(floo::BMXRTCService **)&jarg1; 
   argp2 = *(floo::BMXMessagePtr **)&jarg2; 
   if (argp2) arg2 = *argp2; 
-  (arg1)->sendRTCNotice(arg2);
+  (arg1)->sendRTCMessage(arg2);
 }
 
 
@@ -27140,7 +27957,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_delete_1BMXRTCServiceListen
 }
 
 
-SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCNoticeStatusChanged(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3) {
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCMessageStatusChanged(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3) {
   floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
   floo::BMXMessagePtr arg2 ;
   floo::BMXErrorCode arg3 ;
@@ -27154,11 +27971,11 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRT
   argp2 = *(floo::BMXMessagePtr **)&jarg2; 
   if (argp2) arg2 = *argp2; 
   arg3 = (floo::BMXErrorCode)jarg3; 
-  (arg1)->onRTCNoticeStatusChanged(arg2,arg3);
+  (arg1)->onRTCMessageStatusChanged(arg2,arg3);
 }
 
 
-SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCNoticeStatusChangedSwigExplicitBMXRTCServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3) {
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCMessageStatusChangedSwigExplicitBMXRTCServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3) {
   floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
   floo::BMXMessagePtr arg2 ;
   floo::BMXErrorCode arg3 ;
@@ -27172,43 +27989,103 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRT
   argp2 = *(floo::BMXMessagePtr **)&jarg2; 
   if (argp2) arg2 = *argp2; 
   arg3 = (floo::BMXErrorCode)jarg3; 
-  (arg1)->floo::BMXRTCServiceListener::onRTCNoticeStatusChanged(arg2,arg3);
+  (arg1)->floo::BMXRTCServiceListener::onRTCMessageStatusChanged(arg2,arg3);
 }
 
 
-SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCNoticeReceive(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCCallMessageReceive(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
-  floo::BMXMessageList *arg2 = 0 ;
+  floo::BMXMessagePtr arg2 ;
+  floo::BMXMessagePtr *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(floo::BMXRTCServiceListener **)&jarg1; 
-  arg2 = *(floo::BMXMessageList **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "floo::BMXMessageList const & reference is null");
-    return ;
-  } 
-  (arg1)->onRTCNoticeReceive((floo::BMXMessageList const &)*arg2);
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  (arg1)->onRTCCallMessageReceive(arg2);
 }
 
 
-SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCNoticeReceiveSwigExplicitBMXRTCServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCCallMessageReceiveSwigExplicitBMXRTCServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
-  floo::BMXMessageList *arg2 = 0 ;
+  floo::BMXMessagePtr arg2 ;
+  floo::BMXMessagePtr *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(floo::BMXRTCServiceListener **)&jarg1; 
-  arg2 = *(floo::BMXMessageList **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "floo::BMXMessageList const & reference is null");
-    return ;
-  } 
-  (arg1)->floo::BMXRTCServiceListener::onRTCNoticeReceive((floo::BMXMessageList const &)*arg2);
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  (arg1)->floo::BMXRTCServiceListener::onRTCCallMessageReceive(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCPickupMessageReceive(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
+  floo::BMXMessagePtr arg2 ;
+  floo::BMXMessagePtr *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(floo::BMXRTCServiceListener **)&jarg1; 
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  (arg1)->onRTCPickupMessageReceive(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCPickupMessageReceiveSwigExplicitBMXRTCServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
+  floo::BMXMessagePtr arg2 ;
+  floo::BMXMessagePtr *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(floo::BMXRTCServiceListener **)&jarg1; 
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  (arg1)->floo::BMXRTCServiceListener::onRTCPickupMessageReceive(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCHangupMessageReceive(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
+  floo::BMXMessagePtr arg2 ;
+  floo::BMXMessagePtr *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(floo::BMXRTCServiceListener **)&jarg1; 
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  (arg1)->onRTCHangupMessageReceive(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXRTCServiceListener_1onRTCHangupMessageReceiveSwigExplicitBMXRTCServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  floo::BMXRTCServiceListener *arg1 = (floo::BMXRTCServiceListener *) 0 ;
+  floo::BMXMessagePtr arg2 ;
+  floo::BMXMessagePtr *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(floo::BMXRTCServiceListener **)&jarg1; 
+  argp2 = *(floo::BMXMessagePtr **)&jarg2; 
+  if (argp2) arg2 = *argp2; 
+  (arg1)->floo::BMXRTCServiceListener::onRTCHangupMessageReceive(arg2);
 }
 
 
@@ -35181,6 +36058,28 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserServiceListener_1onO
 }
 
 
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserServiceListener_1onTrafficLimitExceeded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  floo::BMXUserServiceListener *arg1 = (floo::BMXUserServiceListener *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXUserServiceListener **)&jarg1; 
+  (arg1)->onTrafficLimitExceeded();
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserServiceListener_1onTrafficLimitExceededSwigExplicitBMXUserServiceListener(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  floo::BMXUserServiceListener *arg1 = (floo::BMXUserServiceListener *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXUserServiceListener **)&jarg1; 
+  (arg1)->floo::BMXUserServiceListener::onTrafficLimitExceeded();
+}
+
+
 SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXUserServiceListener_1registerUserService(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   floo::BMXUserServiceListener *arg1 = (floo::BMXUserServiceListener *) 0 ;
   floo::BMXUserService *arg2 = (floo::BMXUserService *) 0 ;
@@ -37231,7 +38130,7 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_swig_1module_1init(JNIEnv *
   static struct {
     const char *method;
     const char *signature;
-  } methods[150] = {
+  } methods[153] = {
     {
       "SwigDirector_BMXNetworkListener_onNetworkChanged", "(Lim/floo/floolib/BMXNetworkListener;IZ)V" 
     },
@@ -37554,10 +38453,16 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_swig_1module_1init(JNIEnv *
       "SwigDirector_BMXRTCSignalServiceListener_onSessionDestroy", "(Lim/floo/floolib/BMXRTCSignalServiceListener;JILjava/lang/String;)V" 
     },
     {
-      "SwigDirector_BMXRTCServiceListener_onRTCNoticeStatusChanged", "(Lim/floo/floolib/BMXRTCServiceListener;JI)V" 
+      "SwigDirector_BMXRTCServiceListener_onRTCMessageStatusChanged", "(Lim/floo/floolib/BMXRTCServiceListener;JI)V" 
     },
     {
-      "SwigDirector_BMXRTCServiceListener_onRTCNoticeReceive", "(Lim/floo/floolib/BMXRTCServiceListener;J)V" 
+      "SwigDirector_BMXRTCServiceListener_onRTCCallMessageReceive", "(Lim/floo/floolib/BMXRTCServiceListener;J)V" 
+    },
+    {
+      "SwigDirector_BMXRTCServiceListener_onRTCPickupMessageReceive", "(Lim/floo/floolib/BMXRTCServiceListener;J)V" 
+    },
+    {
+      "SwigDirector_BMXRTCServiceListener_onRTCHangupMessageReceive", "(Lim/floo/floolib/BMXRTCServiceListener;J)V" 
     },
     {
       "SwigDirector_BMXRosterServiceListener_onFriendAdded", "(Lim/floo/floolib/BMXRosterServiceListener;JJ)V" 
@@ -37603,6 +38508,9 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_swig_1module_1init(JNIEnv *
     },
     {
       "SwigDirector_BMXUserServiceListener_onOtherDeviceSingOut", "(Lim/floo/floolib/BMXUserServiceListener;I)V" 
+    },
+    {
+      "SwigDirector_BMXUserServiceListener_onTrafficLimitExceeded", "(Lim/floo/floolib/BMXUserServiceListener;)V" 
     },
     {
       "SwigDirector_BMXGroupServiceListener_onGroupCreate", "(Lim/floo/floolib/BMXGroupServiceListener;J)V" 

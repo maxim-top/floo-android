@@ -464,24 +464,36 @@ public class BMXRTCSignalService {
       }
     }
   
-    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, boolean enableData, String display) {
-      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_0(enableAudio, enableVideo, enableData, display), true);
+    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, int width, int height, int bitrate, boolean enableData, String display) {
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_0(enableAudio, enableVideo, width, height, bitrate, enableData, display), true);
     }
   
-    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, boolean enableData) {
-      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_1(enableAudio, enableVideo, enableData), true);
+    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, int width, int height, int bitrate, boolean enableData) {
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_1(enableAudio, enableVideo, width, height, bitrate, enableData), true);
+    }
+  
+    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, int width, int height, int bitrate) {
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_2(enableAudio, enableVideo, width, height, bitrate), true);
+    }
+  
+    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, int width, int height) {
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_3(enableAudio, enableVideo, width, height), true);
+    }
+  
+    public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo, int width) {
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_4(enableAudio, enableVideo, width), true);
     }
   
     public BMXRoomPubConfigureOptions(boolean enableAudio, boolean enableVideo) {
-      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_2(enableAudio, enableVideo), true);
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_5(enableAudio, enableVideo), true);
     }
   
     public BMXRoomPubConfigureOptions(boolean enableAudio) {
-      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_3(enableAudio), true);
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_6(enableAudio), true);
     }
   
     public BMXRoomPubConfigureOptions() {
-      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_4(), true);
+      this(flooJNI.new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_7(), true);
     }
   
     public void setMEnableAudio(boolean value) {
@@ -514,6 +526,30 @@ public class BMXRTCSignalService {
   
     public String getMDisplay() {
       return flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mDisplay_get(swigCPtr, this);
+    }
+  
+    public void setMWidth(int value) {
+      flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mWidth_set(swigCPtr, this, value);
+    }
+  
+    public int getMWidth() {
+      return flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mWidth_get(swigCPtr, this);
+    }
+  
+    public void setMHeight(int value) {
+      flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mHeight_set(swigCPtr, this, value);
+    }
+  
+    public int getMHeight() {
+      return flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mHeight_get(swigCPtr, this);
+    }
+  
+    public void setMBitrate(int value) {
+      flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mBitrate_set(swigCPtr, this, value);
+    }
+  
+    public int getMBitrate() {
+      return flooJNI.BMXRTCSignalService_BMXRoomPubConfigureOptions_mBitrate_get(swigCPtr, this);
     }
   
   }

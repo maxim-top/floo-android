@@ -212,6 +212,50 @@ public class BMXMessageConfig extends BMXBaseObject {
     return flooJNI.BMXMessageConfig_getPushTitle(swigCPtr, this);
   }
 
+  public void setPushTitleLocKey(String pushTitleLocKey) {
+    flooJNI.BMXMessageConfig_setPushTitleLocKey(swigCPtr, this, pushTitleLocKey);
+  }
+
+  /**
+   *  获取推送消息标题多语言键名
+   **/
+  public String getPushTitleLocKey() {
+    return flooJNI.BMXMessageConfig_getPushTitleLocKey(swigCPtr, this);
+  }
+
+  public void setPushTitleLocArgs(String pushTitleLocArgs) {
+    flooJNI.BMXMessageConfig_setPushTitleLocArgs(swigCPtr, this, pushTitleLocArgs);
+  }
+
+  /**
+   *  获取推送消息标题多语言参数
+   **/
+  public String getPushTitleLocArgs() {
+    return flooJNI.BMXMessageConfig_getPushTitleLocArgs(swigCPtr, this);
+  }
+
+  public void setPushMessageLocKey(String pushMessageLocKey) {
+    flooJNI.BMXMessageConfig_setPushMessageLocKey(swigCPtr, this, pushMessageLocKey);
+  }
+
+  /**
+   *  获取推送消息正文多语言键名
+   **/
+  public String getPushMessageLocKey() {
+    return flooJNI.BMXMessageConfig_getPushMessageLocKey(swigCPtr, this);
+  }
+
+  public void setPushMessageLocArgs(String pushMessageLocArgs) {
+    flooJNI.BMXMessageConfig_setPushMessageLocArgs(swigCPtr, this, pushMessageLocArgs);
+  }
+
+  /**
+   *  获取推送消息正文多语言参数
+   **/
+  public String getPushMessageLocArgs() {
+    return flooJNI.BMXMessageConfig_getPushMessageLocArgs(swigCPtr, this);
+  }
+
   public boolean isSilence() {
     return flooJNI.BMXMessageConfig_isSilence(swigCPtr, this);
   }
@@ -229,6 +273,83 @@ public class BMXMessageConfig extends BMXBaseObject {
    **/
   public String getUsername() {
     return flooJNI.BMXMessageConfig_getUsername(swigCPtr, this);
+  }
+
+  /**
+   *  设置呼叫消息内容
+   * @param calltype 呼叫类型
+   * @param roomId 房间ID
+   * @param initiator 呼叫者ID
+   * @param roomType 房间类型
+   * @param pin 房间密码
+   **/
+  public void setRTCCallInfo(BMXMessageConfig.RTCCallType calltype, long roomId, long initiator, BMXMessageConfig.RTCRoomType roomType, String pin) {
+    flooJNI.BMXMessageConfig_setRTCCallInfo(swigCPtr, this, calltype.swigValue(), roomId, initiator, roomType.swigValue(), pin);
+  }
+
+  /**
+   *  设置接听消息内容
+   * @param callId 呼叫ID
+   **/
+  public void setRTCPickupInfo(String callId) {
+    flooJNI.BMXMessageConfig_setRTCPickupInfo(swigCPtr, this, callId);
+  }
+
+  /**
+   *  设置挂断消息内容
+   * @param callId 呼叫ID
+   **/
+  public void setRTCHangupInfo(String callId) {
+    flooJNI.BMXMessageConfig_setRTCHangupInfo(swigCPtr, this, callId);
+  }
+
+  /**
+   *  获取RTC动作
+   **/
+  public String getRTCAction() {
+    return flooJNI.BMXMessageConfig_getRTCAction(swigCPtr, this);
+  }
+
+  /**
+   *  获取呼叫类型
+   **/
+  public BMXMessageConfig.RTCCallType getRTCCallType() {
+    return BMXMessageConfig.RTCCallType.swigToEnum(flooJNI.BMXMessageConfig_getRTCCallType(swigCPtr, this));
+  }
+
+  /**
+   *  获取房间ID
+   **/
+  public long getRTCRoomId() {
+    return flooJNI.BMXMessageConfig_getRTCRoomId(swigCPtr, this);
+  }
+
+  /**
+   *  获取呼叫者ID
+   **/
+  public long getRTCInitiator() {
+    return flooJNI.BMXMessageConfig_getRTCInitiator(swigCPtr, this);
+  }
+
+  /**
+   *  获取呼叫者ID
+   **/
+  public String getRTCCallId() {
+    return flooJNI.BMXMessageConfig_getRTCCallId(swigCPtr, this);
+  }
+
+  /**
+   *  获取房间类型
+   **/
+  public BMXMessageConfig.RTCRoomType getRTCRoomType() {
+    return BMXMessageConfig.RTCRoomType.swigToEnum(flooJNI.BMXMessageConfig_getRTCRoomType(swigCPtr, this));
+  }
+
+  /**
+   *  获取房间密码
+   **/
+  public String getRTCPin() {
+    return flooJNI.BMXMessageConfig_getRTCPin(swigCPtr, this);
   }
 
   /**
@@ -275,6 +396,90 @@ public class BMXMessageConfig extends BMXBaseObject {
 
     @SuppressWarnings("unused")
     private BadgeCountType(BadgeCountType swigEnum) {
+      this.swigValue = swigEnum.swigValue;
+      SwigNext.next = this.swigValue+1;
+    }
+
+    private final int swigValue;
+
+    private static class SwigNext {
+      private static int next = 0;
+    }
+  }
+
+  public enum RTCCallType {
+    AudioCall,
+    VideoCall;
+
+    public final int swigValue() {
+      return swigValue;
+    }
+
+    public static RTCCallType swigToEnum(int swigValue) {
+      RTCCallType[] swigValues = RTCCallType.class.getEnumConstants();
+      if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+        return swigValues[swigValue];
+      for (RTCCallType swigEnum : swigValues)
+        if (swigEnum.swigValue == swigValue)
+          return swigEnum;
+      throw new IllegalArgumentException("No enum " + RTCCallType.class + " with value " + swigValue);
+    }
+
+    @SuppressWarnings("unused")
+    private RTCCallType() {
+      this.swigValue = SwigNext.next++;
+    }
+
+    @SuppressWarnings("unused")
+    private RTCCallType(int swigValue) {
+      this.swigValue = swigValue;
+      SwigNext.next = swigValue+1;
+    }
+
+    @SuppressWarnings("unused")
+    private RTCCallType(RTCCallType swigEnum) {
+      this.swigValue = swigEnum.swigValue;
+      SwigNext.next = this.swigValue+1;
+    }
+
+    private final int swigValue;
+
+    private static class SwigNext {
+      private static int next = 0;
+    }
+  }
+
+  public enum RTCRoomType {
+    Communication,
+    Broadcast;
+
+    public final int swigValue() {
+      return swigValue;
+    }
+
+    public static RTCRoomType swigToEnum(int swigValue) {
+      RTCRoomType[] swigValues = RTCRoomType.class.getEnumConstants();
+      if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
+        return swigValues[swigValue];
+      for (RTCRoomType swigEnum : swigValues)
+        if (swigEnum.swigValue == swigValue)
+          return swigEnum;
+      throw new IllegalArgumentException("No enum " + RTCRoomType.class + " with value " + swigValue);
+    }
+
+    @SuppressWarnings("unused")
+    private RTCRoomType() {
+      this.swigValue = SwigNext.next++;
+    }
+
+    @SuppressWarnings("unused")
+    private RTCRoomType(int swigValue) {
+      this.swigValue = swigValue;
+      SwigNext.next = swigValue+1;
+    }
+
+    @SuppressWarnings("unused")
+    private RTCRoomType(RTCRoomType swigEnum) {
       this.swigValue = swigEnum.swigValue;
       SwigNext.next = this.swigValue+1;
     }

@@ -334,10 +334,28 @@ public class flooJNI {
   public final static native int BMXMessageConfig_getPushShowEndTime(long jarg1, BMXMessageConfig jarg1_);
   public final static native void BMXMessageConfig_setPushTitle(long jarg1, BMXMessageConfig jarg1_, String jarg2);
   public final static native String BMXMessageConfig_getPushTitle(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushTitleLocKey(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getPushTitleLocKey(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushTitleLocArgs(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getPushTitleLocArgs(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushMessageLocKey(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getPushMessageLocKey(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setPushMessageLocArgs(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getPushMessageLocArgs(long jarg1, BMXMessageConfig jarg1_);
   public final static native boolean BMXMessageConfig_isSilence(long jarg1, BMXMessageConfig jarg1_);
   public final static native int BMXMessageConfig_getBadgeCountType(long jarg1, BMXMessageConfig jarg1_);
   public final static native int BMXMessageConfig_getBadgeCount(long jarg1, BMXMessageConfig jarg1_, int jarg2);
   public final static native String BMXMessageConfig_getUsername(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setRTCCallInfo(long jarg1, BMXMessageConfig jarg1_, int jarg2, long jarg3, long jarg4, int jarg5, String jarg6);
+  public final static native void BMXMessageConfig_setRTCPickupInfo(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native void BMXMessageConfig_setRTCHangupInfo(long jarg1, BMXMessageConfig jarg1_, String jarg2);
+  public final static native String BMXMessageConfig_getRTCAction(long jarg1, BMXMessageConfig jarg1_);
+  public final static native int BMXMessageConfig_getRTCCallType(long jarg1, BMXMessageConfig jarg1_);
+  public final static native long BMXMessageConfig_getRTCRoomId(long jarg1, BMXMessageConfig jarg1_);
+  public final static native long BMXMessageConfig_getRTCInitiator(long jarg1, BMXMessageConfig jarg1_);
+  public final static native String BMXMessageConfig_getRTCCallId(long jarg1, BMXMessageConfig jarg1_);
+  public final static native int BMXMessageConfig_getRTCRoomType(long jarg1, BMXMessageConfig jarg1_);
+  public final static native String BMXMessageConfig_getRTCPin(long jarg1, BMXMessageConfig jarg1_);
   public final static native String BMXMessageConfig_serialize(long jarg1, BMXMessageConfig jarg1_);
   public final static native long BMXMessageConfig_createMessageConfig(boolean jarg1);
   public final static native String encodeBMXMessageConfig(long jarg1, BMXMessageConfig jarg1_);
@@ -396,9 +414,11 @@ public class flooJNI {
   public final static native long BMXMessage_createMessage__SWIG_0(long jarg1, long jarg2, int jarg3, long jarg4, String jarg5);
   public final static native long BMXMessage_createMessage__SWIG_1(long jarg1, long jarg2, int jarg3, long jarg4, long jarg5, BMXMessageAttachment jarg5_);
   public final static native long BMXMessage_createCommandMessage__SWIG_0(long jarg1, long jarg2, int jarg3, long jarg4, String jarg5);
+  public final static native long BMXMessage_createRTCMessage__SWIG_0(long jarg1, long jarg2, int jarg3, long jarg4, String jarg5);
   public final static native long BMXMessage_createMessage__SWIG_2(long jarg1, long jarg2, long jarg3, int jarg4, long jarg5, String jarg6, long jarg7);
   public final static native long BMXMessage_createMessage__SWIG_3(long jarg1, long jarg2, long jarg3, int jarg4, long jarg5, long jarg6, BMXMessageAttachment jarg6_, long jarg7);
   public final static native long BMXMessage_createCommandMessage__SWIG_1(long jarg1, long jarg2, long jarg3, int jarg4, long jarg5, String jarg6, long jarg7);
+  public final static native long BMXMessage_createRTCMessage__SWIG_1(long jarg1, long jarg2, long jarg3, int jarg4, long jarg5, String jarg6, long jarg7);
   public final static native long BMXMessage_createForwardMessage(long jarg1, BMXMessage jarg1_, long jarg2, long jarg3, int jarg4, long jarg5);
   public final static native void delete_BMXConversation(long jarg1);
   public final static native long BMXConversation_conversationId(long jarg1, BMXConversation jarg1_);
@@ -415,7 +435,8 @@ public class flooJNI {
   public final static native int BMXConversation_setMessageReadStatus(long jarg1, BMXConversation jarg1_, long jarg2, BMXMessage jarg2_, boolean jarg3);
   public final static native int BMXConversation_setAllMessagesRead(long jarg1, BMXConversation jarg1_);
   public final static native int BMXConversation_updateMessageExtension(long jarg1, BMXConversation jarg1_, long jarg2, BMXMessage jarg2_);
-  public final static native int BMXConversation_insertMessage(long jarg1, BMXConversation jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native int BMXConversation_insertMessage__SWIG_0(long jarg1, BMXConversation jarg1_, long jarg2, BMXMessage jarg2_, boolean jarg3);
+  public final static native int BMXConversation_insertMessage__SWIG_1(long jarg1, BMXConversation jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native long BMXConversation_loadMessage(long jarg1, BMXConversation jarg1_, long jarg2);
   public final static native int BMXConversation_removeAllMessages(long jarg1, BMXConversation jarg1_);
   public final static native int BMXConversation_loadMessages__SWIG_0(long jarg1, BMXConversation jarg1_, long jarg2, long jarg3, long jarg4, BMXMessageList jarg4_, int jarg5);
@@ -430,13 +451,18 @@ public class flooJNI {
   public final static native int BMXConversation_searchMessages__SWIG_3(long jarg1, BMXConversation jarg1_, int jarg2, long jarg3, long jarg4, long jarg5, BMXMessageList jarg5_);
   public final static native int BMXConversation_refreshConversation(long jarg1, BMXConversation jarg1_);
   public final static native long new_BMXSDKConfig_HostConfig__SWIG_0();
-  public final static native long new_BMXSDKConfig_HostConfig__SWIG_1(String jarg1, int jarg2, String jarg3);
+  public final static native long new_BMXSDKConfig_HostConfig__SWIG_1(String jarg1, int jarg2, String jarg3, String jarg4);
+  public final static native long new_BMXSDKConfig_HostConfig__SWIG_2(String jarg1);
   public final static native void BMXSDKConfig_HostConfig_imHost_set(long jarg1, BMXSDKConfig.HostConfig jarg1_, String jarg2);
   public final static native String BMXSDKConfig_HostConfig_imHost_get(long jarg1, BMXSDKConfig.HostConfig jarg1_);
   public final static native void BMXSDKConfig_HostConfig_imPort_set(long jarg1, BMXSDKConfig.HostConfig jarg1_, int jarg2);
   public final static native int BMXSDKConfig_HostConfig_imPort_get(long jarg1, BMXSDKConfig.HostConfig jarg1_);
   public final static native void BMXSDKConfig_HostConfig_restHost_set(long jarg1, BMXSDKConfig.HostConfig jarg1_, String jarg2);
   public final static native String BMXSDKConfig_HostConfig_restHost_get(long jarg1, BMXSDKConfig.HostConfig jarg1_);
+  public final static native void BMXSDKConfig_HostConfig_rtcHost_set(long jarg1, BMXSDKConfig.HostConfig jarg1_, String jarg2);
+  public final static native String BMXSDKConfig_HostConfig_rtcHost_get(long jarg1, BMXSDKConfig.HostConfig jarg1_);
+  public final static native void BMXSDKConfig_HostConfig_config_set(long jarg1, BMXSDKConfig.HostConfig jarg1_, String jarg2);
+  public final static native String BMXSDKConfig_HostConfig_config_get(long jarg1, BMXSDKConfig.HostConfig jarg1_);
   public final static native void delete_BMXSDKConfig_HostConfig(long jarg1);
   public final static native long new_BMXSDKConfig__SWIG_0(int jarg1, String jarg2, String jarg3, String jarg4, String jarg5, String jarg6, String jarg7, boolean jarg8);
   public final static native long new_BMXSDKConfig__SWIG_1(int jarg1, String jarg2, String jarg3, String jarg4, String jarg5, String jarg6, String jarg7);
@@ -651,6 +677,7 @@ public class flooJNI {
   public final static native int BMXClient_signOut__SWIG_0(long jarg1, BMXClient jarg1_, long jarg2, boolean jarg3);
   public final static native int BMXClient_signOut__SWIG_1(long jarg1, BMXClient jarg1_, long jarg2);
   public final static native int BMXClient_signOut__SWIG_2(long jarg1, BMXClient jarg1_);
+  public final static native int BMXClient_deleteAccount(long jarg1, BMXClient jarg1_, String jarg2);
   public final static native int BMXClient_connectStatus(long jarg1, BMXClient jarg1_);
   public final static native int BMXClient_signInStatus(long jarg1, BMXClient jarg1_);
   public final static native void BMXClient_reconnect(long jarg1, BMXClient jarg1_);
@@ -983,11 +1010,14 @@ public class flooJNI {
   public final static native void BMXRTCSignalService_BMXPubRoomJoinOptions_mToken_set(long jarg1, BMXRTCSignalService.BMXPubRoomJoinOptions jarg1_, String jarg2);
   public final static native String BMXRTCSignalService_BMXPubRoomJoinOptions_mToken_get(long jarg1, BMXRTCSignalService.BMXPubRoomJoinOptions jarg1_);
   public final static native void delete_BMXRTCSignalService_BMXPubRoomJoinOptions(long jarg1);
-  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_0(boolean jarg1, boolean jarg2, boolean jarg3, String jarg4);
-  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_1(boolean jarg1, boolean jarg2, boolean jarg3);
-  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_2(boolean jarg1, boolean jarg2);
-  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_3(boolean jarg1);
-  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_4();
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_0(boolean jarg1, boolean jarg2, int jarg3, int jarg4, int jarg5, boolean jarg6, String jarg7);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_1(boolean jarg1, boolean jarg2, int jarg3, int jarg4, int jarg5, boolean jarg6);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_2(boolean jarg1, boolean jarg2, int jarg3, int jarg4, int jarg5);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_3(boolean jarg1, boolean jarg2, int jarg3, int jarg4);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_4(boolean jarg1, boolean jarg2, int jarg3);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_5(boolean jarg1, boolean jarg2);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_6(boolean jarg1);
+  public final static native long new_BMXRTCSignalService_BMXRoomPubConfigureOptions__SWIG_7();
   public final static native void BMXRTCSignalService_BMXRoomPubConfigureOptions_mEnableAudio_set(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_, boolean jarg2);
   public final static native boolean BMXRTCSignalService_BMXRoomPubConfigureOptions_mEnableAudio_get(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_);
   public final static native void BMXRTCSignalService_BMXRoomPubConfigureOptions_mEnableVideo_set(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_, boolean jarg2);
@@ -996,6 +1026,12 @@ public class flooJNI {
   public final static native boolean BMXRTCSignalService_BMXRoomPubConfigureOptions_mEnableData_get(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_);
   public final static native void BMXRTCSignalService_BMXRoomPubConfigureOptions_mDisplay_set(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_, String jarg2);
   public final static native String BMXRTCSignalService_BMXRoomPubConfigureOptions_mDisplay_get(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_);
+  public final static native void BMXRTCSignalService_BMXRoomPubConfigureOptions_mWidth_set(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_, int jarg2);
+  public final static native int BMXRTCSignalService_BMXRoomPubConfigureOptions_mWidth_get(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_);
+  public final static native void BMXRTCSignalService_BMXRoomPubConfigureOptions_mHeight_set(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_, int jarg2);
+  public final static native int BMXRTCSignalService_BMXRoomPubConfigureOptions_mHeight_get(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_);
+  public final static native void BMXRTCSignalService_BMXRoomPubConfigureOptions_mBitrate_set(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_, int jarg2);
+  public final static native int BMXRTCSignalService_BMXRoomPubConfigureOptions_mBitrate_get(long jarg1, BMXRTCSignalService.BMXRoomPubConfigureOptions jarg1_);
   public final static native void delete_BMXRTCSignalService_BMXRoomPubConfigureOptions(long jarg1);
   public final static native long new_BMXRTCSignalService_BMXRoomSubJoinOptions__SWIG_0();
   public final static native long new_BMXRTCSignalService_BMXRoomSubJoinOptions__SWIG_1(long jarg1, BMXRTCStreams jarg1_, long jarg2, boolean jarg3, boolean jarg4, boolean jarg5, boolean jarg6);
@@ -1152,15 +1188,19 @@ public class flooJNI {
   public final static native void BMXRTCService_setupRTCEngine(long jarg1, BMXRTCService jarg1_, long jarg2, BMXRTCEngine jarg2_);
   public final static native long BMXRTCService_getRTCEngine(long jarg1, BMXRTCService jarg1_);
   public final static native long BMXRTCService_getBMXRTCSignalService(long jarg1, BMXRTCService jarg1_);
-  public final static native void BMXRTCService_sendRTCNotice(long jarg1, BMXRTCService jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXRTCService_sendRTCMessage(long jarg1, BMXRTCService jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXRTCService_addRTCServiceListener(long jarg1, BMXRTCService jarg1_, long jarg2, BMXRTCServiceListener jarg2_);
   public final static native void BMXRTCService_removeRTCServiceListener(long jarg1, BMXRTCService jarg1_, long jarg2, BMXRTCServiceListener jarg2_);
   public final static native long new_BMXRTCServiceListener();
   public final static native void delete_BMXRTCServiceListener(long jarg1);
-  public final static native void BMXRTCServiceListener_onRTCNoticeStatusChanged(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
-  public final static native void BMXRTCServiceListener_onRTCNoticeStatusChangedSwigExplicitBMXRTCServiceListener(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
-  public final static native void BMXRTCServiceListener_onRTCNoticeReceive(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
-  public final static native void BMXRTCServiceListener_onRTCNoticeReceiveSwigExplicitBMXRTCServiceListener(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessageList jarg2_);
+  public final static native void BMXRTCServiceListener_onRTCMessageStatusChanged(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
+  public final static native void BMXRTCServiceListener_onRTCMessageStatusChangedSwigExplicitBMXRTCServiceListener(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_, int jarg3);
+  public final static native void BMXRTCServiceListener_onRTCCallMessageReceive(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXRTCServiceListener_onRTCCallMessageReceiveSwigExplicitBMXRTCServiceListener(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXRTCServiceListener_onRTCPickupMessageReceive(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXRTCServiceListener_onRTCPickupMessageReceiveSwigExplicitBMXRTCServiceListener(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXRTCServiceListener_onRTCHangupMessageReceive(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_);
+  public final static native void BMXRTCServiceListener_onRTCHangupMessageReceiveSwigExplicitBMXRTCServiceListener(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXMessage jarg2_);
   public final static native void BMXRTCServiceListener_registerRTCService(long jarg1, BMXRTCServiceListener jarg1_, long jarg2, BMXRTCService jarg2_);
   public final static native void BMXRTCServiceListener_director_connect(BMXRTCServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXRTCServiceListener_change_ownership(BMXRTCServiceListener obj, long cptr, boolean take_or_release);
@@ -1566,6 +1606,8 @@ public class flooJNI {
   public final static native void BMXUserServiceListener_onOtherDeviceSingInSwigExplicitBMXUserServiceListener(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
   public final static native void BMXUserServiceListener_onOtherDeviceSingOut(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
   public final static native void BMXUserServiceListener_onOtherDeviceSingOutSwigExplicitBMXUserServiceListener(long jarg1, BMXUserServiceListener jarg1_, int jarg2);
+  public final static native void BMXUserServiceListener_onTrafficLimitExceeded(long jarg1, BMXUserServiceListener jarg1_);
+  public final static native void BMXUserServiceListener_onTrafficLimitExceededSwigExplicitBMXUserServiceListener(long jarg1, BMXUserServiceListener jarg1_);
   public final static native void BMXUserServiceListener_registerUserService(long jarg1, BMXUserServiceListener jarg1_, long jarg2, BMXUserService jarg2_);
   public final static native void BMXUserServiceListener_director_connect(BMXUserServiceListener obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void BMXUserServiceListener_change_ownership(BMXUserServiceListener obj, long cptr, boolean take_or_release);
@@ -1997,11 +2039,17 @@ public class flooJNI {
   public static void SwigDirector_BMXRTCSignalServiceListener_onSessionDestroy(BMXRTCSignalServiceListener jself, long sessionId, int error, String reason) {
     jself.onSessionDestroy(sessionId, error, reason);
   }
-  public static void SwigDirector_BMXRTCServiceListener_onRTCNoticeStatusChanged(BMXRTCServiceListener jself, long msg, int error) {
-    jself.onRTCNoticeStatusChanged(new BMXMessage(msg, true), BMXErrorCode.swigToEnum(error));
+  public static void SwigDirector_BMXRTCServiceListener_onRTCMessageStatusChanged(BMXRTCServiceListener jself, long msg, int error) {
+    jself.onRTCMessageStatusChanged(new BMXMessage(msg, true), BMXErrorCode.swigToEnum(error));
   }
-  public static void SwigDirector_BMXRTCServiceListener_onRTCNoticeReceive(BMXRTCServiceListener jself, long list) {
-    jself.onRTCNoticeReceive(new BMXMessageList(list, false));
+  public static void SwigDirector_BMXRTCServiceListener_onRTCCallMessageReceive(BMXRTCServiceListener jself, long msg) {
+    jself.onRTCCallMessageReceive(new BMXMessage(msg, true));
+  }
+  public static void SwigDirector_BMXRTCServiceListener_onRTCPickupMessageReceive(BMXRTCServiceListener jself, long msg) {
+    jself.onRTCPickupMessageReceive(new BMXMessage(msg, true));
+  }
+  public static void SwigDirector_BMXRTCServiceListener_onRTCHangupMessageReceive(BMXRTCServiceListener jself, long msg) {
+    jself.onRTCHangupMessageReceive(new BMXMessage(msg, true));
   }
   public static void SwigDirector_BMXRosterServiceListener_onFriendAdded(BMXRosterServiceListener jself, long sponsorId, long recipientId) {
     jself.onFriendAdded(sponsorId, recipientId);
@@ -2047,6 +2095,9 @@ public class flooJNI {
   }
   public static void SwigDirector_BMXUserServiceListener_onOtherDeviceSingOut(BMXUserServiceListener jself, int deviceSN) {
     jself.onOtherDeviceSingOut(deviceSN);
+  }
+  public static void SwigDirector_BMXUserServiceListener_onTrafficLimitExceeded(BMXUserServiceListener jself) {
+    jself.onTrafficLimitExceeded();
   }
   public static void SwigDirector_BMXGroupServiceListener_onGroupCreate(BMXGroupServiceListener jself, long group) {
     jself.onGroupCreate(new BMXGroup(group, true));

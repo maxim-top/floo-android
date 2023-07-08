@@ -431,6 +431,19 @@ public class BMXMessage extends BMXBaseObject {
   }
 
   /**
+   *  创建RTC的消息
+   * @param from 消息发送者
+   * @param to 消息接收者
+   * @param type 消息类型
+   * @param conversationId 会话id
+   * @param content 消息内容
+   **/
+  public static BMXMessage createRTCMessage(long from, long to, BMXMessage.MessageType type, long conversationId, String content) {
+    long cPtr = flooJNI.BMXMessage_createRTCMessage__SWIG_0(from, to, type.swigValue(), conversationId, content);
+    return (cPtr == 0) ? null : new BMXMessage(cPtr, true);
+  }
+
+  /**
    *  创建收到的消息
    * @param msgId 消息id
    * @param from 消息发送者
@@ -442,6 +455,22 @@ public class BMXMessage extends BMXBaseObject {
    **/
   public static BMXMessage createMessage(long msgId, long from, long to, BMXMessage.MessageType type, long conversationId, String content, long serverTimestamp) {
     long cPtr = flooJNI.BMXMessage_createMessage__SWIG_2(msgId, from, to, type.swigValue(), conversationId, content, serverTimestamp);
+    return (cPtr == 0) ? null : new BMXMessage(cPtr, true);
+  }
+
+
+  /**
+   *  创建收到的RTC消息
+   * @param msgId 消息id
+   * @param from 消息发送者
+   * @param to 消息接收者
+   * @param type 消息类型
+   * @param conversationId 会话id
+   * @param content 消息内容
+   * @param serverTimestamp 服务器时间戳
+   **/
+  public static BMXMessage createRTCMessage(long msgId, long from, long to, BMXMessage.MessageType type, long conversationId, String content, long serverTimestamp) {
+    long cPtr = flooJNI.BMXMessage_createRTCMessage__SWIG_1(msgId, from, to, type.swigValue(), conversationId, content, serverTimestamp);
     return (cPtr == 0) ? null : new BMXMessage(cPtr, true);
   }
 
@@ -593,7 +622,8 @@ public class BMXMessage extends BMXBaseObject {
     File,
     Location,
     Command,
-    Forward;
+    Forward,
+    RTC;
 
     public final int swigValue() {
       return swigValue;

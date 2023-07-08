@@ -76,9 +76,10 @@ public class BMXSDKConfig {
      * @param im IM服务器地址
      * @param port IM服务器端口
      * @param rest ratel服务器地址
+     * @param rtc rtc服务器地址
      **/
-    public HostConfig(String im, int port, String rest) {
-      this(flooJNI.new_BMXSDKConfig_HostConfig__SWIG_1(im, port, rest), true);
+    public HostConfig(String im, int port, String rest, String rtc) {
+      this(flooJNI.new_BMXSDKConfig_HostConfig__SWIG_1(im, port, rest, rtc), true);
     }
   
     public void setImHost(String value) {
@@ -103,6 +104,22 @@ public class BMXSDKConfig {
   
     public String getRestHost() {
       return flooJNI.BMXSDKConfig_HostConfig_restHost_get(swigCPtr, this);
+    }
+  
+    public void setRtcHost(String value) {
+      flooJNI.BMXSDKConfig_HostConfig_rtcHost_set(swigCPtr, this, value);
+    }
+  
+    public String getRtcHost() {
+      return flooJNI.BMXSDKConfig_HostConfig_rtcHost_get(swigCPtr, this);
+    }
+  
+    public void setConfig(String value) {
+      flooJNI.BMXSDKConfig_HostConfig_config_set(swigCPtr, this, value);
+    }
+  
+    public String getConfig() {
+      return flooJNI.BMXSDKConfig_HostConfig_config_get(swigCPtr, this);
     }
   
   }
