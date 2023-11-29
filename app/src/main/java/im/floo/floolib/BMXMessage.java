@@ -383,6 +383,87 @@ public class BMXMessage extends BMXBaseObject {
   }
 
   /**
+   * 设置追加内容
+   * @param appendContent 消息追加内容
+   */
+  public void setAppendedContent(String appendContent) {
+    flooJNI.BMXMessage_setAppendedContent(swigCPtr, this, appendContent);
+  }
+
+  /**
+   * 消息追加内容
+   * @return std::string
+   */
+  public String appendedContent() {
+    return flooJNI.BMXMessage_appendedContent(swigCPtr, this);
+  }
+
+  /**
+   * 设置替换内容
+   * @param replaceContent 消息替换内容
+   */
+  public void setReplaceContent(String replaceContent) {
+    flooJNI.BMXMessage_setReplaceContent(swigCPtr, this, replaceContent);
+  }
+
+  /**
+   * 消息替换内容
+   * @return std::string
+   */
+  public String replaceContent() {
+    return flooJNI.BMXMessage_replaceContent(swigCPtr, this);
+  }
+
+  /**
+   * 设置替换config配置
+   * @param BMXMessageConfigPtr 消息替换config配置
+   */
+  public void setReplaceConfig(BMXMessageConfig arg0) {
+    flooJNI.BMXMessage_setReplaceConfig(swigCPtr, this, BMXMessageConfig.getCPtr(arg0), arg0);
+  }
+
+  /**
+   * 消息替换config配置
+   * @return BMXMessageConfigPtr
+   */
+  public BMXMessageConfig replaceConfig() {
+    long cPtr = flooJNI.BMXMessage_replaceConfig(swigCPtr, this);
+    return (cPtr == 0) ? null : new BMXMessageConfig(cPtr, true);
+  }
+
+  /**
+   * 设置替换extension配置
+   * @param BMXMessageConfigPtr 消息替换extension配置
+   */
+  public void setReplaceExtension(String arg0) {
+    flooJNI.BMXMessage_setReplaceExtension(swigCPtr, this, arg0);
+  }
+
+  /**
+   * 消息替换extension配置
+   * @return std::string
+   */
+  public String replaceExtension() {
+    return flooJNI.BMXMessage_replaceExtension(swigCPtr, this);
+  }
+
+  /**
+   * 设置编辑时间戳（服务端收到时的时间）
+   * @param int64_t
+   */
+  public void setEditTimestamp(long arg0) {
+    flooJNI.BMXMessage_setEditTimestamp(swigCPtr, this, arg0);
+  }
+
+  /**
+   * 消息编辑追加或替换发生时间
+   * @return int64_t
+   */
+  public long editTimestamp() {
+    return flooJNI.BMXMessage_editTimestamp(swigCPtr, this);
+  }
+
+  /**
    * 是否是推送消息
    * @return boolean
    */

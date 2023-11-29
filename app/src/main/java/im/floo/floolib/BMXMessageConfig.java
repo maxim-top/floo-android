@@ -298,9 +298,20 @@ public class BMXMessageConfig extends BMXBaseObject {
   /**
    *  设置挂断消息内容
    * @param callId 呼叫ID
+   * @param peerDrop 是否对方异常挂断
    **/
-  public void setRTCHangupInfo(String callId) {
-    flooJNI.BMXMessageConfig_setRTCHangupInfo(swigCPtr, this, callId);
+  public void setRTCHangupInfo(String callId, boolean peerDrop) {
+    flooJNI.BMXMessageConfig_setRTCHangupInfo__SWIG_0(swigCPtr, this, callId, peerDrop);
+  }
+
+
+  /**
+   *  设置通话记录消息内容
+   * @param callId 呼叫ID
+   * @param peerDrop 是否对方异常挂断
+   **/
+  public void setRTCRecordInfo(String callId, boolean peerDrop) {
+    flooJNI.BMXMessageConfig_setRTCRecordInfo__SWIG_0(swigCPtr, this, callId, peerDrop);
   }
 
   /**
@@ -336,6 +347,13 @@ public class BMXMessageConfig extends BMXBaseObject {
    **/
   public String getRTCCallId() {
     return flooJNI.BMXMessageConfig_getRTCCallId(swigCPtr, this);
+  }
+
+  /**
+   *  是否因对方异常退出而挂断
+   **/
+  public boolean getPeerDrop() {
+    return flooJNI.BMXMessageConfig_getPeerDrop(swigCPtr, this);
   }
 
   /**

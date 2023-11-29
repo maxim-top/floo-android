@@ -107,6 +107,22 @@ public class BMXChatService {
   }
 
   /**
+   *  消息内容追加
+   * @param msg 需要发送追加内容的消息，只允许追加content
+   **/
+  public void appendMessageContent(BMXMessage msg) {
+    flooJNI.BMXChatService_appendMessageContent(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  /**
+   *  消息内容替换
+   * @param msg 需要发送替换内容的消息，允许替换content、config和extension
+   **/
+  public void replaceMessage(BMXMessage msg) {
+    flooJNI.BMXChatService_replaceMessage(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
+  /**
    *  标记此消息为未读，该消息同步到当前用户的所有设备
    * @param msg 需要发送消息已读取消的消息
    **/

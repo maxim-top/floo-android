@@ -71,6 +71,10 @@ public class BMXRTCServiceListener {
     if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCHangupMessageReceive(swigCPtr, this, BMXMessage.getCPtr(msg), msg); else flooJNI.BMXRTCServiceListener_onRTCHangupMessageReceiveSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
   }
 
+  public void onRTCRecordMessageReceive(BMXMessage msg) {
+    if (getClass() == BMXRTCServiceListener.class) flooJNI.BMXRTCServiceListener_onRTCRecordMessageReceive(swigCPtr, this, BMXMessage.getCPtr(msg), msg); else flooJNI.BMXRTCServiceListener_onRTCRecordMessageReceiveSwigExplicitBMXRTCServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg);
+  }
+
   public void registerRTCService(BMXRTCService service) {
     flooJNI.BMXRTCServiceListener_registerRTCService(swigCPtr, this, BMXRTCService.getCPtr(service), service);
   }

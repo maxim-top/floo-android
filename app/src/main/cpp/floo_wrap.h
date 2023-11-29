@@ -34,6 +34,8 @@ public:
     virtual ~SwigDirector_BMXChatServiceListener();
     virtual void onStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
     virtual void onAttachmentUploadProgressChanged(floo::BMXMessagePtr msg, int percent);
+    virtual void onContentAppendChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
+    virtual void onReplaceChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
     virtual void onRecallStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error);
     virtual void onReceive(floo::BMXMessageList const &list);
     virtual void onReceiveCommandMessages(floo::BMXMessageList const &list);
@@ -45,6 +47,8 @@ public:
     virtual void onReceiveReadAllMessages(floo::BMXMessageList const &list);
     virtual void onReceiveDeleteMessages(floo::BMXMessageList const &list);
     virtual void onReceivePlayAcks(floo::BMXMessageList const &list);
+    virtual void onReceiveAppendContentMessages(floo::BMXMessageList const &list);
+    virtual void onReceiveReplaceMessages(floo::BMXMessageList const &list);
     virtual void onAttachmentStatusChanged(floo::BMXMessagePtr msg, floo::BMXErrorCode error, int percent);
     virtual void onAttachmentDownloadByUrlStatusChanged(int64_t msgId, floo::BMXErrorCode error, int percent);
     virtual void onRetrieveHistoryMessages(floo::BMXConversationPtr conversation);
@@ -54,10 +58,10 @@ public:
     virtual void onTotalUnreadCountChanged(int unreadCount);
 public:
     bool swig_overrides(int n) {
-      return (n < 20 ? swig_override[n] : false);
+      return (n < 24 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<20> swig_override;
+    Swig::BoolArray<24> swig_override;
 };
 
 class SwigDirector_BMXPushServiceListener : public floo::BMXPushServiceListener, public Swig::Director {
@@ -212,12 +216,13 @@ public:
     virtual void onRTCCallMessageReceive(floo::BMXMessagePtr msg);
     virtual void onRTCPickupMessageReceive(floo::BMXMessagePtr msg);
     virtual void onRTCHangupMessageReceive(floo::BMXMessagePtr msg);
+    virtual void onRTCRecordMessageReceive(floo::BMXMessagePtr msg);
 public:
     bool swig_overrides(int n) {
-      return (n < 4 ? swig_override[n] : false);
+      return (n < 5 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<4> swig_override;
+    Swig::BoolArray<5> swig_override;
 };
 
 class SwigDirector_BMXRosterServiceListener : public floo::BMXRosterServiceListener, public Swig::Director {

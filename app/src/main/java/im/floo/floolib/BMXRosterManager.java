@@ -205,6 +205,30 @@ public class BMXRosterManager {
     }
 
     /**
+     *  申请添加好友
+     * @param rosterId 申请添加的用户id
+     * @param message 好友申请信息
+     * @param authAnswer 好友验证问题
+     * @param callBack BMXErrorCode
+     **/
+    public void apply(final long rosterId, final  String message, final  String authAnswer,final BMXCallBack callBack) {
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.apply(rosterId, message, authAnswer);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code);
+            }
+        });
+    }
+
+    /**
      *  删除好友
      * @param rosterId 删除的好友id
      * @param callBack BMXErrorCode

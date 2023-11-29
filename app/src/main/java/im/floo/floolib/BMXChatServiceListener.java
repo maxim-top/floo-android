@@ -72,6 +72,24 @@ public class BMXChatServiceListener {
   }
 
   /**
+   * @brief 追加内容消息发送状态发生变化
+   * @param msg 发生追加内容状态变化的消息
+   * @param error 状态错误码
+   **/
+  public void onContentAppendChanged(BMXMessage msg, BMXErrorCode error) {
+    if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onContentAppendChanged(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue()); else flooJNI.BMXChatServiceListener_onContentAppendChangedSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue());
+  }
+
+  /**
+   * @brief 替换消息发送状态发生变化
+   * @param msg 发生替换消息状态变化的消息
+   * @param error 状态错误码
+   **/
+  public void onReplaceChanged(BMXMessage msg, BMXErrorCode error) {
+    if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onReplaceChanged(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue()); else flooJNI.BMXChatServiceListener_onReplaceChangedSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessage.getCPtr(msg), msg, error.swigValue());
+  }
+
+  /**
    *  消息撤回状态发送变化
    * @param msg 撤回状态发生变化的消息
    * @param error 状态错误码
@@ -160,6 +178,21 @@ public class BMXChatServiceListener {
     if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onReceivePlayAcks(swigCPtr, this, BMXMessageList.getCPtr(list), list); else flooJNI.BMXChatServiceListener_onReceivePlayAcksSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessageList.getCPtr(list), list);
   }
 
+  /**
+   * 收到追加内容消息
+   * @param list 接收到的追加内容消息列表
+   **/
+  public void onReceiveAppendContentMessages(BMXMessageList list) {
+    if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onReceiveAppendContentMessages(swigCPtr, this, BMXMessageList.getCPtr(list), list); else flooJNI.BMXChatServiceListener_onReceiveAppendContentMessagesSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessageList.getCPtr(list), list);
+  }
+
+  /**
+   * 收到变更内容消息
+   * @param list 接收到的变更内容消息列表
+   **/
+  public void onReceiveReplaceMessages(BMXMessageList list) {
+    if (getClass() == BMXChatServiceListener.class) flooJNI.BMXChatServiceListener_onReceiveReplaceMessages(swigCPtr, this, BMXMessageList.getCPtr(list), list); else flooJNI.BMXChatServiceListener_onReceiveReplaceMessagesSwigExplicitBMXChatServiceListener(swigCPtr, this, BMXMessageList.getCPtr(list), list);
+  }
   /**
    *  附件下载状态发生变化
    * @param msg 发生下载状态变化的消息
