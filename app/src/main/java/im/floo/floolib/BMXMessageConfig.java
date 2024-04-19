@@ -260,6 +260,22 @@ public class BMXMessageConfig extends BMXBaseObject {
     return flooJNI.BMXMessageConfig_isSilence(swigCPtr, this);
   }
 
+  /**
+   *  设置是否禁用推送
+   * @param
+   **/
+  public void setNoPush(boolean noPush) {
+    flooJNI.BMXMessageConfig_setNoPush(swigCPtr, this, noPush);
+  }
+
+  /**
+   *  获取是否禁用推送
+   * @return bool
+   **/
+  public boolean getNoPush() {
+    return flooJNI.BMXMessageConfig_getNoPush(swigCPtr, this);
+  }
+
   public BMXMessageConfig.BadgeCountType getBadgeCountType() {
     return BMXMessageConfig.BadgeCountType.swigToEnum(flooJNI.BMXMessageConfig_getBadgeCountType(swigCPtr, this));
   }

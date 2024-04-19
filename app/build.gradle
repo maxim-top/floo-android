@@ -4,22 +4,10 @@ android {
     compileSdkVersion 31
     defaultConfig {
         targetSdkVersion 31
-        versionCode 5
-        versionName "4.1.1.20231128"
+        versionCode 6
+        versionName "4.2.1.20240417"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         minSdkVersion 21
-//        externalNativeBuild{
-//            cmake{
-//                cppFlags "-std=c++11 -frtti -fexceptions -DRAPIDJSON_NAMESPACE=floo"
-//                arguments "-DOPENSSL_LIB_DIR=android"
-//                arguments "-DOPENSSL_INC_DIR=include"
-//            }
-//        }
-//        ndk {
-//            // Specifies the ABI configurations of your native
-//            // libraries Gradle should build and package with your APK.
-//            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
-//        }
     }
 
     buildTypes {
@@ -28,48 +16,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-//    flavorDimensions "openssl"
-//    productFlavors{
-//        Openssl_1_1_0{
-//            dimension "openssl"
-//            externalNativeBuild{
-//                cmake{
-//                    cppFlags "-std=c++11 -frtti -fexceptions -DRAPIDJSON_NAMESPACE=floo -DUSE_OPENSSL1_1_0=1"
-//                    arguments "-DOPENSSL_LIB_DIR=android_1_1_0"
-//                    arguments "-DOPENSSL_INC_DIR=include_1_1_0"
-//                }
-//            }
-//            minSdkVersion 14
-//        }
-//        Openssl_1_1_1{
-//            dimension "openssl"
-//            externalNativeBuild{
-//                cmake{
-//                    cppFlags "-std=c++11 -frtti -fexceptions -DRAPIDJSON_NAMESPACE=floo"
-//                    arguments "-DOPENSSL_LIB_DIR=android"
-//                    arguments "-DOPENSSL_INC_DIR=include"
-//                }
-//            }
-//            minSdkVersion 21
-//        }
-//    }
-//
-//    externalNativeBuild {
-//        cmake {
-//            path "CMakeLists.txt"
-//        }
-//    }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
-//    ndkVersion '21.4.7075529'
-//
-//    android.libraryVariants.all { variant ->
-//        variant.outputs.all {
-//            outputFileName = "floo-android" + "_${variant.mergedFlavor.versionName}_${variant.flavorName}" + '.aar'
-//        }
-//    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -82,4 +32,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+task aarCopy(type: Copy, dependsOn: "assembleRelease") {
+    from("build/outputs/aar")
+    into("../../aar/")
+}
+
+task assembleAndBackup(type: Copy, dependsOn: "aarCopy") {
+    from("build/intermediates/cmake")
+    into("../../cmakeSo/"+android.defaultConfig.versionName)
+}
+
+task backupAndUploadSymbols(type: Exec, dependsOn: "assembleAndBackup"){
+    commandLine("bash", "../../buglyqq-upload-symbol-android.3.3.4/my.sh", android.defaultConfig.versionName)
 }

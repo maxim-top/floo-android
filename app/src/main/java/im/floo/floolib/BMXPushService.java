@@ -86,10 +86,24 @@ public class BMXPushService {
   }
 
   /**
+   获取推送token。
+   **/
+  public String getPushToken() {
+    return flooJNI.BMXPushService_getPushToken(swigCPtr, this);
+  }
+
+  /**
    获取登陆后服务器返回的推送证书。
    **/
   public String getCert() {
     return flooJNI.BMXPushService_getCert(swigCPtr, this);
+  }
+
+  /**
+   获取登陆后服务器返回的推送证书。
+   **/
+  public String getPushCert() {
+    return flooJNI.BMXPushService_getPushCert(swigCPtr, this);
   }
 
   /**

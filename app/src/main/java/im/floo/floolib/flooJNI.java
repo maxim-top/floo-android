@@ -343,6 +343,8 @@ public class flooJNI {
   public final static native void BMXMessageConfig_setPushMessageLocArgs(long jarg1, BMXMessageConfig jarg1_, String jarg2);
   public final static native String BMXMessageConfig_getPushMessageLocArgs(long jarg1, BMXMessageConfig jarg1_);
   public final static native boolean BMXMessageConfig_isSilence(long jarg1, BMXMessageConfig jarg1_);
+  public final static native void BMXMessageConfig_setNoPush(long jarg1, BMXMessageConfig jarg1_, boolean jarg2);
+  public final static native boolean BMXMessageConfig_getNoPush(long jarg1, BMXMessageConfig jarg1_);
   public final static native int BMXMessageConfig_getBadgeCountType(long jarg1, BMXMessageConfig jarg1_);
   public final static native int BMXMessageConfig_getBadgeCount(long jarg1, BMXMessageConfig jarg1_, int jarg2);
   public final static native String BMXMessageConfig_getUsername(long jarg1, BMXMessageConfig jarg1_);
@@ -635,7 +637,9 @@ public class flooJNI {
   public final static native int BMXPushService_resume(long jarg1, BMXPushService jarg1_);
   public final static native int BMXPushService_unbindAlias(long jarg1, BMXPushService jarg1_, String jarg2);
   public final static native String BMXPushService_getToken(long jarg1, BMXPushService jarg1_);
+  public final static native String BMXPushService_getPushToken(long jarg1, BMXPushService jarg1_);
   public final static native String BMXPushService_getCert(long jarg1, BMXPushService jarg1_);
+  public final static native String BMXPushService_getPushCert(long jarg1, BMXPushService jarg1_);
   public final static native int BMXPushService_status(long jarg1, BMXPushService jarg1_);
   public final static native int BMXPushService_bindDeviceToken(long jarg1, BMXPushService jarg1_, String jarg2);
   public final static native int BMXPushService_bindVoipToken(long jarg1, BMXPushService jarg1_, String jarg2);

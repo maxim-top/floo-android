@@ -11282,6 +11282,40 @@ SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1isSil
 }
 
 
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1setNoPush(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  bool arg2 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  arg2 = jarg2 ? true : false;
+  (arg1)->setNoPush(arg2);
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getNoPush(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
+  std::shared_ptr< floo::BMXMessageConfig > *smartarg1 = 0 ;
+  bool result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXMessageConfig > **)&jarg1;
+  arg1 = (floo::BMXMessageConfig *)(smartarg1 ? smartarg1->get() : 0);
+  result = (bool)(arg1)->getNoPush();
+  jresult = (jboolean)result;
+  return jresult;
+}
+
+
 SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXMessageConfig_1getBadgeCountType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jint jresult = 0 ;
   floo::BMXMessageConfig *arg1 = (floo::BMXMessageConfig *) 0 ;
@@ -17098,6 +17132,21 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getToken
 }
 
 
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getPushToken(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXPushService *arg1 = (floo::BMXPushService *) 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXPushService **)&jarg1;
+  result = (arg1)->getPushToken();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
 SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getCert(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jstring jresult = 0 ;
   floo::BMXPushService *arg1 = (floo::BMXPushService *) 0 ;
@@ -17109,6 +17158,21 @@ SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getCert(
   arg1 = *(floo::BMXPushService **)&jarg1; 
   result = (std::string *) &(arg1)->getCert();
   jresult = NewStringUTF(jenv, result->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXPushService_1getPushCert(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXPushService *arg1 = (floo::BMXPushService *) 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(floo::BMXPushService **)&jarg1;
+  result = (arg1)->getPushCert();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
   return jresult;
 }
 

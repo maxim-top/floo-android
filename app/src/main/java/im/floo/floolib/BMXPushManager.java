@@ -127,11 +127,25 @@ public class BMXPushManager {
         return mService.getToken();
     }
 
+    /**
+     获取推送token。
+     **/
+    public String getPushToken() {
+        return mService.getPushToken();
+    }
+
   /**
    获取登陆后服务器返回的推送证书。
    **/
     public String getCert() {
         return mService.getCert();
+    }
+
+  /**
+   获取登陆后服务器返回的推送证书。
+   **/
+  public String getPushCert() {
+        return mService.getPushCert();
     }
 
   /**
