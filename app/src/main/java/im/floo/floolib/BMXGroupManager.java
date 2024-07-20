@@ -1267,4 +1267,27 @@ public class BMXGroupManager {
             }
         });
     }
+
+    /**
+     *  设置是否隐藏群成员信息
+     * @param group 进行操作的群组
+     * @param hide 是否隐藏
+     * @param callBack BMXErrorCode
+     **/
+    public void setHideMemberInfo(final BMXGroup group, final  boolean hide,final BMXCallBack callBack) {
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.setHideMemberInfo(group, hide);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null){
+                    return;
+                }
+                callBack.onResult(code);
+            }
+        });
+    }
 }

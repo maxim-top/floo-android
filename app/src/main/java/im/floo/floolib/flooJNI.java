@@ -1342,6 +1342,7 @@ public class flooJNI {
   public final static native int BMXGroup_groupStatus(long jarg1, BMXGroup jarg1_);
   public final static native boolean BMXGroup_isMember(long jarg1, BMXGroup jarg1_);
   public final static native boolean BMXGroup_enableReadAck(long jarg1, BMXGroup jarg1_);
+  public final static native boolean BMXGroup_hideMemberInfo(long jarg1, BMXGroup jarg1_);
   public final static native boolean BMXGroup_historyVisible(long jarg1, BMXGroup jarg1_);
   public final static native int BMXGroup_roleType(long jarg1, BMXGroup jarg1_);
   public final static native long BMXGroup_banExpireTime(long jarg1, BMXGroup jarg1_);
@@ -1437,6 +1438,8 @@ public class flooJNI {
   public final static native int BMXGroupService_downloadAvatar(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, boolean jarg3, FileProgressListener jarg4);
   public final static native int BMXGroupService_setAllowMemberModify(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, boolean jarg3);
   public final static native int BMXGroupService_setEnableReadAck(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, boolean jarg3);
+
+  public final static native int BMXGroupService_setHideMemberInfo(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, boolean jarg3);
   public final static native int BMXGroupService_setHistoryVisible(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, boolean jarg3);
   public final static native void BMXGroupService_addGroupListener(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroupServiceListener jarg2_);
   public final static native void BMXGroupService_removeGroupListener(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroupServiceListener jarg2_);

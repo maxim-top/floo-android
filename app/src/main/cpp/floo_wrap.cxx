@@ -30779,6 +30779,24 @@ SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1enableReadAck
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1hideMemberInfo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  floo::BMXGroup *arg1 = (floo::BMXGroup *) 0 ;
+  std::shared_ptr< floo::BMXGroup > *smartarg1 = 0 ;
+  bool result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXGroup > **)&jarg1;
+  arg1 = (floo::BMXGroup *)(smartarg1 ? smartarg1->get() : 0);
+  result = (bool)(arg1)->hideMemberInfo();
+  jresult = (jboolean)result;
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1historyVisible(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   floo::BMXGroup *arg1 = (floo::BMXGroup *) 0 ;
@@ -33163,6 +33181,28 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setEnableR
   arg3 = jarg3 ? true : false; 
   result = (floo::BMXErrorCode)(arg1)->setEnableReadAck(arg2,arg3);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1setHideMemberInfo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jboolean jarg3) {
+  jint jresult = 0 ;
+  floo::BMXGroupService *arg1 = (floo::BMXGroupService *) 0 ;
+  floo::BMXGroupPtr arg2 ;
+  bool arg3 ;
+  floo::BMXGroupPtr *argp2 ;
+  floo::BMXErrorCode result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(floo::BMXGroupService **)&jarg1;
+  argp2 = *(floo::BMXGroupPtr **)&jarg2;
+  if (argp2) arg2 = *argp2;
+  arg3 = jarg3 ? true : false;
+  result = (floo::BMXErrorCode)(arg1)->setHideMemberInfo(arg2,arg3);
+  jresult = (jint)result;
   return jresult;
 }
 

@@ -5,7 +5,7 @@ android {
     defaultConfig {
         targetSdkVersion 31
         versionCode 6
-        versionName "4.2.1.20240417"
+        versionName "4.2.2.20240719"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         minSdkVersion 21
     }
@@ -45,5 +45,5 @@ task assembleAndBackup(type: Copy, dependsOn: "aarCopy") {
 }
 
 task backupAndUploadSymbols(type: Exec, dependsOn: "assembleAndBackup"){
-    commandLine("bash", "../../buglyqq-upload-symbol-android.3.3.4/my.sh", android.defaultConfig.versionName)
+    commandLine("bash", "../../buglyqq-upload-symbol-v3.3.5/my.sh", android.defaultConfig.versionName)
 }

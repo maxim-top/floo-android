@@ -752,6 +752,14 @@ public class BMXGroup extends BMXBaseObject {
   }
 
   /**
+   *  是否隐藏群成员信息（普通成员不能查看其它成员信息，不能私聊）
+   * @return bool
+   **/
+  public boolean hideMemberInfo() {
+    return flooJNI.BMXGroup_hideMemberInfo(swigCPtr, this);
+  }
+
+  /**
    *  是否可以加载显示历史聊天记录
    * @return bool
    **/
@@ -1068,8 +1076,8 @@ public class BMXGroup extends BMXBaseObject {
     MsgMuteMode,
     ReadAckMode,
     HistoryVisibleMode,
-    BanExpireTime;
-
+    BanExpireTime,
+    HideMemberInfoMode;
     public final int swigValue() {
       return swigValue;
     }

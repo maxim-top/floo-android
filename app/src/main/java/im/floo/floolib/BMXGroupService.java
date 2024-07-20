@@ -793,6 +793,16 @@ public class BMXGroupService {
   }
 
   /**
+   *  设置是否隐藏群成员信息
+   * @param group 进行操作的群组
+   * @param hide 是否隐藏
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode setHideMemberInfo(BMXGroup group, boolean hide) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_setHideMemberInfo(swigCPtr, this, BMXGroup.getCPtr(group), group, hide));
+  }
+
+  /**
    *  设置群成员是否开可见群历史聊天记录
    * @param group 进行操作的群组
    * @param enable 是否开启
