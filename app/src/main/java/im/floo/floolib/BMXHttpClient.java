@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
@@ -171,12 +172,24 @@ public class BMXHttpClient {
             Log.i(TAG, "sendRequest request:" + strUrl + " body:" + body + "response:"+strResponse.toString());
         } catch (MalformedURLException e) {
             Log.e(TAG, "sendRequest MalformedURLException:" + strUrl);
+            try {
+                strResponse.append( new String(e.getMessage().getBytes(), "utf-8") );
+            } catch (UnsupportedEncodingException ex) {
+            }
             retCode = 400;
         } catch (IOException e) {
             Log.e(TAG, "sendRequest IOException:" + strUrl + " exception:" + e.getMessage());
-            retCode = 500;
+            try {
+                strResponse.append( new String(e.getMessage().getBytes(), "utf-8") );
+            } catch (UnsupportedEncodingException ex) {
+            }
+            retCode = 700;
         } catch (Exception e) {
             Log.e(TAG, "sendRequest Exception:" + strUrl + " exception:" + e.getMessage());
+            try {
+                strResponse.append( new String(e.getMessage().getBytes(), "utf-8") );
+            } catch (UnsupportedEncodingException ex) {
+            }
             retCode = 400;
         }
 

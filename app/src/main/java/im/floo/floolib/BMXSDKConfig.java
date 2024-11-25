@@ -321,4 +321,12 @@ public class BMXSDKConfig {
     flooJNI.BMXSDKConfig_setDebugLogReceiverId(swigCPtr, this, uid);
   }
 
+  public String getAppConfig() {
+    return flooJNI.BMXSDKConfig_getAppConfig(swigCPtr, this);
+  }
+
+  public void setAppConfig(String appConfig) {
+    flooJNI.BMXSDKConfig_setAppConfig(swigCPtr, this, appConfig);
+  }
+
 }

@@ -15181,6 +15181,45 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setDebugLogRe
 }
 
 
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1getAppConfig(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXSDKConfig *arg1 = (floo::BMXSDKConfig *) 0 ;
+  std::shared_ptr< floo::BMXSDKConfig > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
+  arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getAppConfig();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXSDKConfig_1setAppConfig(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXSDKConfig *arg1 = (floo::BMXSDKConfig *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXSDKConfig > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXSDKConfig > **)&jarg1;
+  arg1 = (floo::BMXSDKConfig *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  (arg1)->setAppConfig((std::string const &)*arg2);
+}
+
+
 SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_delete_1BMXNetworkListener(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   floo::BMXNetworkListener *arg1 = (floo::BMXNetworkListener *) 0 ;
   std::shared_ptr< floo::BMXNetworkListener > *smartarg1 = 0 ;

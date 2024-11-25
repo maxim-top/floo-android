@@ -528,6 +528,8 @@ public class flooJNI {
   public final static native void BMXSDKConfig_setEnvironmentType(long jarg1, BMXSDKConfig jarg1_, int jarg2);
   public final static native long BMXSDKConfig_getDebugLogReceiverId(long jarg1, BMXSDKConfig jarg1_);
   public final static native void BMXSDKConfig_setDebugLogReceiverId(long jarg1, BMXSDKConfig jarg1_, long jarg2);
+  public final static native String BMXSDKConfig_getAppConfig(long jarg1, BMXSDKConfig jarg1_);
+  public final static native void BMXSDKConfig_setAppConfig(long jarg1, BMXSDKConfig jarg1_, String jarg2);
   public final static native void delete_BMXNetworkListener(long jarg1);
   public final static native void BMXNetworkListener_onNetworkChanged(long jarg1, BMXNetworkListener jarg1_, int jarg2, boolean jarg3);
   public final static native long new_BMXNetworkListener();
