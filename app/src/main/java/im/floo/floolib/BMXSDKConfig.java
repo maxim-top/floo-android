@@ -8,8 +8,6 @@
 
 package im.floo.floolib;
 
-import android.os.Build;
-
 /**
  *  SDK设置管理
  **/
@@ -133,20 +131,20 @@ public class BMXSDKConfig {
    * @param pushCertName Push证书名字
    * @param deliveryAck 是否发送消息送达回执
    **/
-  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, boolean deliveryAck) {
-    this(flooJNI.new_BMXSDKConfig__SWIG_0(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND+ ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT, deliveryAck), true);
+  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String userAgent, boolean deliveryAck) {
+    this(flooJNI.new_BMXSDKConfig__SWIG_0(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, userAgent, deliveryAck), true);
   }
 
-  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName) {
-    this(flooJNI.new_BMXSDKConfig__SWIG_1(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND + ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT), true);
+  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String userAgent) {
+    this(flooJNI.new_BMXSDKConfig__SWIG_1(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, userAgent), true);
   }
 
-  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String appId, String appSecret, boolean deliveryAck) {
-    this(flooJNI.new_BMXSDKConfig__SWIG_2(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND + ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT, appId, appSecret, deliveryAck), true);
+  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String userAgent, String appId, String appSecret, boolean deliveryAck) {
+    this(flooJNI.new_BMXSDKConfig__SWIG_2(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, userAgent, appId, appSecret, deliveryAck), true);
   }
 
-  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String appId, String appSecret) {
-    this(flooJNI.new_BMXSDKConfig__SWIG_3(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, android.os.Build.BRAND + ";" + Build.MODEL + ";" + Build.VERSION.SDK_INT, appId, appSecret), true);
+  public BMXSDKConfig(BMXClientType type, String vsn, String dataDir, String cacheDir, String pushCertName, String userAgent, String appId, String appSecret) {
+    this(flooJNI.new_BMXSDKConfig__SWIG_3(type.swigValue(), vsn, dataDir, cacheDir, sdkVersion, pushCertName, userAgent, appId, appSecret), true);
   }
 
   public String getDataDir() {
