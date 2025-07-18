@@ -12,10 +12,10 @@ android {
         jvmTarget = '1.8'
     }
     defaultConfig {
-        compileSdk 34
-        targetSdk 34
+        compileSdk 35
+        targetSdk 35
         versionCode 11
-        versionName "4.4.3.20250428"
+        versionName "4.5.0.20250704"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 21
     }
@@ -30,7 +30,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    ndkVersion '21.4.7075529'
 }
 
 dependencies {
