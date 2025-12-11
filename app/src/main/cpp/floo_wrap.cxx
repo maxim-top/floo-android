@@ -18115,6 +18115,42 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1getSDKConfig(JN
 }
 
 
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1getAppStatus(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXClient *arg1 = (floo::BMXClient *) 0 ;
+  std::shared_ptr< floo::BMXClient > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXClient > **)&jarg1;
+  arg1 = (floo::BMXClient *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getAppStatus();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1getRatelIpList(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXClient *arg1 = (floo::BMXClient *) 0 ;
+  std::shared_ptr< floo::BMXClient > *smartarg1 = 0 ;
+  std::string result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr<  floo::BMXClient > **)&jarg1;
+  arg1 = (floo::BMXClient *)(smartarg1 ? smartarg1->get() : 0);
+  result = (arg1)->getRatelIpList();
+  jresult = NewStringUTF(jenv, (&result)->c_str());
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXClient_1getUserService(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   floo::BMXClient *arg1 = (floo::BMXClient *) 0 ;

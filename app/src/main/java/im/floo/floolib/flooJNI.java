@@ -693,6 +693,8 @@ public class flooJNI {
   public final static native long BMXClient_create(long jarg1, BMXSDKConfig jarg1_);
   public final static native void delete_BMXClient(long jarg1);
   public final static native long BMXClient_getSDKConfig(long jarg1, BMXClient jarg1_);
+  public final static native String BMXClient_getAppStatus(long jarg1, BMXClient jarg1_);
+  public final static native String BMXClient_getRatelIpList(long jarg1, BMXClient jarg1_);
   public final static native long BMXClient_getUserService(long jarg1, BMXClient jarg1_);
   public final static native long BMXClient_getChatService(long jarg1, BMXClient jarg1_);
   public final static native long BMXClient_getGroupService(long jarg1, BMXClient jarg1_);

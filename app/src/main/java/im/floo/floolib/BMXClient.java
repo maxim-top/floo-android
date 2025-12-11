@@ -74,6 +74,22 @@ public class BMXClient extends BMXNetworkListener {
   }
 
   /**
+   *  获取服务状态
+   * @return std::string
+   **/
+  public String getAppStatus() {
+    return flooJNI.BMXClient_getAppStatus(swigCPtr, this);
+  }
+
+  /**
+   *  获取API服务器IP地址列表（用分号分隔）
+   * @return std::string
+   **/
+  public String getRatelIpList() {
+    return flooJNI.BMXClient_getRatelIpList(swigCPtr, this);
+  }
+
+  /**
    *  获取用户Service
    * @return BMXUserService
    **/

@@ -14,8 +14,8 @@ android {
     defaultConfig {
         compileSdk 35
         targetSdk 35
-        versionCode 11
-        versionName "4.5.0.20250704"
+        versionCode 14
+        versionName "4.7.0.20250925"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 21
     }
