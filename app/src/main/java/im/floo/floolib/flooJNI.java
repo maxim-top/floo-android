@@ -1247,6 +1247,12 @@ public class flooJNI {
   public final static native String BMXGroup_Member_mGroupNickname_get(long jarg1, BMXGroup.Member jarg1_);
   public final static native void BMXGroup_Member_mCreateTime_set(long jarg1, BMXGroup.Member jarg1_, long jarg2);
   public final static native long BMXGroup_Member_mCreateTime_get(long jarg1, BMXGroup.Member jarg1_);
+  public final static native void BMXGroup_Member_mAvatar_set(long jarg1, BMXGroup.Member jarg1_, String jarg2);
+  public final static native String BMXGroup_Member_mAvatar_get(long jarg1, BMXGroup.Member jarg1_);
+  public final static native void BMXGroup_Member_mNickname_set(long jarg1, BMXGroup.Member jarg1_, String jarg2);
+  public final static native String BMXGroup_Member_mNickname_get(long jarg1, BMXGroup.Member jarg1_);
+  public final static native void BMXGroup_Member_mUsername_set(long jarg1, BMXGroup.Member jarg1_, String jarg2);
+  public final static native String BMXGroup_Member_mUsername_get(long jarg1, BMXGroup.Member jarg1_);
   public final static native long new_BMXGroup_BannedMember();
   public final static native void delete_BMXGroup_BannedMember(long jarg1);
   public final static native void BMXGroup_BannedMember_mUid_set(long jarg1, BMXGroup.BannedMember jarg1_, long jarg2);
@@ -1382,6 +1388,8 @@ public class flooJNI {
   public final static native int BMXGroupService_leave(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_);
   public final static native int BMXGroupService_getInfo(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_);
   public final static native int BMXGroupService_getMembersNickname(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_, long jarg4, BMXGroupMemberList jarg4_);
+  public final static native int BMXGroupService_getMembersInfo(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, long jarg3, ListOfLongLong jarg3_, long jarg4, BMXGroupMemberList jarg4_);
+  public final static native int BMXGroupService_searchMembers(long jarg1, BMXGroupService jarg1_, long jarg2, BMXGroup jarg2_, String jarg3, long jarg4, ListOfLongLong jarg4_, String jarg5, int jarg6);
   public final static native int BMXGroupService_getInvitationList__SWIG_0(long jarg1, BMXGroupService jarg1_, long jarg2, ListOfLongLong jarg2_, String jarg3, int jarg4);
   public final static native int BMXGroupService_getInvitationList__SWIG_1(long jarg1, BMXGroupService jarg1_, long jarg2, String jarg3);
   public final static native int BMXGroupService_getInvitationList__SWIG_2(long jarg1, BMXGroupService jarg1_, long jarg2);

@@ -288,6 +288,36 @@ public class BMXGroupService {
   }
 
   /**
+   *  批量获取指定群成员信息
+   * @param group 进行操作的群组
+   * @param members 要获取信息的群成员id列表
+   * @param list 返回的群成员信息列表，传入空列表在函数操作后从此处获取结果
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode getMembersInfo(BMXGroup group, ListOfLongLong members, BMXGroupMemberList list) {
+    return BMXErrorCode.swigToEnum(flooJNI.BMXGroupService_getMembersInfo(swigCPtr, this, BMXGroup.getCPtr(group), group, ListOfLongLong.getCPtr(members), members, BMXGroupMemberList.getCPtr(list), list));
+  }
+
+  /**
+   *  搜索群成员
+   * @param group 进行操作的群组
+   * @param keyword 搜索关键词
+   * @param result 搜索结果，包含群成员列表和下一页cursor
+   * @param cursor 分页起始cursor，首次搜索传入空字符串
+   * @param pageSize 分页大小，默认20，有效范围1到100
+   * @return BMXErrorCode
+   **/
+  public BMXErrorCode searchMembers(BMXGroup group, String keyword,
+      BMXGroupMemberResultPage result, String cursor, int pageSize) {
+    ListOfLongLong listOfLongLong = new ListOfLongLong();
+    int iRet = flooJNI.BMXGroupService_searchMembers(swigCPtr, this,
+        BMXGroup.getCPtr(group), group, keyword, ListOfLongLong.getCPtr(listOfLongLong),
+        listOfLongLong, cursor, pageSize);
+    result.swigCPtr = listOfLongLong.get(0);
+    return BMXErrorCode.swigToEnum(iRet);
+  }
+
+  /**
    *  分页获取群组邀请列表
    * @param result 分页获取的群组邀请列表，传入指向为空的shared_ptr对象函数执行后从此处获取结果
    * @param cursor 分页获取的起始cursor，第一次传入为空，后续传入上次操作返回的result中的cursor

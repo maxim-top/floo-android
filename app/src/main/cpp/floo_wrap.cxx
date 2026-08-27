@@ -29131,6 +29131,117 @@ SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mCreateT
   return jresult;
 }
 
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mAvatar_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXGroup::Member *arg1 = (floo::BMXGroup::Member *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXGroup::Member > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr< floo::BMXGroup::Member > **)&jarg1;
+  arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  if (arg1) (arg1)->mAvatar = *arg2;
+}
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mAvatar_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXGroup::Member *arg1 = (floo::BMXGroup::Member *) 0 ;
+  std::shared_ptr< floo::BMXGroup::Member > *smartarg1 = 0 ;
+  std::string *result = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr< floo::BMXGroup::Member > **)&jarg1;
+  arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0);
+  result = (std::string *) & ((arg1)->mAvatar);
+  jresult = NewStringUTF(jenv, result->c_str());
+  return jresult;
+}
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mNickname_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXGroup::Member *arg1 = (floo::BMXGroup::Member *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXGroup::Member > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr< floo::BMXGroup::Member > **)&jarg1;
+  arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  if (arg1) (arg1)->mNickname = *arg2;
+}
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mNickname_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXGroup::Member *arg1 = (floo::BMXGroup::Member *) 0 ;
+  std::shared_ptr< floo::BMXGroup::Member > *smartarg1 = 0 ;
+  std::string *result = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr< floo::BMXGroup::Member > **)&jarg1;
+  arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0);
+  result = (std::string *) & ((arg1)->mNickname);
+  jresult = NewStringUTF(jenv, result->c_str());
+  return jresult;
+}
+
+SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mUsername_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  floo::BMXGroup::Member *arg1 = (floo::BMXGroup::Member *) 0 ;
+  std::string *arg2 = 0 ;
+  std::shared_ptr< floo::BMXGroup::Member > *smartarg1 = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr< floo::BMXGroup::Member > **)&jarg1;
+  arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0);
+  if(!jarg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return ;
+  }
+  std::string arg2_str = getStdString(jenv, jarg2);
+  arg2 = &arg2_str;
+  if (arg1) (arg1)->mUsername = *arg2;
+}
+
+SWIGEXPORT jstring JNICALL Java_im_floo_floolib_flooJNI_BMXGroup_1Member_1mUsername_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  floo::BMXGroup::Member *arg1 = (floo::BMXGroup::Member *) 0 ;
+  std::shared_ptr< floo::BMXGroup::Member > *smartarg1 = 0 ;
+  std::string *result = 0 ;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+
+  smartarg1 = *(std::shared_ptr< floo::BMXGroup::Member > **)&jarg1;
+  arg1 = (floo::BMXGroup::Member *)(smartarg1 ? smartarg1->get() : 0);
+  result = (std::string *) & ((arg1)->mUsername);
+  jresult = NewStringUTF(jenv, result->c_str());
+  return jresult;
+}
+
 
 SWIGEXPORT jlong JNICALL Java_im_floo_floolib_flooJNI_new_1BMXGroup_1BannedMember(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
@@ -31602,6 +31713,84 @@ SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getMembers
   } 
   result = (floo::BMXErrorCode)(arg1)->getMembersNickname(arg2,(std::vector< int64_t > const &)*arg3,*arg4);
   jresult = (jint)result; 
+  return jresult;
+}
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1getMembersInfo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_) {
+  jint jresult = 0 ;
+  floo::BMXGroupService *arg1 = (floo::BMXGroupService *) 0 ;
+  floo::BMXGroupPtr arg2 ;
+  std::vector< int64_t > *arg3 = 0 ;
+  floo::BMXGroup::MemberList *arg4 = 0 ;
+  floo::BMXGroupPtr *argp2 ;
+  floo::BMXErrorCode result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  (void)jarg4_;
+  arg1 = *(floo::BMXGroupService **)&jarg1;
+  argp2 = *(floo::BMXGroupPtr **)&jarg2;
+  if (argp2) arg2 = *argp2;
+  arg3 = *(std::vector< int64_t > **)&jarg3;
+  if (!arg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "std::vector< int64_t > const & reference is null");
+    return 0;
+  }
+  arg4 = *(floo::BMXGroup::MemberList **)&jarg4;
+  if (!arg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "floo::BMXGroup::MemberList & reference is null");
+    return 0;
+  }
+  result = (floo::BMXErrorCode)(arg1)->getMembersInfo(arg2,(std::vector< int64_t > const &)*arg3,*arg4);
+  jresult = (jint)result;
+  return jresult;
+}
+
+SWIGEXPORT jint JNICALL Java_im_floo_floolib_flooJNI_BMXGroupService_1searchMembers(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jstring jarg3, jlong jarg4, jobject jarg4_, jstring jarg5, jint jarg6) {
+  jint jresult = 0 ;
+  floo::BMXGroupService *arg1 = (floo::BMXGroupService *) 0 ;
+  floo::BMXGroupPtr arg2 ;
+  std::string *arg3 = 0 ;
+  floo::BMXGroupMemberResultPagePtr *arg4 = 0 ;
+  std::string *arg5 = 0 ;
+  int arg6 ;
+  floo::BMXGroupPtr *argp2 ;
+  floo::BMXErrorCode result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg4_;
+  arg1 = *(floo::BMXGroupService **)&jarg1;
+  argp2 = *(floo::BMXGroupPtr **)&jarg2;
+  if (argp2) arg2 = *argp2;
+  if(!jarg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  std::string arg3_str = getStdString(jenv, jarg3);
+  arg3 = &arg3_str;
+  if(!jarg5) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null string");
+    return 0;
+  }
+  std::string arg5_str = getStdString(jenv, jarg5);
+  arg5 = &arg5_str;
+  arg6 = (int)jarg6;
+
+  floo::BMXGroupMemberResultPagePtr tmpPtr = floo::BMXGroupMemberResultPagePtr();
+  result = (floo::BMXErrorCode)(arg1)->searchMembers(arg2,(std::string const &)*arg3,tmpPtr,(std::string const &)*arg5,arg6);
+
+  GET_INT_VECTOR(jarg4);
+  jlong jPtr = 0;
+  *(floo::BMXGroupMemberResultPagePtr **)&jPtr = tmpPtr ? new floo::BMXGroupMemberResultPagePtr(tmpPtr) : 0;
+  PUSH_INT_INTO_VECTOR;
+
+  jresult = (jint)result;
   return jresult;
 }
 
@@ -39522,4 +39711,3 @@ SWIGEXPORT void JNICALL Java_im_floo_floolib_flooJNI_swig_1module_1init(JNIEnv *
 #ifdef __cplusplus
 }
 #endif
-

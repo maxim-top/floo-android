@@ -14,10 +14,11 @@ android {
     defaultConfig {
         compileSdk 35
         targetSdk 35
-        versionCode 14
-        versionName "4.7.0.20250925"
+        versionCode 23
+        versionName "4.10.2.20260814"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 21
+        // abiFilters are now configured per flavor
     }
 
     buildTypes {
@@ -34,7 +35,7 @@ android {
 
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'org.webrtc:google-webrtc:1.0.30039@aar'
+    implementation 'io.github.webrtc-sdk:android:137.7151.03'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.7.0'

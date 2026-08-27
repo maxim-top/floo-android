@@ -298,6 +298,67 @@ public class BMXGroupManager {
     }
 
     /**
+     * 批量获取指定群成员信息
+     * @param group 进行操作的群组
+     * @param members 要获取信息的群成员id列表
+     * @param callBack BMXErrorCode,群成员信息列表
+     **/
+    public void getMembersInfo(final BMXGroup group, final ListOfLongLong members,
+                               final BMXDataCallBack<BMXGroupMemberList> callBack) {
+        final BMXGroupMemberList list = new BMXGroupMemberList();
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.getMembersInfo(group, members, list);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null) {
+                    return;
+                }
+                callBack.onResult(code, list);
+            }
+        });
+    }
+
+    /**
+     * 搜索群成员
+     * @param group 进行操作的群组
+     * @param keyword 搜索关键词
+     * @param cursor 分页起始cursor，首次搜索传入空字符串
+     * @param pageSize 分页大小，默认20，有效范围1到100
+     * @param callBack BMXErrorCode,群成员搜索结果
+     **/
+    public void searchMembers(final BMXGroup group, final String keyword, final String cursor,
+                              final int pageSize,
+                              final BMXDataCallBack<BMXGroupMemberResultPage> callBack) {
+        final BMXGroupMemberResultPage page = new BMXGroupMemberResultPage();
+        new AsyncExecutor().exec(new AsyncExecutor.Task() {
+            @Override
+            public BMXErrorCode exec() {
+                return mService.searchMembers(group, keyword, page, cursor, pageSize);
+            }
+
+            @Override
+            public void onPostExecute(BMXErrorCode code) {
+                if (callBack == null) {
+                    return;
+                }
+                callBack.onResult(code, page);
+            }
+        });
+    }
+
+    /**
+     * 搜索群成员，首次搜索默认返回20条
+     **/
+    public void searchMembers(final BMXGroup group, final String keyword,
+                              final BMXDataCallBack<BMXGroupMemberResultPage> callBack) {
+        searchMembers(group, keyword, "", 20, callBack);
+    }
+
+    /**
      *  添加群成员
      * @param group 进行操作的群组
      * @param members 要添加进群的成员id列表

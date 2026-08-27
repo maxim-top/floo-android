@@ -22,8 +22,8 @@ import im.floo.floolib.okhttpwrapper.OkHttpClientHelper;
 import im.floo.floolib.okhttpwrapper.ProgressRequestListener;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.ConnectionPool;
 import okhttp3.Dns;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -45,9 +45,11 @@ public class BMXHttpClient {
     private static final String CHARSET = "utf-8"; //设置编码
     private static HashSet<String> sPathSet = new HashSet<>();
     private static ConcurrentHashMap<Long, Call> sCallMap = new ConcurrentHashMap<>();
+    private static final ConnectionPool sConnectionPool = new ConnectionPool(5, 5, TimeUnit.MINUTES);
 
     private static OkHttpClient getOkHttpClient(final List<String> ipList){
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectionPool(sConnectionPool)
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(40, TimeUnit.SECONDS);
         if (ipList.isEmpty()){
@@ -167,8 +169,12 @@ public class BMXHttpClient {
 
             final Call call = client.newCall(request);
             Response response = call.execute();
-            retCode = response.code();
-            strResponse.append( new String(response.body().bytes(), "utf-8") );
+            try {
+                retCode = response.code();
+                strResponse.append( new String(response.body().bytes(), "utf-8") );
+            } finally {
+                response.close();
+            }
             Log.i(TAG, "sendRequest request:" + strUrl + " body:" + body + "response:"+strResponse.toString());
         } catch (MalformedURLException e) {
             Log.e(TAG, "sendRequest MalformedURLException:" + strUrl);
@@ -254,7 +260,7 @@ public class BMXHttpClient {
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
-
+            response.close();
         }
     }
 
@@ -308,65 +314,69 @@ public class BMXHttpClient {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len = 0;
-                FileOutputStream fos = null;
-                int httpStatusCode = response.code();
-                if (httpStatusCode / 100 ==2){
-                    try {
-                        long downloaded = fileTemp.length();
-                        long total = response.body().contentLength();
-                        long current = 0;
-                        long prev_percent = 0;
-                        is = response.body().byteStream();
-                        while ((len = is.read(buf)) != -1) {
-                            //the real file is downloaded by other thread
-                            if (isFileExist(filePath)){
-                                Log.e(TAG,  "sendDownloadRequest:" + strUrl + " file downloaded by others");
-                                deleteFile(fos, tempPath);
-                                break;
-                            }
-                            fos = new FileOutputStream(fileTemp, true);
-                            fos.write(buf, 0, len);
-                            fos.flush();
-                            fos.close();
-                            fos = null;
-
-                            current += len;
-                            long current_percent = (current + downloaded) * 100 / (total + downloaded);
-                            if (current_percent - prev_percent > 0 || current_percent == 100){
-                                changePercent(fileLock,percent,current_percent);
-                                prev_percent = current_percent;
-                                Log.d(TAG, "sendDownloadRequest cur percent:" + current_percent+" total:"+total+" len:"+len);
-                            }
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG,  "sendDownloadRequest:" + strUrl + " exception:" + e.getMessage());
-                        httpStatusCode = 400;
-                    } finally {
+                try {
+                    InputStream is = null;
+                    byte[] buf = new byte[2048];
+                    int len = 0;
+                    FileOutputStream fos = null;
+                    int httpStatusCode = response.code();
+                    if (httpStatusCode / 100 ==2){
                         try {
-                            if (is != null) {
-                                is.close();
-                            }
-                            if (fos != null) {
+                            long downloaded = fileTemp.length();
+                            long total = response.body().contentLength();
+                            long current = 0;
+                            long prev_percent = 0;
+                            is = response.body().byteStream();
+                            while ((len = is.read(buf)) != -1) {
+                                //the real file is downloaded by other thread
+                                if (isFileExist(filePath)){
+                                    Log.e(TAG,  "sendDownloadRequest:" + strUrl + " file downloaded by others");
+                                    deleteFile(fos, tempPath);
+                                    break;
+                                }
+                                fos = new FileOutputStream(fileTemp, true);
+                                fos.write(buf, 0, len);
+                                fos.flush();
                                 fos.close();
+                                fos = null;
+
+                                current += len;
+                                long current_percent = (current + downloaded) * 100 / (total + downloaded);
+                                if (current_percent - prev_percent > 0 || current_percent == 100){
+                                    changePercent(fileLock,percent,current_percent);
+                                    prev_percent = current_percent;
+                                    Log.d(TAG, "sendDownloadRequest cur percent:" + current_percent+" total:"+total+" len:"+len);
+                                }
                             }
                         } catch (IOException e) {
-                            Log.e(TAG,  "sendDownloadRequest:" + strUrl + " exception2:" + e.getMessage());
+                            Log.e(TAG,  "sendDownloadRequest:" + strUrl + " exception:" + e.getMessage());
                             httpStatusCode = 400;
                         } finally {
                             try {
-                                Thread.sleep(200);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                if (is != null) {
+                                    is.close();
+                                }
+                                if (fos != null) {
+                                    fos.close();
+                                }
+                            } catch (IOException e) {
+                                Log.e(TAG,  "sendDownloadRequest:" + strUrl + " exception2:" + e.getMessage());
+                                httpStatusCode = 400;
+                            } finally {
+                                try {
+                                    Thread.sleep(200);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                changePercent(fileLock,percent,httpStatusCode);
                             }
-                            changePercent(fileLock,percent,httpStatusCode);
                         }
+                    }else{
+                        Log.e(TAG, "sendDownloadRequest failure:" + strUrl + " http code:" + httpStatusCode);
+                        changePercent(fileLock,percent,httpStatusCode);
                     }
-                }else{
-                    Log.e(TAG, "sendDownloadRequest failure:" + strUrl + " http code:" + httpStatusCode);
-                    changePercent(fileLock,percent,httpStatusCode);
+                } finally {
+                    response.close();
                 }
             }
         });
@@ -482,8 +492,12 @@ public class BMXHttpClient {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    int httpStatusCode = response.code();
-                    changePercent(fileLock, percent, httpStatusCode);
+                    try {
+                        int httpStatusCode = response.code();
+                        changePercent(fileLock, percent, httpStatusCode);
+                    } finally {
+                        response.close();
+                    }
                 }
             });
         } catch (IllegalStateException e){

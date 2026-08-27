@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionPool;
 import okhttp3.Dns;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -17,6 +18,7 @@ import okhttp3.Response;
  * Created by Cmad on 2016/4/28.
  */
 public class OkHttpClientHelper {
+    private static final ConnectionPool sConnectionPool = new ConnectionPool(5, 5, TimeUnit.MINUTES);
 
     /**
      * 包装OkHttpClient，用于下载文件的回调
@@ -25,7 +27,9 @@ public class OkHttpClientHelper {
      */
     public static OkHttpClient addProgressResponseListener(final ProgressResponseListener progressListener){
         OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.readTimeout(1, TimeUnit.HOURS).writeTimeout(1, TimeUnit.HOURS);
+        client.connectionPool(sConnectionPool)
+                .readTimeout(1, TimeUnit.HOURS)
+                .writeTimeout(1, TimeUnit.HOURS);
         //增加拦截器
         client.addInterceptor(new Interceptor() {
             @Override
@@ -50,6 +54,7 @@ public class OkHttpClientHelper {
      */
     public static OkHttpClient addProgressRequestListener(final ProgressRequestListener progressListener, final List<String> ipList){
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectionPool(sConnectionPool)
                 .readTimeout(1, TimeUnit.HOURS)
                 .writeTimeout(1, TimeUnit.HOURS)
                 .addInterceptor(new Interceptor() {

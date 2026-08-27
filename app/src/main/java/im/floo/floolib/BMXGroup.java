@@ -103,6 +103,30 @@ public class BMXGroup extends BMXBaseObject {
     public long getMCreateTime() {
       return flooJNI.BMXGroup_Member_mCreateTime_get(swigCPtr, this);
     }
+
+    public void setMAvatar(String value) {
+      flooJNI.BMXGroup_Member_mAvatar_set(swigCPtr, this, value);
+    }
+
+    public String getMAvatar() {
+      return flooJNI.BMXGroup_Member_mAvatar_get(swigCPtr, this);
+    }
+
+    public void setMNickname(String value) {
+      flooJNI.BMXGroup_Member_mNickname_set(swigCPtr, this, value);
+    }
+
+    public String getMNickname() {
+      return flooJNI.BMXGroup_Member_mNickname_get(swigCPtr, this);
+    }
+
+    public void setMUsername(String value) {
+      flooJNI.BMXGroup_Member_mUsername_set(swigCPtr, this, value);
+    }
+
+    public String getMUsername() {
+      return flooJNI.BMXGroup_Member_mUsername_get(swigCPtr, this);
+    }
   
   }
 
